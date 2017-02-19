@@ -30,3 +30,5 @@ http://www.gamasutra.com/view/feature/132636/designing_fast_crossplatform_simd_.
 https://www.gamedev.net/resources/_/technical/general-programming/practical-cross-platform-simd-math-r3068
 
 http://stackoverflow.com/questions/15723995/simd-math-libraries-for-sse-and-avx
+
+http://codesuppository.blogspot.com/2015/02/sse2neonh-porting-guide-and-header-file.html
