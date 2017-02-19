@@ -9,7 +9,9 @@
 #define HLML_PI           3.14159265358979323846f
 #define HLML_DEG2RAD(_a)  ((_a) * HLML_PI / 180.0f)
 #define HLML_RAD2DEG(_a)  ((_a) * 180.0f / HLML_PI)
-#define HLML_FLT_MAX      3.402823466e+38F
+
+#undef min
+#undef max
 
 namespace hlml {
 typedef float F32;
