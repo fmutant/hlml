@@ -21,6 +21,8 @@ http://gruntthepeon.free.fr/ssemath/
 
 https://github.com/to-miz/sse_mathfun_extension/
 
+https://db.in.tum.de/~finis/x86%20intrinsics%20cheat%20sheet%20v1.0.pdf
+
 https://bitbucket.org/eschnett/vecmathlib/wiki/Home
 
 http://www.gamasutra.com/view/feature/132636/designing_fast_crossplatform_simd_.php
