@@ -1,8 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <emmintrin.h>
-#include <intrin.h>
+#include <smmintrin.h>
 
 #define HLML_INLINEF      __forceinline
 #define HLML_VCONST       extern const __declspec(selectany)
