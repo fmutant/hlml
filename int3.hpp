@@ -12,10 +12,10 @@ struct int3 {
   VI128 m = { 0 };
 
   HLML_INLINEF int3() {}
-  HLML_INLINEF int3(I32 x, I32 y, I32 z) : m(_mm_set_epi32(snZero, z, y, x)) {}
-  HLML_INLINEF int3(int2 v, I32 z, I32 w) : m(_mm_set_epi32(snZero, z, v.y(), v.x())) {}
-  HLML_INLINEF explicit int3(I32 x) : m(_mm_set_epi32(snZero, x, x, x)) {}
-  HLML_INLINEF explicit int3(const I32 *p) : m(_mm_set_epi32(snZero, p[2], p[1], p[0])) {}
+  HLML_INLINEF int3(I32 x, I32 y, I32 z) : m(setXYZW(x, y, z, snZero)) {}
+  HLML_INLINEF int3(int2 v, I32 z, I32 w) : int3(v.x(), v.y(), z) {}
+  HLML_INLINEF explicit int3(I32 x) : int3(x, x, x) {}
+  HLML_INLINEF explicit int3(const I32 *p) : int3(p[0], p[1], p[2]) {}
   HLML_INLINEF explicit int3(VI128 v) : m(v) {}
 
   HLML_INLINEF void store(I32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); }
@@ -111,51 +111,14 @@ struct int3 {
   HLML_INLINEF int3 bbb() const { return zzz(); }
 };
 
-HLML_INLINEF int3   operator~   (int3 a) { a.m = _mm_andnot_si128(a.m, vnall); return a; }
-HLML_INLINEF int3   operator&   (int3 a, int3 b) { a.m = _mm_and_si128(a.m, b.m); return a; }
-HLML_INLINEF int3   operator|   (int3 a, int3 b) { a.m = _mm_or_si128(a.m, b.m); return a; }
-HLML_INLINEF int3   operator^   (int3 a, int3 b) { a.m = _mm_xor_si128(a.m, b.m); return a; }
+HLML_INLINEF bool3   operator== (int3 a, int3 b) { return bool3(ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool3   operator!= (int3 a, int3 b) { return bool3(ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool3   operator<  (int3 a, int3 b) { return bool3(ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool3   operator>  (int3 a, int3 b) { return bool3(ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool3   operator<= (int3 a, int3 b) { return bool3(ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool3   operator>= (int3 a, int3 b) { return bool3(ftoi(cmpge(a, b).m)); }
 
-HLML_INLINEF int3   operator+   (int3 a) { return a; }
-HLML_INLINEF int3   operator+   (int3 a, int3 b) { a.m = _mm_add_epi32(a.m, b.m); return a; }
-HLML_INLINEF int3   operator+   (int3 a, I32 b) { return a + int3(b); }
-HLML_INLINEF int3   operator+   (I32 b, int3 a) { return a + b; }
-HLML_INLINEF int3&  operator+=  (int3& a, int3 b) { a = a + b; return a; }
-HLML_INLINEF int3&  operator+=  (int3& a, I32 b) { return a += int3(b); }
-HLML_INLINEF int3   operator-   (int3 a) { a.m = _mm_xor_si128(a.m, vsignbits); return a; }
-HLML_INLINEF int3   operator-   (int3 a, int3 b) { a.m = _mm_sub_epi32(a.m, b.m); return a; }
-HLML_INLINEF int3   operator-   (int3 a, I32 b) { return a - int3(b); }
-HLML_INLINEF int3   operator-   (I32 a, int3 b) { return int3(a) - b; }
-HLML_INLINEF int3&  operator-=  (int3& a, int3 b) { a = a - b; return a; }
-HLML_INLINEF int3&  operator-=  (int3& a, I32 b) { return a -= int3(b); }
-HLML_INLINEF int3   operator*   (int3 a, int3 b) { a.m = _mm_mul_epi32(a.m, b.m); return a; }
-HLML_INLINEF int3   operator*   (int3 a, I32 b) { return a * int3(b); }
-HLML_INLINEF int3   operator*   (I32 b, int3 a) { return a * b; }
-HLML_INLINEF int3&  operator*=  (int3& a, int3 b) { a = a * b; return a; }
-HLML_INLINEF int3&  operator*=  (int3& a, I32 b) { return a *= int3(b); }
-
-HLML_INLINEF int3   cmpeq       (int3 a, int3 b) { return int3(_mm_cmpeq_epi32(a.m, b.m)); }
-HLML_INLINEF int3   cmpgt       (int3 a, int3 b) { return int3(_mm_cmpgt_epi32(a.m, b.m)); }
-HLML_INLINEF int3   cmplt       (int3 a, int3 b) { return int3(_mm_cmplt_epi32(a.m, b.m)); }
-
-HLML_INLINEF bool3  operator==  (int3 a, int3 b) { return bool3(cmpeq(a, b).m); }
-HLML_INLINEF bool3  operator!=  (int3 a, int3 b) { return !(a == b); }
-HLML_INLINEF bool3  operator<   (int3 a, int3 b) { return bool3(cmplt(a, b).m); }
-HLML_INLINEF bool3  operator>   (int3 a, int3 b) { return bool3(cmpgt(a, b).m); }
-HLML_INLINEF bool3  operator<=  (int3 a, int3 b) { return !(a > b); }
-HLML_INLINEF bool3  operator>=  (int3 a, int3 b) { return b <= a; }
-
-HLML_INLINEF int3   operator<<  (int3 a, U8 bits) { a.m = _mm_slli_epi32(a.m, bits); return a; }
-HLML_INLINEF int3   operator>>  (int3 a, U8 bits) { a.m = _mm_srli_epi32(a.m, bits); return a; }
-HLML_INLINEF int3&  operator<<= (int3& a, U8 bits) { a = a << bits; return a; }
-HLML_INLINEF int3&  operator>>= (int3& a, U8 bits) { a = a >> bits; return a; }
-
-HLML_INLINEF int3 abs(int3 v) { v.m = _mm_andnot_si128(vsignbits, v.m); return v; }
-HLML_INLINEF int3 min(int3 a, int3 b) { a.m = _mm_min_epi32(a.m, b.m); return a; }
-HLML_INLINEF int3 max(int3 a, int3 b) { a.m = _mm_max_epi32(a.m, b.m); return a; }
 HLML_INLINEF int3 sumv(int3 v) { return v += v.zxy() + v.yzx(); }
-HLML_INLINEF I32 sum(int3 v) { return sumv(v).x(); }
-HLML_INLINEF int3 clamp(int3 t, int3 a, int3 b) { return min(max(t, a), b); }
 HLML_INLINEF I32 hmin(int3 v) { v = min(v, shufflei3(v, 1, 0, 2)); return min(v, shufflei3(v, 2, 0, 1)).x(); }
 HLML_INLINEF I32 hmax(int3 v) { v = max(v, shufflei3(v, 1, 0, 2)); return max(v, shufflei3(v, 2, 0, 1)).x(); }
 }

@@ -12,11 +12,11 @@ struct float4 {
   VF128 m = { 0 };
 
   HLML_INLINEF float4() {}
-  HLML_INLINEF float4(F32 x, F32 y, F32 z, F32 w) : m(_mm_set_ps(w, z, y, x)) {}
-  HLML_INLINEF float4(float2 v, F32 z, F32 w) : m(_mm_set_ps(w, z, v.y(), v.x())) {}
-  HLML_INLINEF float4(float3 v, F32 w) : m(_mm_set_ps(w, v.z(), v.y(), v.x())) {}
-  HLML_INLINEF explicit float4(F32 x) : m(_mm_set_ps1(x)) {}
-  HLML_INLINEF explicit float4(const F32 *p) : m(_mm_set_ps(p[3], p[2], p[1], p[0])) {}
+  HLML_INLINEF float4(F32 x, F32 y, F32 z, F32 w) : m(setXYZW(x, y, z, w)) {}
+  HLML_INLINEF float4(float2 v, F32 z, F32 w) : float4(v.x(), v.y(), z, w) {}
+  HLML_INLINEF float4(float3 v, F32 w) : float4(v.x(), v.y(), v.z(), w) {}
+  HLML_INLINEF explicit float4(F32 x) : float4(x, x, x, x) {}
+  HLML_INLINEF explicit float4(const F32 *p) : float4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit float4(VF128 v) : m(v) {}
   HLML_INLINEF float4 float4i(I32 x, I32 y, I32 z, I32 w) { return float4((F32)x, (F32)y, (F32)z, (F32)w); }
 
@@ -27,10 +27,10 @@ struct float4 {
   HLML_INLINEF void setZ(F32 z) { m = insertf4(m, z, 2); }
   HLML_INLINEF void setW(F32 w) { m = insertf4(m, w, 3); }
 
-  HLML_INLINEF F32 x() const { iasf res = _mm_extract_ps(m, 0); return res.f; }
-  HLML_INLINEF F32 y() const { iasf res = _mm_extract_ps(m, 1); return res.f; }
-  HLML_INLINEF F32 z() const { iasf res = _mm_extract_ps(m, 2); return res.f; }
-  HLML_INLINEF F32 w() const { iasf res = _mm_extract_ps(m, 3); return res.f; }
+  HLML_INLINEF F32 x() const { uiasf res = _mm_extract_ps(m, 0); return res.f; }
+  HLML_INLINEF F32 y() const { uiasf res = _mm_extract_ps(m, 1); return res.f; }
+  HLML_INLINEF F32 z() const { uiasf res = _mm_extract_ps(m, 2); return res.f; }
+  HLML_INLINEF F32 w() const { uiasf res = _mm_extract_ps(m, 3); return res.f; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }
@@ -709,22 +709,19 @@ struct float4 {
   HLML_INLINEF float4 aaaa() const { return wwww(); }
 };
 
-HLML_INLINEF bool4    operator== (float4 a, float4 b) { return bool4(_mm_cvttps_epi32(cmpeq(a, b).m)); }
-HLML_INLINEF bool4    operator!= (float4 a, float4 b) { return bool4(_mm_cvttps_epi32(cmpneq(a, b).m)); }
-HLML_INLINEF bool4    operator<  (float4 a, float4 b) { return bool4(_mm_cvttps_epi32(cmplt(a, b).m)); }
-HLML_INLINEF bool4    operator>  (float4 a, float4 b) { return bool4(_mm_cvttps_epi32(cmpgt(a, b).m)); }
-HLML_INLINEF bool4    operator<= (float4 a, float4 b) { return bool4(_mm_cvttps_epi32(cmple(a, b).m)); }
-HLML_INLINEF bool4    operator>= (float4 a, float4 b) { return bool4(_mm_cvttps_epi32(cmpge(a, b).m)); }
+HLML_INLINEF bool4    operator== (float4 a, float4 b) { return bool4(ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool4    operator!= (float4 a, float4 b) { return bool4(ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool4    operator<  (float4 a, float4 b) { return bool4(ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool4    operator>  (float4 a, float4 b) { return bool4(ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool4    operator<= (float4 a, float4 b) { return bool4(ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool4    operator>= (float4 a, float4 b) { return bool4(ftoi(cmpge(a, b).m)); }
 
-HLML_INLINEF int4 asint(float4 a) { return int4(_mm_castps_si128(a.m)); }
-HLML_INLINEF int4 toint(float4 a) { return int4(_mm_cvttps_epi32(a.m)); }
-HLML_INLINEF int4 toint2(float4 a) { return asint(a + float4(vf2ibits)) - int4(vf2ibits); }
-HLML_INLINEF float4 asflt(int4 a) { return float4(_mm_castsi128_ps(a.m)); }
-HLML_INLINEF float4 toflt(int4 a) { return float4(_mm_cvtepi32_ps(a.m)); }
+HLML_INLINEF int4 asint(float4 a) { return int4(fasi(a.m)); }
+HLML_INLINEF int4 toint(float4 a) { return int4(ftoi(a.m)); }
+HLML_INLINEF float4 asflt(int4 a) { return float4(iasf(a.m)); }
+HLML_INLINEF float4 toflt(int4 a) { return float4(itof(a.m)); }
 
-template<> HLML_INLINEF float4 min(float4 a, float4 b) { a.m = _mm_min_ps(a.m, b.m); return a; }
-template<> HLML_INLINEF float4 max(float4 a, float4 b) { a.m = _mm_max_ps(a.m, b.m); return a; }
-HLML_INLINEF float4 sumv(float4 v) { v.m = _mm_hadd_ps(v.m, v.zwxy().m); v.m = _mm_hadd_ps(v.m, v.m); return v; }
+HLML_INLINEF float4 sumv(float4 v) { v.m = AhaddB(v.m, v.zwxy().m); v.m = AhaddB(v.m, v.m); return v; }
 HLML_INLINEF F32 hmin(float4 v) { v = min(v, shufflef4(v, 1, 0, 3, 2)); return min(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF F32 hmax(float4 v) { v = max(v, shufflef4(v, 1, 0, 3, 2)); return max(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 }

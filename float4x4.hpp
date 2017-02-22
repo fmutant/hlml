@@ -20,19 +20,19 @@ struct float4x4 {
 };
 
 HLML_INLINEF float4x4 transpose(float4x4 m) {
-  float4 t0(_mm_unpacklo_ps(m.c0.m, m.c1.m));
-  float4 t2(_mm_unpackhi_ps(m.c0.m, m.c1.m));
-  float4 t1(_mm_unpacklo_ps(m.c2.m, m.c3.m));
-  float4 t3(_mm_unpackhi_ps(m.c2.m, m.c3.m));
-  m.c0.m = _mm_movelh_ps(t0.m, t1.m);
-  m.c1.m = _mm_movehl_ps(t1.m, t0.m);
-	m.c2.m = _mm_movelh_ps(t2.m, t3.m);
-  m.c3.m = _mm_movehl_ps(t3.m, t2.m);
+  float4 t0(axbxayby(m.c0.m, m.c1.m));
+  float4 t2(azbzawbw(m.c0.m, m.c1.m));
+  float4 t1(axbxayby(m.c2.m, m.c3.m));
+  float4 t3(azbzawbw(m.c2.m, m.c3.m));
+  m.c0.m = axaybxby(t0.m, t1.m);
+  m.c1.m = bzbwazaw(t1.m, t0.m);
+	m.c2.m = axaybxby(t2.m, t3.m);
+  m.c3.m = bzbwazaw(t3.m, t2.m);
   return m;
 }
 
 HLML_INLINEF float4x4 inverse(float4x4 m) {
-  float4 A(_mm_unpacklo_ps(m.c0.m, m.c1.m)), B(_mm_unpacklo_ps(m.c2.m, m.c3.m)), C(_mm_unpackhi_ps(m.c0.m, m.c1.m)), D(_mm_unpackhi_ps(m.c2.m, m.c3.m));
+  float4 A(axbxayby(m.c0.m, m.c1.m)), B(axbxayby(m.c2.m, m.c3.m)), C(azbzawbw(m.c0.m, m.c1.m)), D(azbzawbw(m.c2.m, m.c3.m));
   float4 AB = A.wwxx() * B - A.yyzz() * B.zwxy();
   float4 t0 = AB.xyxy() * C.xxzz() + AB.zwzw() * C.yyww();
   float4 t1 = AB.wxwx() * D - AB.zyzy() * D.yxwz();
@@ -54,7 +54,7 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
   float4 iA = A * dD - t3;
 
   float4 det = dA * dD + dB * dC - dotv(DC.xzyw(), AB);
-  det.m = _mm_xor_ps(det.m, vsignpnnp);
+  det.m = AxorB(det.m, vsignpnnp);
   float4 idet = rcp(det);
   iA *= idet;
   iB *= idet;
@@ -75,11 +75,11 @@ HLML_INLINEF float4x4 inverse2(float4x4 m) {
 		    , yw1yw3(_mm_shuffle_ps(m.c1.m, m.c3.m, _MM_SHUFFLE(3,1,3,1)))
 		    , xz1xz3(_mm_shuffle_ps(m.c1.m, m.c3.m, _MM_SHUFFLE(2,0,2,0)));
 	float4  dACBD(xz0xz2 * yw1yw3 - yw0yw2 * xz1xz3)
-		    , A(_mm_unpacklo_ps(m.c0.m, m.c1.m))
-		    , B(_mm_unpacklo_ps(m.c2.m, m.c3.m))
+		    , A(axbxayby(m.c0.m, m.c1.m))
+		    , B(axbxayby(m.c2.m, m.c3.m))
 		    , AB(A.wwxx() * B - A.yyzz() * B.zwxy())
-		    , C(_mm_unpackhi_ps(m.c0.m, m.c1.m))
-		    , D(_mm_unpackhi_ps(m.c2.m, m.c3.m))
+		    , C(azbzawbw(m.c0.m, m.c1.m))
+		    , D(azbzawbw(m.c2.m, m.c3.m))
 		    , DC(D.wwxx() * C - D.yyzz() * C.zwxy());
 	float4  dA(dACBD.xxxx())
 		    , dB(dACBD.zzzz())
@@ -138,7 +138,7 @@ HLML_INLINEF float4x4   operator*   (F32 s, float4x4 a) { return a * s; }
 HLML_INLINEF float4     operator*   (float4x4 a, float4 v) { return v.xxxx() * a.c0 + v.yyyy() * a.c1 + v.zzzz() * a.c2 + v.wwww() * a.c3; }
 HLML_INLINEF float4     operator*   (float4 v, float4x4 a) {
   float4 xxxx(dotv(v, a.c0)), yyyy(dotv(v, a.c1)), zzzz(dotv(v, a.c2)), wwww(dotv(v, a.c3));
-  float4 xyxy(_mm_unpacklo_ps(xxxx.m, yyyy.m)), zwzw(_mm_unpacklo_ps(zzzz.m, wwww.m)), xyzw(_mm_movelh_ps(xyxy.m, zwzw.m));
+  float4 xyxy(axbxayby(xxxx.m, yyyy.m)), zwzw(axbxayby(zzzz.m, wwww.m)), xyzw(axaybxby(xyxy.m, zwzw.m));
   return xyzw;
 }
 HLML_INLINEF float4x4&  operator*=  (float4x4& a, float4x4 b) { a = a * b; return a; }

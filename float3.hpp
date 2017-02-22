@@ -12,10 +12,10 @@ struct float3 {
   VF128 m = { 0 };
 
   HLML_INLINEF float3() {}
-  HLML_INLINEF float3(F32 x, F32 y, F32 z) : m(_mm_set_ps(sfZero, z, y, x)) {}
-  HLML_INLINEF float3(float2 v, F32 z) : m(_mm_set_ps(sfZero, z, v.y(), v.x())) {}
-  HLML_INLINEF explicit float3(F32 x) : m(_mm_set_ps(sfZero, x, x, x)) {}
-  HLML_INLINEF explicit float3(const F32 *p) : m(_mm_set_ps(sfZero, p[2], p[1], p[0])) {}
+  HLML_INLINEF float3(F32 x, F32 y, F32 z) : m(setXYZW(x, y, z, sfZero)) {}
+  HLML_INLINEF float3(float2 v, F32 z) : float3(v.x(), v.y(), z) {}
+  HLML_INLINEF explicit float3(F32 x) : float3(x, x, x) {}
+  HLML_INLINEF explicit float3(const F32 *p) : float3(p[0], p[1], p[2]) {}
   HLML_INLINEF explicit float3(VF128 v) : m(v) {}
   HLML_INLINEF float3 float3i(I32 x, I32 y, I32 z) { return float3((F32)x, (F32)y, (F32)z); }
 
@@ -25,9 +25,9 @@ struct float3 {
   HLML_INLINEF void setY(F32 y) { m = insertf3(m, y, 1); }
   HLML_INLINEF void setZ(F32 z) { m = insertf3(m, z, 2); }
 
-  HLML_INLINEF F32 x() const { iasf res = _mm_extract_ps(m, 0); return res.f; }
-  HLML_INLINEF F32 y() const { iasf res = _mm_extract_ps(m, 1); return res.f; }
-  HLML_INLINEF F32 z() const { iasf res = _mm_extract_ps(m, 2); return res.f; }
+  HLML_INLINEF F32 x() const { uiasf res = _mm_extract_ps(m, 0); return res.f; }
+  HLML_INLINEF F32 y() const { uiasf res = _mm_extract_ps(m, 1); return res.f; }
+  HLML_INLINEF F32 z() const { uiasf res = _mm_extract_ps(m, 2); return res.f; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }
@@ -109,21 +109,18 @@ struct float3 {
   HLML_INLINEF float3 bbg() const { return zzy(); }
   HLML_INLINEF float3 bbb() const { return zzz(); }
 };
-HLML_INLINEF bool3    operator== (float3 a, float3 b) { return bool3(_mm_cvttps_epi32(cmpeq(a, b).m)); }
-HLML_INLINEF bool3    operator!= (float3 a, float3 b) { return bool3(_mm_cvttps_epi32(cmpneq(a, b).m)); }
-HLML_INLINEF bool3    operator<  (float3 a, float3 b) { return bool3(_mm_cvttps_epi32(cmplt(a, b).m)); }
-HLML_INLINEF bool3    operator>  (float3 a, float3 b) { return bool3(_mm_cvttps_epi32(cmpgt(a, b).m)); }
-HLML_INLINEF bool3    operator<= (float3 a, float3 b) { return bool3(_mm_cvttps_epi32(cmple(a, b).m)); }
-HLML_INLINEF bool3    operator>= (float3 a, float3 b) { return bool3(_mm_cvttps_epi32(cmpge(a, b).m)); }
 
-HLML_INLINEF int3 asint(float3 a) { return int3(_mm_castps_si128(a.m)); }
-HLML_INLINEF int3 toint(float3 a) { return int3(_mm_cvttps_epi32(a.m)); }
-HLML_INLINEF int3 toint2(float3 a) { return asint(a + float3(vf2ibits)) - int3(vf2ibits); }
-HLML_INLINEF float3 asflt(int3 a) { return float3(_mm_castsi128_ps(a.m)); }
-HLML_INLINEF float3 toflt(int3 a) { return float3(_mm_cvtepi32_ps(a.m)); }
+HLML_INLINEF bool3   operator== (float3 a, float3 b) { return bool3(ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool3   operator!= (float3 a, float3 b) { return bool3(ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool3   operator<  (float3 a, float3 b) { return bool3(ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool3   operator>  (float3 a, float3 b) { return bool3(ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool3   operator<= (float3 a, float3 b) { return bool3(ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool3   operator>= (float3 a, float3 b) { return bool3(ftoi(cmpge(a, b).m)); }
 
-template<> HLML_INLINEF float3 min(float3 a, float3 b) { a.m = _mm_min_ps(a.m, b.m); return a; }
-template<> HLML_INLINEF float3 max(float3 a, float3 b) { a.m = _mm_max_ps(a.m, b.m); return a; }
+HLML_INLINEF int3 asint(float3 a) { return int3(fasi(a.m)); }
+HLML_INLINEF int3 toint(float3 a) { return int3(ftoi(a.m)); }
+HLML_INLINEF float3 asflt(int3 a) { return float3(iasf(a.m)); }
+HLML_INLINEF float3 toflt(int3 a) { return float3(itof(a.m)); }
 HLML_INLINEF float3 sumv(float3 v) { return v += v.zxy() + v.yzx(); }
 HLML_INLINEF float3 crossv(float3 a, float3 b) { return (a.zxy() * b - a * b.zxy()).zxy(); }
 HLML_INLINEF float3 cross(float3 a, float3 b) { return crossv(a, b); }

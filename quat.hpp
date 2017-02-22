@@ -30,7 +30,7 @@ class quat {
     float4 left = cxxyz * coses.zzyz() * coses.wwwy(), right = sxxyz * sines.zzyz() * sines.wwwy();
     m = left + (right ^ float4(vsignnpnp));
   }
-  quat(float3x3 rot) {
+  explicit quat(float3x3 rot) {
     // https://www.fd.cvut.cz/personal/voracsar/geometriepg/pgr020/matrix2quaternions.pdf
     // http://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
     // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm

@@ -19,8 +19,8 @@ struct float3x3 {
 };
 
 HLML_INLINEF float3x3 transpose(float3x3 m) {
-  float3 t0 = m.c0, t1 = m.c1, t2 = m.c2, vT(_mm_unpackhi_ps(t0.m, t1.m));
-  t0.m = _mm_unpacklo_ps(t0.m, t1.m);
+  float3 t0 = m.c0, t1 = m.c1, t2 = m.c2, vT(azbzawbw(t0.m, t1.m));
+  t0.m = axbxayby(t0.m, t1.m);
   m.c0.m = _mm_shuffle_ps(t0.m, t2.m, _MM_SHUFFLE(3,0,1,0));
   m.c1.m = _mm_shuffle_ps(t0.m, t2.m, _MM_SHUFFLE(3,1,3,2));
   m.c2.m = _mm_shuffle_ps(vT.m, t2.m, _MM_SHUFFLE(3,2,1,0));
@@ -63,7 +63,7 @@ HLML_INLINEF float3x3   operator*   (F32 s, float3x3 a) { return a * s; }
 HLML_INLINEF float3     operator*   (float3x3 a, float3 v) { return v.xxx() * a.c0 + v.yyy() * a.c1 + v.zzz() * a.c2; }
 HLML_INLINEF float3     operator*   (float3 v, float3x3 a) {
   float3 xxx(dotv(v, a.c0)), yyy(dotv(v, a.c1)), zzz(dotv(v, a.c2));
-  float3 xyxy(_mm_unpacklo_ps(xxx.m, yyy.m)), xyz0(_mm_movehl_ps(zzz.m, xyxy.m));
+  float3 xyxy(axbxayby(xxx.m, yyy.m)), xyz0(bzbwazaw(zzz.m, xyxy.m));
   return xyz0;
 }
 HLML_INLINEF float3x3&  operator*=  (float3x3& a, float3x3 b) { a = a * b; return a; }

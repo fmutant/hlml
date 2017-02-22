@@ -5,36 +5,46 @@
 namespace hlml {
 struct bool4 {
 #define shuffleb4(V, X, Y, Z, W) bool4(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(W, Z, Y, X)))
+  #define insertb4(V, X, i) _mm_insert_epi32((V), (X), i)
+  #define extractb4(V, i) _mm_extract_epi32((V), i)
+  static constexpr U32 flagsall = 0x8888;
 
   VI128 m = { 0 };
 
   HLML_INLINEF bool4() {}
-  HLML_INLINEF explicit bool4(B8* p) : m(_mm_set_epi32(p[3], p[2], p[1], p[0])) {}
-  HLML_INLINEF explicit bool4(B8 x, B8 y, B8 z, B8 w) : m(_mm_set_epi32(w, z, y, x)) {}
-  HLML_INLINEF explicit bool4(bool3 v, B8 w) : m(_mm_set_epi32(w, v.z(), v.y(), v.x())) {}
+  HLML_INLINEF explicit bool4(B8 x, B8 y, B8 z, B8 w) : m(setXYZW(x, y, z, w)) {}
+  HLML_INLINEF explicit bool4(B8* p) : bool4(p[0], p[1], p[2], p[3]) {}
+  HLML_INLINEF explicit bool4(bool3 v, B8 w) : bool4(v.x(), v.y(), v.z(), w) {}
   HLML_INLINEF explicit bool4(VI128 v) : m(v) {}
 
-  HLML_INLINEF B8 x() const { return 0 != _mm_cvtsi128_si32(m); }
-  HLML_INLINEF B8 y() const { return 0 != _mm_cvtsi128_si32(_mm_shuffle_epi32(m, _MM_SHUFFLE(1, 1, 1, 1))); }
-  HLML_INLINEF B8 z() const { return 0 != _mm_cvtsi128_si32(_mm_shuffle_epi32(m, _MM_SHUFFLE(2, 2, 2, 2))); }
-  HLML_INLINEF B8 w() const { return 0 != _mm_cvtsi128_si32(_mm_shuffle_epi32(m, _MM_SHUFFLE(3, 3, 3, 3))); }
+  HLML_INLINEF void store(B8 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
+
+  HLML_INLINEF void setX(B8 x) { m = insertb4(m, x, 0); }
+  HLML_INLINEF void setY(B8 y) { m = insertb4(m, y, 1); }
+  HLML_INLINEF void setZ(B8 y) { m = insertb4(m, y, 2); }
+  HLML_INLINEF void setW(B8 y) { m = insertb4(m, y, 3); }
+
+  HLML_INLINEF B8 x() const { return 0 != extractb4(m, 0); }
+  HLML_INLINEF B8 y() const { return 0 != extractb4(m, 1); }
+  HLML_INLINEF B8 z() const { return 0 != extractb4(m, 2); }
+  HLML_INLINEF B8 w() const { return 0 != extractb4(m, 3); }
 
   HLML_INLINEF bool2 xx() const { return shuffleb2(*this, 0, 0); }
   HLML_INLINEF bool2 xy() const { return shuffleb2(*this, 0, 1); }
   HLML_INLINEF bool2 xz() const { return shuffleb2(*this, 0, 2); }
   HLML_INLINEF bool2 xw() const { return shuffleb2(*this, 0, 3); }
-  HLML_INLINEF bool2 yy() const { return shuffleb2(*this, 1, 1); }
   HLML_INLINEF bool2 yx() const { return shuffleb2(*this, 1, 0); }
+  HLML_INLINEF bool2 yy() const { return shuffleb2(*this, 1, 1); }
   HLML_INLINEF bool2 yz() const { return shuffleb2(*this, 1, 2); }
   HLML_INLINEF bool2 yw() const { return shuffleb2(*this, 1, 3); }
-  HLML_INLINEF bool2 zz() const { return shuffleb2(*this, 2, 2); }
   HLML_INLINEF bool2 zx() const { return shuffleb2(*this, 2, 0); }
   HLML_INLINEF bool2 zy() const { return shuffleb2(*this, 2, 1); }
+  HLML_INLINEF bool2 zz() const { return shuffleb2(*this, 2, 2); }
   HLML_INLINEF bool2 zw() const { return shuffleb2(*this, 2, 3); }
-  HLML_INLINEF bool2 ww() const { return shuffleb2(*this, 3, 3); }
   HLML_INLINEF bool2 wx() const { return shuffleb2(*this, 3, 0); }
   HLML_INLINEF bool2 wy() const { return shuffleb2(*this, 3, 1); }
   HLML_INLINEF bool2 wz() const { return shuffleb2(*this, 3, 2); }
+  HLML_INLINEF bool2 ww() const { return shuffleb2(*this, 3, 3); }
 
   HLML_INLINEF bool3 xxx() const { return shuffleb3(*this, 0, 0, 0); }
   HLML_INLINEF bool3 xxy() const { return shuffleb3(*this, 0, 0, 1); }
@@ -114,7 +124,7 @@ struct bool4 {
   HLML_INLINEF bool4 xyzx() const { return shuffleb4(*this, 0, 1, 2, 0); }
   HLML_INLINEF bool4 xyzy() const { return shuffleb4(*this, 0, 1, 2, 1); }
   HLML_INLINEF bool4 xyzz() const { return shuffleb4(*this, 0, 1, 2, 2); }
-  HLML_INLINEF bool4 xyzw() const { return shuffleb4(*this, 0, 1, 2, 3); }
+  HLML_INLINEF bool4 xyzw() const { return *this; }
   HLML_INLINEF bool4 xywx() const { return shuffleb4(*this, 0, 1, 3, 0); }
   HLML_INLINEF bool4 xywy() const { return shuffleb4(*this, 0, 1, 3, 1); }
   HLML_INLINEF bool4 xywz() const { return shuffleb4(*this, 0, 1, 3, 2); }
@@ -347,39 +357,5 @@ struct bool4 {
   HLML_INLINEF bool4 wwwz() const { return shuffleb4(*this, 3, 3, 3, 2); }
   HLML_INLINEF bool4 wwww() const { return shuffleb4(*this, 3, 3, 3, 3); }
 
-  HLML_INLINEF void store(B8 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
-
-  void setX(B8 x) { m = _mm_cvtps_epi32(_mm_move_ss(_mm_cvtepi32_ps(m), _mm_set_ss(x))); }
-  void setY(B8 y) {
-    VF128 t = _mm_move_ss(_mm_cvtepi32_ps(m), _mm_set_ss(y));
-    t = _mm_shuffle_ps(t, t, _MM_SHUFFLE(3, 2, 0, 0));
-    m = _mm_cvtps_epi32(_mm_move_ss(t, _mm_cvtepi32_ps(m)));
-  }
-  void setZ(B8 z) {
-    VF128 t = _mm_move_ss(_mm_cvtepi32_ps(m), _mm_set_ss(z));
-    t = _mm_shuffle_ps(t, t, _MM_SHUFFLE(3, 0, 1, 0));
-    m = _mm_cvtps_epi32(_mm_move_ss(t, _mm_cvtepi32_ps(m)));
-  }
-  void setW(B8 w) {
-    VF128 t = _mm_move_ss(_mm_cvtepi32_ps(m), _mm_set_ss(w));
-    t = _mm_shuffle_ps(t, t, _MM_SHUFFLE(0, 2, 1, 0));
-    m = _mm_cvtps_epi32(_mm_move_ss(t, _mm_cvtepi32_ps(m)));
-  }
-
-  HLML_INLINEF bool4& operator =  (bool4 vec) { m = vec.m; return *this; }
-  HLML_INLINEF bool4& operator &= (bool4 vec) { m = _mm_and_si128(m, vec.m); return *this; }
-  HLML_INLINEF bool4& operator ^= (bool4 vec) { m = _mm_xor_si128(m, vec.m); return *this; }
-  HLML_INLINEF bool4& operator |= (bool4 vec) { m = _mm_or_si128(m, vec.m); return *this; }
 };
-HLML_INLINEF U32 mask(bool4 v) { return 0x8888 & _mm_movemask_epi8(v.m); }
-HLML_INLINEF B8  none(bool4 v) { return 0 == mask(v); }
-HLML_INLINEF B8  any (bool4 v) { return 0 != mask(v); }
-HLML_INLINEF B8  all (bool4 v) { return 0x8888 == mask(v); }
-
-HLML_INLINEF bool4  operator!  (bool4 a) { a.m = _mm_andnot_si128(a.m, vsignbits); return a; }
-HLML_INLINEF bool4  operator== (bool4 a, bool4 b) { return bool4(_mm_cmpeq_epi32(a.m, b.m)); }
-HLML_INLINEF bool4  operator!= (bool4 a, bool4 b) { return !(a == b); }
-HLML_INLINEF bool4  operator&  (bool4 a, bool4 b) { return a &= b; }
-HLML_INLINEF bool4  operator|  (bool4 a, bool4 b) { return a |= b; }
-HLML_INLINEF bool4  operator^  (bool4 a, bool4 b) { return a ^= b; }
 }
