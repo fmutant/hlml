@@ -5,9 +5,6 @@
 
 namespace hlml {
 struct int2 {
-  #define shufflei2(V, X, Y) int2(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, 2, Y, X)))
-  #define inserti2(V, X, i) _mm_insert_epi32((V), (X), i)
-  #define extracti2(V, i) _mm_extract_epi32((V), i)
 
   VI128 m = { 0 };
 
@@ -19,11 +16,11 @@ struct int2 {
 
   HLML_INLINEF void store(I32 *p) const { p[0] = x(); p[1] = y(); }
 
-  HLML_INLINEF void setX(I32 x) { m = inserti2(m, x, 0); }
-  HLML_INLINEF void setY(I32 y) { m = inserti2(m, y, 1); }
+  HLML_INLINEF void setX(I32 x) { m = inserti(m, x, 0); }
+  HLML_INLINEF void setY(I32 y) { m = inserti(m, y, 1); }
 
-  HLML_INLINEF I32 x() const { return extracti2(m, 0); }
-  HLML_INLINEF I32 y() const { return extracti2(m, 1); }
+  HLML_INLINEF I32 x() const { return extracti(m, 0); }
+  HLML_INLINEF I32 y() const { return extracti(m, 1); }
 
   HLML_INLINEF int2 xx() const { return shufflei2(*this, 0, 0); }
   HLML_INLINEF int2 xy() const { return *this; }

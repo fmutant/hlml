@@ -21,15 +21,15 @@ struct float3x3 {
 HLML_INLINEF float3x3 transpose(float3x3 m) {
   float3 t0 = m.c0, t1 = m.c1, t2 = m.c2, vT(azbzawbw(t0.m, t1.m));
   t0.m = axbxayby(t0.m, t1.m);
-  m.c0.m = _mm_shuffle_ps(t0.m, t2.m, _MM_SHUFFLE(3,0,1,0));
-  m.c1.m = _mm_shuffle_ps(t0.m, t2.m, _MM_SHUFFLE(3,1,3,2));
-  m.c2.m = _mm_shuffle_ps(vT.m, t2.m, _MM_SHUFFLE(3,2,1,0));
+  m.c0.m = axaybxbw(t0.m, t2.m);
+  m.c1.m = azawbybw(t0.m, t2.m);
+  m.c2.m = axaybzbw(vT.m, t2.m);
   return m;
 }
 HLML_INLINEF float3x3 inverse(float3x3 m) {
   float3 t0 = m.c0, t1 = m.c1, t2 = m.c2;
   float3 dets = rcp(dotv(t0, cross(t1, t2)));
-  dets.m = _mm_moveldup_ps(dets.m);
+  dets.m = axaxazaz(dets.m);
   m.c0 = cross(t1, t2) * dets;
   m.c1 = cross(t2, t0) * dets;
   m.c2 = cross(t0, t1) * dets;

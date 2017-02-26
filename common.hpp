@@ -62,6 +62,7 @@ static constexpr U32 snZero = 0x00000000;
 static constexpr U32 snZeroN = ~snZero;
 static constexpr I32 snMagicF2I = (150 << 23) | (1 << 22);
 
+HLML_VCONST vconstu vzeros = { sfZero, sfZero, sfZero, sfZero };
 HLML_VCONST vconstu vf2ibits = { snMagicF2I, snMagicF2I, snMagicF2I, snMagicF2I };
 HLML_VCONST vconstu vsignbits = { snSignBit, snSignBit, snSignBit, snSignBit };
 HLML_VCONST vconstu vsignbitsn = { snNSignBit, snNSignBit, snNSignBit, snNSignBit };

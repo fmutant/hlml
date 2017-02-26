@@ -27,7 +27,6 @@ HLML_VCONST vconstu vntwos = { snTwo, snTwo, snTwo, snTwo };
 HLML_VCONST vconstu vnfours = { snFour, snFour, snFour, snFour };
 HLML_VCONST vconstu vn127s = { sn127, sn127, sn127, sn127 };
 
-HLML_VCONST vconstu vzeros = { sfZero, sfZero, sfZero, sfZero };
 HLML_VCONST vconstu vones = { sfOne, sfOne, sfOne, sfOne };
 HLML_VCONST vconstu vonesneg = { sfOneNeg, sfOneNeg, sfOneNeg, sfOneNeg };
 HLML_VCONST vconstu vhalves = { sfHalf, sfHalf, sfHalf, sfHalf };
@@ -141,7 +140,7 @@ void sincos(float4 x, float4& s, float4& c) {
 float4 sincos(float4 x) {
   float4 s, c;
   sincos(x, s, c);
-  return float4(_mm_shuffle_ps(s.m, c.m, _MM_SHUFFLE(0,1,0,1)));
+  return float4(ayaxbybx(s.m, c.m));
 }
 
 float4 tan(float4 x) {

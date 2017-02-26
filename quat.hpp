@@ -12,7 +12,7 @@ class quat {
   explicit quat(float3 v) : quat(0.0f, v) {}
   explicit quat(float4 v) : m(v.wxyz()) {}
   explicit quat(F32* v) : m(v) {}
-  explicit quat(F32 scalar) : m(_mm_move_ss(_mm_set1_ps(scalar), _mm_setzero_ps())) {}
+  explicit quat(F32 scalar) : m(bxayazaw(setXXXX(scalar), vzeros)) {}
   quat(F32 w, float3 v) : m(w, v.x(), v.y(), v.z()) {}
   quat(F32 w, F32 x, F32 y, F32 z) : m(w, x, y, z) {}
   quat(float3 axis, F32 degs) {
@@ -20,13 +20,13 @@ class quat {
     F32 angleHalf(HLML_DEG2RAD(degs) * 0.5f);
     float4 sc = sincos(float4(angleHalf)), xxyz(axis.m);
     float4 sins(xxyz.xxyz() * sc.xxxx()), coss(sc.yyyy());
-    m.m = _mm_move_ss(sins.m, coss.m);
+    m.m = bxayazaw(sins.m, coss.m);
   }
   //pitch = X axis, yaw = Y axis, roll = Z axis
   quat(F32 pitch, F32 yaw, F32 roll) {
     float4 angles(pitch, pitch, yaw, roll), sines, coses;
     sincos(angles * 0.5f, sines, coses);
-    float4 cxxyz(_mm_move_ss(sines.m, coses.m)), sxxyz(_mm_move_ss(coses.m, sines.m));;
+    float4 cxxyz(bxayazaw(sines.m, coses.m)), sxxyz(bxayazaw(coses.m, sines.m));;
     float4 left = cxxyz * coses.zzyz() * coses.wwwy(), right = sxxyz * sines.zzyz() * sines.wwwy();
     m = left + (right ^ float4(vsignnpnp));
   }
@@ -44,24 +44,24 @@ class quat {
       if (all(m00 > m11)) {
         factor += sumv(diag ^ s0);
         float4 v(left - (right ^ s0));
-        v.m = _mm_move_ss(v.m, factor.m);
+        v.m = bxayazaw(v.m, factor.m);
         m = v.yxwz();
       } else {
         factor += sumv(diag ^ s1);
         float4 v(left - (right ^ s1));
-        v.m = _mm_move_ss(v.m, factor.m);
+        v.m = bxayazaw(v.m, factor.m);
         m = v.zwxy();
       }
     } else {
       if (all(m00 < -m11)) {
         factor += sumv(diag ^ s2);
         float4 v(left - (right ^ s2));
-        v.m = _mm_move_ss(v.m, factor.m);
+        v.m = bxayazaw(v.m, factor.m);
         m = v.wzyx();
       } else {
         factor += sumv(diag);
         float4 v(left - right);
-        m.m = _mm_move_ss(v.m, factor.m);
+        m.m = bxayazaw(v.m, factor.m);
       }
     }
     m *= rsqrt(factor) * 0.5f;
@@ -69,7 +69,7 @@ class quat {
   quat(float3 u, float3 v) : quat(dot(u, v), cross(u, v)) {
     //http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
     float4 t(length(m));
-    m.m = _mm_add_ss(m.m, t.m);
+    m.m = AaddssB(m.m, t.m);
     m = normalize(m);
   }
   explicit HLML_INLINEF operator float4() const { return m.yzwx(); }
@@ -106,7 +106,7 @@ HLML_INLINEF quat&    operator-= (quat& a, F32 s) { a = a - quat(s); return a; }
 HLML_INLINEF quat     operator*  (quat a, quat b) {
   float4 ai = (float4)a, bi = (float4)b;
   float4 s1 = ai.xyzy() * bi.wwwy() + ai.yzxz() * bi.zxyz();
-  s1.m = _mm_xor_ps(s1.m, vsignnnnp);
+  s1.m = AxorB(s1.m, vsignnnnp);
   ai = ai.wwww() * bi - ai.zxyx() * bi.yzxx() + s1;
   return quat(ai);
 }

@@ -61,19 +61,19 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
   iC *= idet;
   iD *= idet;
 
-  m.c0.m = _mm_shuffle_ps(iA.m, iC.m, _MM_SHUFFLE(2,3,2,3));
-  m.c1.m = _mm_shuffle_ps(iA.m, iC.m, _MM_SHUFFLE(0,1,0,1));
-  m.c2.m = _mm_shuffle_ps(iB.m, iD.m, _MM_SHUFFLE(2,3,2,3));
-  m.c3.m = _mm_shuffle_ps(iB.m, iD.m, _MM_SHUFFLE(0,1,0,1));
+  m.c0.m = awazbwbz(iA.m, iC.m);
+  m.c1.m = ayaxbybx(iA.m, iC.m);
+  m.c2.m = awazbwbz(iB.m, iD.m);
+  m.c3.m = ayaxbybx(iB.m, iD.m);
 
   return m;
 }
 
 HLML_INLINEF float4x4 inverse2(float4x4 m) {
-  float4  xz0xz2(_mm_shuffle_ps(m.c0.m, m.c2.m, _MM_SHUFFLE(2,0,2,0)))
-		    , yw0yw2(_mm_shuffle_ps(m.c0.m, m.c2.m, _MM_SHUFFLE(3,1,3,1)))
-		    , yw1yw3(_mm_shuffle_ps(m.c1.m, m.c3.m, _MM_SHUFFLE(3,1,3,1)))
-		    , xz1xz3(_mm_shuffle_ps(m.c1.m, m.c3.m, _MM_SHUFFLE(2,0,2,0)));
+  float4  xz0xz2(axazbxbz(m.c0.m, m.c2.m))
+		    , yw0yw2(ayawbybw(m.c0.m, m.c2.m))
+		    , yw1yw3(ayawbybw(m.c1.m, m.c3.m))
+		    , xz1xz3(axazbxbz(m.c1.m, m.c3.m));
 	float4  dACBD(xz0xz2 * yw1yw3 - yw0yw2 * xz1xz3)
 		    , A(axbxayby(m.c0.m, m.c1.m))
 		    , B(axbxayby(m.c2.m, m.c3.m))
@@ -92,7 +92,7 @@ HLML_INLINEF float4x4 inverse2(float4x4 m) {
 		    , BdC(B * dC)
 		    , DdA(D * dA);
 	float4 det = dAD + dBC - dotv(DC.xzyw(), AB);
-    det.m = _mm_xor_ps(det.m, vsignpnnp);
+    det.m = AxorB(det.m, vsignpnnp);
 	float4 t0(DC.xyxy() * B.xxzz() + DC.zwzw() * B.yyww())
 		 , t1(AB.wxwx() * D - AB.zyzy() * D.yxwz())
 		 , t2(DC.wxwx() * A - DC.zyzy() * A.yxwz())
@@ -102,10 +102,10 @@ HLML_INLINEF float4x4 inverse2(float4x4 m) {
 		 , iC((BdC - t2) / det)
 		 , iD((DdA - t3) / det);
 	
-    m.c0.m = _mm_shuffle_ps(iA.m, iC.m, _MM_SHUFFLE(2,3,2,3));
-    m.c1.m = _mm_shuffle_ps(iA.m, iC.m, _MM_SHUFFLE(0,1,0,1));
-    m.c2.m = _mm_shuffle_ps(iB.m, iD.m, _MM_SHUFFLE(2,3,2,3));
-    m.c3.m = _mm_shuffle_ps(iB.m, iD.m, _MM_SHUFFLE(0,1,0,1));
+    m.c0.m = awazbwbz(iA.m, iC.m);
+    m.c1.m = ayaxbybx(iA.m, iC.m);
+    m.c2.m = awazbwbz(iB.m, iD.m);
+    m.c3.m = ayaxbybx(iB.m, iD.m);
 
 	return m;
 }

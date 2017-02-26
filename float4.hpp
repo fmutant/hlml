@@ -6,8 +6,6 @@
 
 namespace hlml {
 struct float4 {
-  #define shufflef4(V, X, Y, Z, W) float4(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(W, Z, Y, X)))
-  #define insertf4(V, X, i) _mm_insert_ps((V), _mm_set_ss((X)), i << 4)
 
   VF128 m = { 0 };
 
@@ -22,15 +20,15 @@ struct float4 {
 
   HLML_INLINEF void store(F32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
 
-  HLML_INLINEF void setX(F32 x) { m = insertf4(m, x, 0); }
-  HLML_INLINEF void setY(F32 y) { m = insertf4(m, y, 1); }
-  HLML_INLINEF void setZ(F32 z) { m = insertf4(m, z, 2); }
-  HLML_INLINEF void setW(F32 w) { m = insertf4(m, w, 3); }
+  HLML_INLINEF void setX(F32 x) { m = insertf(m, x, 0); }
+  HLML_INLINEF void setY(F32 y) { m = insertf(m, y, 1); }
+  HLML_INLINEF void setZ(F32 z) { m = insertf(m, z, 2); }
+  HLML_INLINEF void setW(F32 w) { m = insertf(m, w, 3); }
 
-  HLML_INLINEF F32 x() const { uiasf res = _mm_extract_ps(m, 0); return res.f; }
-  HLML_INLINEF F32 y() const { uiasf res = _mm_extract_ps(m, 1); return res.f; }
-  HLML_INLINEF F32 z() const { uiasf res = _mm_extract_ps(m, 2); return res.f; }
-  HLML_INLINEF F32 w() const { uiasf res = _mm_extract_ps(m, 3); return res.f; }
+  HLML_INLINEF F32 x() const { uiasf res = extractf(m, 0); return res.f; }
+  HLML_INLINEF F32 y() const { uiasf res = extractf(m, 1); return res.f; }
+  HLML_INLINEF F32 z() const { uiasf res = extractf(m, 2); return res.f; }
+  HLML_INLINEF F32 w() const { uiasf res = extractf(m, 3); return res.f; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }

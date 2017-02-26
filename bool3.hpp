@@ -4,9 +4,6 @@
 
 namespace hlml {
 struct bool3 {
-#define shuffleb3(V, X, Y, Z) bool3(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, Z, Y, X)))
-  #define insertb3(V, X, i) _mm_insert_epi32((V), (X), i)
-  #define extractb3(V, i) _mm_extract_epi32((V), i)
   static constexpr U32 flagsall = 0x888;
 
   VI128 m = { 0 };
@@ -19,13 +16,13 @@ struct bool3 {
 
   HLML_INLINEF void store(B8 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); }
 
-  HLML_INLINEF void setX(B8 x) { m = insertb3(m, x, 0); }
-  HLML_INLINEF void setY(B8 y) { m = insertb3(m, y, 1); }
-  HLML_INLINEF void setZ(B8 y) { m = insertb3(m, y, 2); }
+  HLML_INLINEF void setX(B8 x) { m = inserti(m, x, 0); }
+  HLML_INLINEF void setY(B8 y) { m = inserti(m, y, 1); }
+  HLML_INLINEF void setZ(B8 y) { m = inserti(m, y, 2); }
 
-  HLML_INLINEF B8 x() const { return 0 != extractb3(m, 0); }
-  HLML_INLINEF B8 y() const { return 0 != extractb3(m, 1); }
-  HLML_INLINEF B8 z() const { return 0 != extractb3(m, 2); }
+  HLML_INLINEF B8 x() const { return 0 != extracti(m, 0); }
+  HLML_INLINEF B8 y() const { return 0 != extracti(m, 1); }
+  HLML_INLINEF B8 z() const { return 0 != extracti(m, 2); }
 
   HLML_INLINEF bool2 xx() const { return shuffleb2(*this, 0, 0); }
   HLML_INLINEF bool2 xy() const { return shuffleb2(*this, 0, 1); }

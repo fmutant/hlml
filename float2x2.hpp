@@ -21,7 +21,7 @@ struct float2x2 {
 HLML_INLINEF float2x2 transpose(float2x2 m) { m.m = m.m.xzyw(); return m; }
 HLML_INLINEF float2x2 inverse(float2x2 a) {
   float4 neg(-a.m);
-  float4 tmp(_mm_shuffle_ps(a.m.m, neg.m, _MM_SHUFFLE(2,1,0,3)));
+  float4 tmp(awaxbybz(a.m.m, neg.m));
   float4 adj = tmp.xzwy();
   float4 trans = a.m.xzyw();
   float4 lhs = trans * adj;

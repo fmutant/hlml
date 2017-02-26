@@ -6,8 +6,6 @@
 
 namespace hlml {
 struct float2 {
-  #define shufflef2(V, X, Y) float2(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)))
-  #define insertf2(V, X, i) _mm_insert_ps((V), _mm_set_ss((X)), i << 4)
   
   VF128 m = { 0 };
 
@@ -20,11 +18,11 @@ struct float2 {
 
   HLML_INLINEF void store(F32 *p) const { p[0] = x(); p[1] = y(); }
 
-  HLML_INLINEF void setX(F32 x) { m = insertf2(m, x, 0); }
-  HLML_INLINEF void setY(F32 y) { m = insertf2(m, y, 1); }
+  HLML_INLINEF void setX(F32 x) { m = insertf(m, x, 0); }
+  HLML_INLINEF void setY(F32 y) { m = insertf(m, y, 1); }
 
-  HLML_INLINEF F32 x() const { uiasf res = _mm_extract_ps(m, 0); return res.f; }
-  HLML_INLINEF F32 y() const { uiasf res = _mm_extract_ps(m, 1); return res.f; }
+  HLML_INLINEF F32 x() const { uiasf res = extractf(m, 0); return res.f; }
+  HLML_INLINEF F32 y() const { uiasf res = extractf(m, 1); return res.f; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return *this; }
