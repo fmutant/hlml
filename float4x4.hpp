@@ -69,47 +69,6 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
   return m;
 }
 
-HLML_INLINEF float4x4 inverse2(float4x4 m) {
-  float4  xz0xz2(funcs::axazbxbz(m.c0.m, m.c2.m))
-		    , yw0yw2(funcs::ayawbybw(m.c0.m, m.c2.m))
-		    , yw1yw3(funcs::ayawbybw(m.c1.m, m.c3.m))
-		    , xz1xz3(funcs::axazbxbz(m.c1.m, m.c3.m));
-	float4  dACBD(xz0xz2 * yw1yw3 - yw0yw2 * xz1xz3)
-		    , A(funcs::axbxayby(m.c0.m, m.c1.m))
-		    , B(funcs::axbxayby(m.c2.m, m.c3.m))
-		    , AB(A.wwxx() * B - A.yyzz() * B.zwxy())
-		    , C(funcs::azbzawbw(m.c0.m, m.c1.m))
-		    , D(funcs::azbzawbw(m.c2.m, m.c3.m))
-		    , DC(D.wwxx() * C - D.yyzz() * C.zwxy());
-	float4  dA(dACBD.xxxx())
-		    , dB(dACBD.zzzz())
-		    , dC(dACBD.yyyy())
-		    , dD(dACBD.wwww())
-		    , dAD(dA * dD)
-		    , dBC(dB * dC)
-		    , AdD(A * dD)
-		    , CdB(C * dB)
-		    , BdC(B * dC)
-		    , DdA(D * dA);
-	float4 det = dAD + dBC - dotv(DC.xzyw(), AB);
-  det.m = funcs::AxorB(det.m, consts::vsignpnnp);
-	float4 t0(DC.xyxy() * B.xxzz() + DC.zwzw() * B.yyww())
-		 , t1(AB.wxwx() * D - AB.zyzy() * D.yxwz())
-		 , t2(DC.wxwx() * A - DC.zyzy() * A.yxwz())
-		 , t3(AB.xyxy() * C.xxzz() + AB.zwzw() * C.yyww());
-	float4 iA((AdD - t0) / det)
-		 , iB((CdB - t1) / det)
-		 , iC((BdC - t2) / det)
-		 , iD((DdA - t3) / det);
-	
-  m.c0.m = funcs::awazbwbz(iA.m, iC.m);
-  m.c1.m = funcs::ayaxbybx(iA.m, iC.m);
-  m.c2.m = funcs::awazbwbz(iB.m, iD.m);
-  m.c3.m = funcs::ayaxbybx(iB.m, iD.m);
-
-	return m;
-}
-
 HLML_INLINEF B8         operator==  (float4x4 lhs, float4x4 rhs) { return all(lhs.c0 == rhs.c0) && all(lhs.c1 == rhs.c1) && all(lhs.c2 == rhs.c2) && all(lhs.c3 == rhs.c3); }
 HLML_INLINEF B8         operator!=  (float4x4 lhs, float4x4 rhs) { return !(lhs == rhs); }
 
