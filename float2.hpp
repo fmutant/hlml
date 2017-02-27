@@ -10,7 +10,7 @@ struct float2 {
   VF128 m = { 0 };
 
   HLML_INLINEF float2() {}
-  HLML_INLINEF float2(F32 x, F32 y) : m(funcs::setXYZW(x, y, sfZero, sfZero)) {}
+  HLML_INLINEF float2(F32 x, F32 y) : m(funcs::setXYZW(x, y, consts::sfZero, consts::sfZero)) {}
   HLML_INLINEF explicit float2(F32 x) : float2(x, x) {}
   HLML_INLINEF explicit float2(const F32 *p) : float2(p[0], p[1]) {}
   HLML_INLINEF explicit float2(VF128 v) : m(v) {}

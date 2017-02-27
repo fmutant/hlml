@@ -2,6 +2,7 @@
 #include "int4.hpp"
 
 namespace hlml {
+namespace consts {
 // i got these here http://gruntthepeon.free.fr/ssemath/
 // and here https://github.com/to-miz/sse_mathfun_extension/blob/master/sse_mathfun_extension.h
 static constexpr F32 sfOneNeg = -sfOne;
@@ -70,10 +71,10 @@ HLML_VCONST vconstu vtancp4 = { 1.33387994085E-1f, 1.33387994085E-1f, 1.33387994
 HLML_VCONST vconstu vtancp5 = { 3.33331568548E-1f, 3.33331568548E-1f, 3.33331568548E-1f, 3.33331568548E-1f };
 HLML_VCONST vconstu vtaneps = { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f };
 HLML_VCONST vconstu vfopi = { 1.27323954473516f, 1.27323954473516f, 1.27323954473516f, 1.27323954473516f };// 4 / M_PI
-
+}
 float4 log(float4 x) {
-  const float4 ones(vones), zeros(vzeros), halves(vhalves), npos(vnormpos), sqrthf(vsqrthf), mantisn(vmskmntsn), lp1(vlogp1), lp2(vlogp2), lp3(vlogp3), lp4(vlogp4), lp5(vlogp5), lp6(vlogp6), lp7(vlogp7), lp8(vlogp8), lq1(vlogq1), lq2(vlogq2);
-  const int4 v127(vn127s);
+  const float4 ones(consts::vones), zeros(consts::vzeros), halves(consts::vhalves), npos(consts::vnormpos), sqrthf(consts::vsqrthf), mantisn(consts::vmskmntsn), lp1(consts::vlogp1), lp2(consts::vlogp2), lp3(consts::vlogp3), lp4(consts::vlogp4), lp5(consts::vlogp5), lp6(consts::vlogp6), lp7(consts::vlogp7), lp8(consts::vlogp8), lq1(consts::vlogq1), lq2(consts::vlogq2);
+  const int4 v127(consts::vn127s);
 
   float4 maskinv = cmple(x, zeros);
   x = max(x, npos);
@@ -81,7 +82,7 @@ float4 log(float4 x) {
   x = (x & mantisn) | halves;
   float4 mask = cmplt(x, sqrthf), e = toflt(emm0) - (ones & mask) + ones;
   x = x - ones + (x & mask);
-  float4 z(x * x), y(vlogp0);
+  float4 z(x * x), y(consts::vlogp0);
   y = y * x + lp1;
   y = y * x + lp2;
   y = y * x + lp3;
@@ -95,14 +96,14 @@ float4 log(float4 x) {
 }
 
 float4 exp(float4 x) {
-  const float4 one(vones), ehi(vexphi), elo(vexplo), elf(vlogef), halves(vhalves), exc1(vexpc1), exc2(vexpc2), exp1(vexpp1), exp2(vexpp2), exp3(vexpp3), exp4(vexpp4), exp5(vexpp5);
-  const int4 n127(vn127s);
+  const float4 one(consts::vones), ehi(consts::vexphi), elo(consts::vexplo), elf(consts::vlogef), halves(consts::vhalves), exc1(consts::vexpc1), exc2(consts::vexpc2), exp1(consts::vexpp1), exp2(consts::vexpp2), exp3(consts::vexpp3), exp4(consts::vexpp4), exp5(consts::vexpp5);
+  const int4 n127(consts::vn127s);
   float4 xex = max(elo, min(x, ehi)), fx = xex * elf + halves; //express exp(x) as exp(g + n*log(2))
   float4 nfx(toflt(toint(fx))); //how to perform a floorf with SSE: just below
   fx = toflt(toint(fx)) - (cmpgt(nfx, fx) & one); //if greater, substract 1
   xex = xex - fx * exc1 - fx * exc2;
 
-  float4 z(xex * xex), poly(vexpp0);
+  float4 z(xex * xex), poly(consts::vexpp0);
   poly = poly * xex + exp1;
   poly = poly * xex + exp2;
   poly = poly * xex + exp3;
@@ -114,13 +115,13 @@ float4 exp(float4 x) {
 }
 
 void sincos(float4 x, float4& s, float4& c) {
-  const int4 ones(vnones), nones(vnonesn), zeros(vnzeros), twos(vntwos), fours(vnfours);
-  const float4 cp1(vcoscp1), cp2(vcoscp2), sp1(vsincp1), sp2(vsincp2), halves(vhalves), fones(vones), ndp1(vnegdp1), ndp2(vnegdp2), ndp3(vnegdp3), fpi(vfopi);
+  const int4 ones(consts::vnones), nones(consts::vnonesn), zeros(consts::vnzeros), twos(consts::vntwos), fours(consts::vnfours);
+  const float4 cp1(consts::vcoscp1), cp2(consts::vcoscp2), sp1(consts::vsincp1), sp2(consts::vsincp2), halves(consts::vhalves), fones(consts::vones), ndp1(consts::vnegdp1), ndp2(consts::vnegdp2), ndp3(consts::vnegdp3), fpi(consts::vfopi);
 
   float4 ax(abs(x)), y(ax * fpi);
   int4 emm2 = nones & (toint(y) + ones);
   y = toflt(emm2);
-  float4 dps = ((ax + y * ndp1) + y * ndp2) + y * ndp3, z(dps * dps), polyc(vcoscp0), polys(vsincp0);
+  float4 dps = ((ax + y * ndp1) + y * ndp2) + y * ndp3, z(dps * dps), polyc(consts::vcoscp0), polys(consts::vsincp0);
   polyc = polyc * z + cp1;
   polys = polys * z + sp1;
   polyc = polyc * z + cp2;
@@ -132,7 +133,7 @@ void sincos(float4 x, float4& s, float4& c) {
   float4 ysin = (polymsk & polys) + (polymskn & polyc);
   float4 ycos = polyc + polys - ysin;
   float4 signs_cos = asflt((~(emm2 - twos) & fours) << 29);
-  float4 signs_sin = (x & float4(vsignbits)) ^ asflt((emm2 & fours) << 29);
+  float4 signs_sin = (x & float4(consts::vsignbits)) ^ asflt((emm2 & fours) << 29);
   s = ysin ^ signs_sin;
   c = ycos ^ signs_cos;
 }
@@ -144,8 +145,8 @@ float4 sincos(float4 x) {
 }
 
 float4 tan(float4 x) {
-  const float4 signs(vsignbits), ones(vones), signsres(x & signs), fopi(vfopi), tanp1(vtancp1), tanp2(vtancp2), tanp3(vtancp3), tanp4(vtancp4), tanp5(vtancp5);
-  const int4 iones(vnones), ionesn(vnonesn), twos(vntwos), nzeros(vnzeros);
+  const float4 signs(consts::vsignbits), ones(consts::vones), signsres(x & signs), fopi(consts::vfopi), tanp1(consts::vtancp1), tanp2(consts::vtancp2), tanp3(consts::vtancp3), tanp4(consts::vtancp4), tanp5(consts::vtancp5);
+  const int4 iones(consts::vnones), ionesn(consts::vnonesn), twos(consts::vntwos), nzeros(consts::vnzeros);
 
 	float4 ax(abs(x));
 	/* store the integer part of y in mm0 */
@@ -154,7 +155,7 @@ float4 tan(float4 x) {
   emm2 = cmpeq(emm2 & twos, nzeros);
   const float4 polymsk(asflt(emm2)), polymskn(~polymsk);
 
-	float4 z = ((ax + y * float4(vnegdp1)) + y * float4(vnegdp2)) + y * float4(vnegdp3), zz(z * z), poly(vtancp0);
+	float4 z = ((ax + y * float4(consts::vnegdp1)) + y * float4(consts::vnegdp2)) + y * float4(consts::vnegdp3), zz(z * z), poly(consts::vtancp0);
 	poly = poly * zz + tanp1;
 	poly = poly * zz + tanp2;
 	poly = poly * zz + tanp3;

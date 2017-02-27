@@ -9,7 +9,7 @@ struct int2 {
   VI128 m = { 0 };
 
   HLML_INLINEF int2() {}
-  HLML_INLINEF int2(I32 x, I32 y) : m(funcs::setXYZW(x, y, snZero, snZero)) {}
+  HLML_INLINEF int2(I32 x, I32 y) : m(funcs::setXYZW(x, y, consts::snZero, consts::snZero)) {}
   HLML_INLINEF explicit int2(I32 x) : int2(x, x) {}
   HLML_INLINEF explicit int2(const I32 *p) : int2(p[0], p[1]) {}
   HLML_INLINEF explicit int2(VI128 v) : m(v) {}

@@ -54,7 +54,7 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
   float4 iA = A * dD - t3;
 
   float4 det = dA * dD + dB * dC - dotv(DC.xzyw(), AB);
-  det.m = funcs::AxorB(det.m, vsignpnnp);
+  det.m = funcs::AxorB(det.m, consts::vsignpnnp);
   float4 idet = rcp(det);
   iA *= idet;
   iB *= idet;
@@ -92,7 +92,7 @@ HLML_INLINEF float4x4 inverse2(float4x4 m) {
 		    , BdC(B * dC)
 		    , DdA(D * dA);
 	float4 det = dAD + dBC - dotv(DC.xzyw(), AB);
-  det.m = funcs::AxorB(det.m, vsignpnnp);
+  det.m = funcs::AxorB(det.m, consts::vsignpnnp);
 	float4 t0(DC.xyxy() * B.xxzz() + DC.zwzw() * B.yyww())
 		 , t1(AB.wxwx() * D - AB.zyzy() * D.yxwz())
 		 , t2(DC.wxwx() * A - DC.zyzy() * A.yxwz())

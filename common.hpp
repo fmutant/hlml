@@ -29,6 +29,7 @@ typedef __m128i VI128;
 #include "funcs_sse.hpp"
 
 namespace hlml {
+namespace consts {
 struct vconstu {
   vconstu(U32 u0, U32 u1, U32 u2, U32 u3) {
     u[0] = u0;
@@ -73,20 +74,22 @@ HLML_VCONST vconstu vsignppnn = { snSignBit, snSignBit, snZero, snZero };
 HLML_VCONST vconstu vsignpnpn = { snSignBit, snZero, snSignBit, snZero };
 HLML_VCONST vconstu vsignnpnp = { snZero, snSignBit, snZero, snSignBit };
 HLML_VCONST vconstu vnall = { snZeroN, snZeroN, snZeroN, snZeroN };
+}
 
 struct uiasf {
   union { I32 i; F32 f; };
   uiasf(I32 val) : i(val) {}
 };
+
 HLML_INLINEF I32 f2i(F32 x) {
-  const I32 magic = snMagicF2I;
+  const I32 magic = consts::snMagicF2I;
   x += *(F32*)&magic;
   return *(I32*)&x - magic;
 }
 HLML_INLINEF F32 min(F32 a, F32 b) { return (a) < (b) ? (a) : (b); }
 HLML_INLINEF F32 max(F32 a, F32 b) { return (a) > (b) ? (a) : (b); }
-template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = funcs::notAandB(a.m, vsignbits); return a; } // for bools
-template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = funcs::notAandB(a.m, vnall); return a; }
+template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = funcs::notAandB(a.m, consts::vsignbits); return a; } // for bools
+template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = funcs::notAandB(a.m, consts::vnall); return a; }
 template<typename T> HLML_INLINEF T   operator&   (T a, T b) { a.m = funcs::AandB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   operator|   (T a, T b) { a.m = funcs::AorB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   operator^   (T a, T b) { a.m = funcs::AxorB(a.m, b.m); return a; }
@@ -97,7 +100,7 @@ template<typename T> HLML_INLINEF T&  operator^=  (T& a, T b) { a = a ^ b; retur
 template<typename T> HLML_INLINEF T   operator+   (T a) { return a; }
 template<typename T> HLML_INLINEF T   operator+   (T a, T b) { a.m = funcs::AaddB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator+=  (T& a, T b) { a = a + b; return a; }
-template<typename T> HLML_INLINEF T   operator-   (T a) { a.m = funcs::AxorB(a.m, vsignbits); return a; }
+template<typename T> HLML_INLINEF T   operator-   (T a) { a.m = funcs::AxorB(a.m, consts::vsignbits); return a; }
 template<typename T> HLML_INLINEF T   operator-   (T a, T b) { a.m = funcs::AsubB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator-=  (T& a, T b) { a = a - b; return a; }
 template<typename T> HLML_INLINEF T   operator*   (T a, T b) { a.m = funcs::AmulB(a.m, b.m); return a; }
@@ -117,7 +120,7 @@ template<typename T> HLML_INLINEF T   cmpge       (T a, T b) { return T(funcs::A
 template<typename T> HLML_INLINEF T   cmplt       (T a, T b) { return T(funcs::AcmpltB(a.m, b.m)); }
 template<typename T> HLML_INLINEF T   cmple       (T a, T b) { return T(funcs::AcmpleB(a.m, b.m)); }
 
-template<typename T> HLML_INLINEF T   abs         (T v) { v.m = funcs::notAandB(vsignbits, v.m); return v; }
+template<typename T> HLML_INLINEF T   abs         (T v) { v.m = funcs::notAandB(consts::vsignbits, v.m); return v; }
 template<typename T> HLML_INLINEF T   sign        (T v) { T zro0(vzeros); return (cmplt(v, zro0) & T(vonesneg)) | (cmpgt(v, zro0) & T(vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
 template<typename T> HLML_INLINEF T   min         (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   max         (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }

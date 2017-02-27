@@ -5,14 +5,14 @@
 
 namespace hlml {
 class quat {
-  float4 m = { sfOne, sfZero, sfZero, sfZero };
+  float4 m = { consts::sfOne, consts::sfZero, consts::sfZero, consts::sfZero };
 
  public:
   quat() = default;
   explicit quat(float3 v) : quat(0.0f, v) {}
   explicit quat(float4 v) : m(v.wxyz()) {}
   explicit quat(F32* v) : m(v) {}
-  explicit quat(F32 scalar) : m(funcs::bxayazaw(funcs::setXXXX(scalar), vzeros)) {}
+  explicit quat(F32 scalar) : m(funcs::bxayazaw(funcs::setXXXX(scalar), consts::vzeros)) {}
   quat(F32 w, float3 v) : m(w, v.x(), v.y(), v.z()) {}
   quat(F32 w, F32 x, F32 y, F32 z) : m(w, x, y, z) {}
   quat(float3 axis, F32 degs) {
@@ -28,17 +28,17 @@ class quat {
     sincos(angles * 0.5f, sines, coses);
     float4 cxxyz(funcs::bxayazaw(sines.m, coses.m)), sxxyz(funcs::bxayazaw(coses.m, sines.m));;
     float4 left = cxxyz * coses.zzyz() * coses.wwwy(), right = sxxyz * sines.zzyz() * sines.wwwy();
-    m = left + (right ^ float4(vsignnpnp));
+    m = left + (right ^ float4(consts::vsignnpnp));
   }
   explicit quat(float3x3 rot) {
     // https://www.fd.cvut.cz/personal/voracsar/geometriepg/pgr020/matrix2quaternions.pdf
     // http://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
     // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
     const float3 m00(rot.c0.xxx()), m11(rot.c1.yyy()), m22(rot.c2.zzz()), zero;
-    const float4 diag(sfZero, m00.x(), m11.x(), m22.x())
-               , left(sfZero, rot.c2.y(), rot.c0.z(), rot.c1.x())
-               , right(sfZero, rot.c1.z(), rot.c2.x(), rot.c0.y());
-    const float4 s0(vsignppnn), s1(vsignpnpn), s2(vsignpnnp);
+    const float4 diag(consts::sfZero, m00.x(), m11.x(), m22.x())
+               , left(consts::sfZero, rot.c2.y(), rot.c0.z(), rot.c1.x())
+               , right(consts::sfZero, rot.c1.z(), rot.c2.x(), rot.c0.y());
+    const float4 s0(consts::vsignppnn), s1(consts::vsignpnpn), s2(consts::vsignpnnp);
     float4 factor(1.0f);
     if (all(m22 < zero)) {
       if (all(m00 > m11)) {
@@ -97,7 +97,7 @@ HLML_INLINEF quat     operator+  (quat a, F32 s) { return a + quat(s); }
 HLML_INLINEF quat     operator+  (F32 s, quat a) { return a + s; }
 HLML_INLINEF quat&    operator+= (quat& a, quat b) { a = a + b; return a; }
 HLML_INLINEF quat&    operator+= (quat& a, F32 s) { a = a + quat(s); return a; }
-HLML_INLINEF quat     operator-  (quat a) { return quat((float4)a ^ float4(vsignpppn)); }
+HLML_INLINEF quat     operator-  (quat a) { return quat((float4)a ^ float4(consts::vsignpppn)); }
 HLML_INLINEF quat     operator-  (quat a, quat b) { return quat((float4)a - (float4)b); }
 HLML_INLINEF quat     operator-  (quat a, F32 s) { return a - quat(s); }
 HLML_INLINEF quat     operator-  (F32 s, quat b) { return quat(s) - b; }
@@ -106,7 +106,7 @@ HLML_INLINEF quat&    operator-= (quat& a, F32 s) { a = a - quat(s); return a; }
 HLML_INLINEF quat     operator*  (quat a, quat b) {
   float4 ai = (float4)a, bi = (float4)b;
   float4 s1 = ai.xyzy() * bi.wwwy() + ai.yzxz() * bi.zxyz();
-  s1.m = funcs::AxorB(s1.m, vsignnnnp);
+  s1.m = funcs::AxorB(s1.m, consts::vsignnnnp);
   ai = ai.wwww() * bi - ai.zxyx() * bi.yzxx() + s1;
   return quat(ai);
 }
