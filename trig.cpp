@@ -71,6 +71,15 @@ HLML_VCONST vconstu vtancp4 = { 1.33387994085E-1f, 1.33387994085E-1f, 1.33387994
 HLML_VCONST vconstu vtancp5 = { 3.33331568548E-1f, 3.33331568548E-1f, 3.33331568548E-1f, 3.33331568548E-1f };
 HLML_VCONST vconstu vtaneps = { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f };
 HLML_VCONST vconstu vfopi = { 1.27323954473516f, 1.27323954473516f, 1.27323954473516f, 1.27323954473516f };// 4 / M_PI
+HLML_VCONST vconstu vpif = { 3.141592653589793238f, 3.141592653589793238f, 3.141592653589793238f, 3.141592653589793238f };
+HLML_VCONST vconstu vpih = { 1.5707963267948966192f, 1.5707963267948966192f, 1.5707963267948966192f, 1.5707963267948966192f};
+HLML_VCONST vconstu vpiq = { 0.7853981633974483096f, 0.7853981633974483096f, 0.7853981633974483096f, 0.7853981633974483096f};
+HLML_VCONST vconstu vatanhi = { 2.414213562373095f, 2.414213562373095f, 2.414213562373095f, 2.414213562373095f };
+HLML_VCONST vconstu vatanlo = { 0.4142135623730950f, 0.4142135623730950f, 0.4142135623730950f, 0.4142135623730950f };
+HLML_VCONST vconstu vatanp0 = { 8.05374449538e-2f, 8.05374449538e-2f, 8.05374449538e-2f, 8.05374449538e-2f };
+HLML_VCONST vconstu vatanp1 = { 1.38776856032E-1f, 1.38776856032E-1f, 1.38776856032E-1f, 1.38776856032E-1f };
+HLML_VCONST vconstu vatanp2 = { 1.99777106478E-1f, 1.99777106478E-1f, 1.99777106478E-1f, 1.99777106478E-1f };
+HLML_VCONST vconstu vatanp3 = { 3.33329491539E-1f, 3.33329491539E-1f, 3.33329491539E-1f, 3.33329491539E-1f };
 }
 float4 log(float4 x) {
   const float4 ones(consts::vones), zeros(consts::vzeros), halves(consts::vhalves), npos(consts::vnormpos), sqrthf(consts::vsqrthf), mantisn(consts::vmskmntsn), lp1(consts::vlogp1), lp2(consts::vlogp2), lp3(consts::vlogp3), lp4(consts::vlogp4), lp5(consts::vlogp5), lp6(consts::vlogp6), lp7(consts::vlogp7), lp8(consts::vlogp8), lq1(consts::vlogq1), lq2(consts::vlogq2);
@@ -166,5 +175,30 @@ float4 tan(float4 x) {
 	float4 polyinv = ones / poly;
 	poly = (poly & polymsk) | (-polyinv & polymskn);
 	return poly ^ signsres;
+}
+
+float4 atan(float4 x) {
+  const float4 signsn(consts::vsignbitsn), signs(consts::vsignbits), ones(consts::vones), atanhi(consts::vatanhi), atanlo(consts::vatanlo), pih(consts::vpih), piq(consts::vpiq), atanp0(consts::vatanp0), atanp1(consts::vatanp1), atanp2(consts::vatanp2), atanp3(consts::vatanp3);
+  float4 ax = abs(x), r = ax - ones, r0 = rcp(ax + ones), r1 = -rcp(ax);
+	float4 cmp0 = cmpgt(ax, atanhi), cmp1 = cmpgt(ax, atanlo), cmp2 = ~cmp0 & cmp1, cmp = cmp0 | cmp1;
+	float4 x2 = (cmp2 & (r * r0)) | (cmp0 & r1);
+	ax = (cmp & x2) | (~cmp & ax);
+
+	float4 zz = ax * ax, acc = atanp0;
+	acc = acc * zz - atanp1;
+	acc = acc * zz + atanp2;
+	acc = acc * zz - atanp3;
+	acc = acc * zz * ax + ax + ((cmp0 & pih) | (cmp2 & piq));
+	return acc ^ (x & signs);
+}
+
+float4 atan2(float4 x, float4 y) {
+  const float4 zeros(consts::vzeros), signs(consts::vsignbits), pi(consts::vpif), pih(consts::vpih);
+	float4 xeq = cmpeq(x, zeros), xgt = cmpgt(x, zeros), xle = cmple(x, zeros), xlt = cmplt(x, zeros), yeq = cmpeq(y, zeros), ylt = cmplt(y, zeros);
+	float4 zero_mask = (xeq & yeq) | (xgt & yeq), pio2_mask = ~yeq &  xeq;
+	float4 pio2_result = (pih ^ (ylt & signs)) & pio2_mask;
+	float4 atan_result = atan(y / x) + (xlt & (pi ^ (xlt & ylt & signs)));
+
+	return (~zero_mask & pio2_result) | (~pio2_mask & atan_result) | (pi & xle & yeq);
 }
 }
