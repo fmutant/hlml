@@ -20,19 +20,19 @@ struct float4x4 {
 };
 
 HLML_INLINEF float4x4 transpose(float4x4 m) {
-  float4 t0(axbxayby(m.c0.m, m.c1.m));
-  float4 t2(azbzawbw(m.c0.m, m.c1.m));
-  float4 t1(axbxayby(m.c2.m, m.c3.m));
-  float4 t3(azbzawbw(m.c2.m, m.c3.m));
-  m.c0.m = axaybxby(t0.m, t1.m);
-  m.c1.m = bzbwazaw(t1.m, t0.m);
-	m.c2.m = axaybxby(t2.m, t3.m);
-  m.c3.m = bzbwazaw(t3.m, t2.m);
+  float4 t0(funcs::axbxayby(m.c0.m, m.c1.m));
+  float4 t2(funcs::azbzawbw(m.c0.m, m.c1.m));
+  float4 t1(funcs::axbxayby(m.c2.m, m.c3.m));
+  float4 t3(funcs::azbzawbw(m.c2.m, m.c3.m));
+  m.c0.m = funcs::axaybxby(t0.m, t1.m);
+  m.c1.m = funcs::bzbwazaw(t1.m, t0.m);
+	m.c2.m = funcs::axaybxby(t2.m, t3.m);
+  m.c3.m = funcs::bzbwazaw(t3.m, t2.m);
   return m;
 }
 
 HLML_INLINEF float4x4 inverse(float4x4 m) {
-  float4 A(axbxayby(m.c0.m, m.c1.m)), B(axbxayby(m.c2.m, m.c3.m)), C(azbzawbw(m.c0.m, m.c1.m)), D(azbzawbw(m.c2.m, m.c3.m));
+  float4 A(funcs::axbxayby(m.c0.m, m.c1.m)), B(funcs::axbxayby(m.c2.m, m.c3.m)), C(funcs::azbzawbw(m.c0.m, m.c1.m)), D(funcs::azbzawbw(m.c2.m, m.c3.m));
   float4 AB = A.wwxx() * B - A.yyzz() * B.zwxy();
   float4 t0 = AB.xyxy() * C.xxzz() + AB.zwzw() * C.yyww();
   float4 t1 = AB.wxwx() * D - AB.zyzy() * D.yxwz();
@@ -54,32 +54,32 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
   float4 iA = A * dD - t3;
 
   float4 det = dA * dD + dB * dC - dotv(DC.xzyw(), AB);
-  det.m = AxorB(det.m, vsignpnnp);
+  det.m = funcs::AxorB(det.m, vsignpnnp);
   float4 idet = rcp(det);
   iA *= idet;
   iB *= idet;
   iC *= idet;
   iD *= idet;
 
-  m.c0.m = awazbwbz(iA.m, iC.m);
-  m.c1.m = ayaxbybx(iA.m, iC.m);
-  m.c2.m = awazbwbz(iB.m, iD.m);
-  m.c3.m = ayaxbybx(iB.m, iD.m);
+  m.c0.m = funcs::awazbwbz(iA.m, iC.m);
+  m.c1.m = funcs::ayaxbybx(iA.m, iC.m);
+  m.c2.m = funcs::awazbwbz(iB.m, iD.m);
+  m.c3.m = funcs::ayaxbybx(iB.m, iD.m);
 
   return m;
 }
 
 HLML_INLINEF float4x4 inverse2(float4x4 m) {
-  float4  xz0xz2(axazbxbz(m.c0.m, m.c2.m))
-		    , yw0yw2(ayawbybw(m.c0.m, m.c2.m))
-		    , yw1yw3(ayawbybw(m.c1.m, m.c3.m))
-		    , xz1xz3(axazbxbz(m.c1.m, m.c3.m));
+  float4  xz0xz2(funcs::axazbxbz(m.c0.m, m.c2.m))
+		    , yw0yw2(funcs::ayawbybw(m.c0.m, m.c2.m))
+		    , yw1yw3(funcs::ayawbybw(m.c1.m, m.c3.m))
+		    , xz1xz3(funcs::axazbxbz(m.c1.m, m.c3.m));
 	float4  dACBD(xz0xz2 * yw1yw3 - yw0yw2 * xz1xz3)
-		    , A(axbxayby(m.c0.m, m.c1.m))
-		    , B(axbxayby(m.c2.m, m.c3.m))
+		    , A(funcs::axbxayby(m.c0.m, m.c1.m))
+		    , B(funcs::axbxayby(m.c2.m, m.c3.m))
 		    , AB(A.wwxx() * B - A.yyzz() * B.zwxy())
-		    , C(azbzawbw(m.c0.m, m.c1.m))
-		    , D(azbzawbw(m.c2.m, m.c3.m))
+		    , C(funcs::azbzawbw(m.c0.m, m.c1.m))
+		    , D(funcs::azbzawbw(m.c2.m, m.c3.m))
 		    , DC(D.wwxx() * C - D.yyzz() * C.zwxy());
 	float4  dA(dACBD.xxxx())
 		    , dB(dACBD.zzzz())
@@ -92,7 +92,7 @@ HLML_INLINEF float4x4 inverse2(float4x4 m) {
 		    , BdC(B * dC)
 		    , DdA(D * dA);
 	float4 det = dAD + dBC - dotv(DC.xzyw(), AB);
-    det.m = AxorB(det.m, vsignpnnp);
+  det.m = funcs::AxorB(det.m, vsignpnnp);
 	float4 t0(DC.xyxy() * B.xxzz() + DC.zwzw() * B.yyww())
 		 , t1(AB.wxwx() * D - AB.zyzy() * D.yxwz())
 		 , t2(DC.wxwx() * A - DC.zyzy() * A.yxwz())
@@ -102,10 +102,10 @@ HLML_INLINEF float4x4 inverse2(float4x4 m) {
 		 , iC((BdC - t2) / det)
 		 , iD((DdA - t3) / det);
 	
-    m.c0.m = awazbwbz(iA.m, iC.m);
-    m.c1.m = ayaxbybx(iA.m, iC.m);
-    m.c2.m = awazbwbz(iB.m, iD.m);
-    m.c3.m = ayaxbybx(iB.m, iD.m);
+  m.c0.m = funcs::awazbwbz(iA.m, iC.m);
+  m.c1.m = funcs::ayaxbybx(iA.m, iC.m);
+  m.c2.m = funcs::awazbwbz(iB.m, iD.m);
+  m.c3.m = funcs::ayaxbybx(iB.m, iD.m);
 
 	return m;
 }
@@ -138,7 +138,7 @@ HLML_INLINEF float4x4   operator*   (F32 s, float4x4 a) { return a * s; }
 HLML_INLINEF float4     operator*   (float4x4 a, float4 v) { return v.xxxx() * a.c0 + v.yyyy() * a.c1 + v.zzzz() * a.c2 + v.wwww() * a.c3; }
 HLML_INLINEF float4     operator*   (float4 v, float4x4 a) {
   float4 xxxx(dotv(v, a.c0)), yyyy(dotv(v, a.c1)), zzzz(dotv(v, a.c2)), wwww(dotv(v, a.c3));
-  float4 xyxy(axbxayby(xxxx.m, yyyy.m)), zwzw(axbxayby(zzzz.m, wwww.m)), xyzw(axaybxby(xyxy.m, zwzw.m));
+  float4 xyxy(funcs::axbxayby(xxxx.m, yyyy.m)), zwzw(funcs::axbxayby(zzzz.m, wwww.m)), xyzw(funcs::axaybxby(xyxy.m, zwzw.m));
   return xyzw;
 }
 HLML_INLINEF float4x4&  operator*=  (float4x4& a, float4x4 b) { a = a * b; return a; }

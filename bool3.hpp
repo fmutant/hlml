@@ -9,7 +9,7 @@ struct bool3 {
   VI128 m = { 0 };
 
   HLML_INLINEF bool3() {}
-  HLML_INLINEF explicit bool3(B8 x, B8 y, B8 z) : m(setXYZW(x, y, z, snZero)) {}
+  HLML_INLINEF explicit bool3(B8 x, B8 y, B8 z) : m(funcs::setXYZW(x, y, z, snZero)) {}
   HLML_INLINEF explicit bool3(B8* p) : bool3(p[0], p[1], p[2]) {}
   HLML_INLINEF explicit bool3(bool2 v, B8 z) : bool3(v.x(), v.y(), z) {}
   HLML_INLINEF explicit bool3(VI128 v) : m(v) {}

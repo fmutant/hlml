@@ -140,7 +140,7 @@ void sincos(float4 x, float4& s, float4& c) {
 float4 sincos(float4 x) {
   float4 s, c;
   sincos(x, s, c);
-  return float4(ayaxbybx(s.m, c.m));
+  return float4(funcs::ayaxbybx(s.m, c.m));
 }
 
 float4 tan(float4 x) {

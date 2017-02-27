@@ -9,7 +9,7 @@ struct bool4 {
   VI128 m = { 0 };
 
   HLML_INLINEF bool4() {}
-  HLML_INLINEF explicit bool4(B8 x, B8 y, B8 z, B8 w) : m(setXYZW(x, y, z, w)) {}
+  HLML_INLINEF explicit bool4(B8 x, B8 y, B8 z, B8 w) : m(funcs::setXYZW(x, y, z, w)) {}
   HLML_INLINEF explicit bool4(B8* p) : bool4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit bool4(bool3 v, B8 w) : bool4(v.x(), v.y(), v.z(), w) {}
   HLML_INLINEF explicit bool4(VI128 v) : m(v) {}

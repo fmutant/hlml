@@ -9,7 +9,7 @@ struct int3 {
   VI128 m = { 0 };
 
   HLML_INLINEF int3() {}
-  HLML_INLINEF int3(I32 x, I32 y, I32 z) : m(setXYZW(x, y, z, snZero)) {}
+  HLML_INLINEF int3(I32 x, I32 y, I32 z) : m(funcs::setXYZW(x, y, z, snZero)) {}
   HLML_INLINEF int3(int2 v, I32 z, I32 w) : int3(v.x(), v.y(), z) {}
   HLML_INLINEF explicit int3(I32 x) : int3(x, x, x) {}
   HLML_INLINEF explicit int3(const I32 *p) : int3(p[0], p[1], p[2]) {}
@@ -108,12 +108,12 @@ struct int3 {
   HLML_INLINEF int3 bbb() const { return zzz(); }
 };
 
-HLML_INLINEF bool3   operator== (int3 a, int3 b) { return bool3(ftoi(cmpeq(a, b).m)); }
-HLML_INLINEF bool3   operator!= (int3 a, int3 b) { return bool3(ftoi(cmpneq(a, b).m)); }
-HLML_INLINEF bool3   operator<  (int3 a, int3 b) { return bool3(ftoi(cmplt(a, b).m)); }
-HLML_INLINEF bool3   operator>  (int3 a, int3 b) { return bool3(ftoi(cmpgt(a, b).m)); }
-HLML_INLINEF bool3   operator<= (int3 a, int3 b) { return bool3(ftoi(cmple(a, b).m)); }
-HLML_INLINEF bool3   operator>= (int3 a, int3 b) { return bool3(ftoi(cmpge(a, b).m)); }
+HLML_INLINEF bool3   operator== (int3 a, int3 b) { return bool3(funcs::ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool3   operator!= (int3 a, int3 b) { return bool3(funcs::ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool3   operator<  (int3 a, int3 b) { return bool3(funcs::ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool3   operator>  (int3 a, int3 b) { return bool3(funcs::ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool3   operator<= (int3 a, int3 b) { return bool3(funcs::ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool3   operator>= (int3 a, int3 b) { return bool3(funcs::ftoi(cmpge(a, b).m)); }
 
 HLML_INLINEF int3 sumv(int3 v) { return v += v.zxy() + v.yzx(); }
 HLML_INLINEF I32 hmin(int3 v) { v = min(v, shufflei3(v, 1, 0, 2)); return min(v, shufflei3(v, 2, 0, 1)).x(); }

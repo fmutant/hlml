@@ -85,45 +85,45 @@ HLML_INLINEF I32 f2i(F32 x) {
 }
 HLML_INLINEF F32 min(F32 a, F32 b) { return (a) < (b) ? (a) : (b); }
 HLML_INLINEF F32 max(F32 a, F32 b) { return (a) > (b) ? (a) : (b); }
-template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = notAandB(a.m, vsignbits); return a; } // for bools
-template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = notAandB(a.m, vnall); return a; }
-template<typename T> HLML_INLINEF T   operator&   (T a, T b) { a.m = AandB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   operator|   (T a, T b) { a.m = AorB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   operator^   (T a, T b) { a.m = AxorB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = funcs::notAandB(a.m, vsignbits); return a; } // for bools
+template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = funcs::notAandB(a.m, vnall); return a; }
+template<typename T> HLML_INLINEF T   operator&   (T a, T b) { a.m = funcs::AandB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator|   (T a, T b) { a.m = funcs::AorB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator^   (T a, T b) { a.m = funcs::AxorB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator&=  (T& a, T b) { a = a & b; return a; }
 template<typename T> HLML_INLINEF T&  operator|=  (T& a, T b) { a = a | b; return a; }
 template<typename T> HLML_INLINEF T&  operator^=  (T& a, T b) { a = a ^ b; return a; }
 
 template<typename T> HLML_INLINEF T   operator+   (T a) { return a; }
-template<typename T> HLML_INLINEF T   operator+   (T a, T b) { a.m = AaddB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator+   (T a, T b) { a.m = funcs::AaddB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator+=  (T& a, T b) { a = a + b; return a; }
-template<typename T> HLML_INLINEF T   operator-   (T a) { a.m = AxorB(a.m, vsignbits); return a; }
-template<typename T> HLML_INLINEF T   operator-   (T a, T b) { a.m = AsubB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator-   (T a) { a.m = funcs::AxorB(a.m, vsignbits); return a; }
+template<typename T> HLML_INLINEF T   operator-   (T a, T b) { a.m = funcs::AsubB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator-=  (T& a, T b) { a = a - b; return a; }
-template<typename T> HLML_INLINEF T   operator*   (T a, T b) { a.m = AmulB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator*   (T a, T b) { a.m = funcs::AmulB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator*=  (T& a, T b) { a = a * b; return a; }
-template<typename T> HLML_INLINEF T   operator/   (T a, T b) { a.m = AdivB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   operator/   (T a, T b) { a.m = funcs::AdivB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T&  operator/=  (T& a, T b) { a = a / b; return a; }
 
-template<typename T> HLML_INLINEF T   operator<<  (T a, U8 bits) { a.m = Ashiftl(a.m, bits); return a; }
-template<typename T> HLML_INLINEF T   operator>>  (T a, U8 bits) { a.m = Ashiftr(a.m, bits); return a; }
+template<typename T> HLML_INLINEF T   operator<<  (T a, U8 bits) { a.m = funcs::Ashiftl(a.m, bits); return a; }
+template<typename T> HLML_INLINEF T   operator>>  (T a, U8 bits) { a.m = funcs::Ashiftr(a.m, bits); return a; }
 template<typename T> HLML_INLINEF T&  operator<<= (T& a, U8 bits) { a = a << bits; return a; }
 template<typename T> HLML_INLINEF T&  operator>>= (T& a, U8 bits) { a = a >> bits; return a; }
 
-template<typename T> HLML_INLINEF T   cmpeq       (T a, T b) { return T(AcmpeqB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmpneq      (T a, T b) { return T(AcmpneqB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmpgt       (T a, T b) { return T(AcmpgtB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmpge       (T a, T b) { return T(AcmpgeB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmplt       (T a, T b) { return T(AcmpltB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmple       (T a, T b) { return T(AcmpleB(a.m, b.m)); }
+template<typename T> HLML_INLINEF T   cmpeq       (T a, T b) { return T(funcs::AcmpeqB(a.m, b.m)); }
+template<typename T> HLML_INLINEF T   cmpneq      (T a, T b) { return T(funcs::AcmpneqB(a.m, b.m)); }
+template<typename T> HLML_INLINEF T   cmpgt       (T a, T b) { return T(funcs::AcmpgtB(a.m, b.m)); }
+template<typename T> HLML_INLINEF T   cmpge       (T a, T b) { return T(funcs::AcmpgeB(a.m, b.m)); }
+template<typename T> HLML_INLINEF T   cmplt       (T a, T b) { return T(funcs::AcmpltB(a.m, b.m)); }
+template<typename T> HLML_INLINEF T   cmple       (T a, T b) { return T(funcs::AcmpleB(a.m, b.m)); }
 
-template<typename T> HLML_INLINEF T   abs         (T v) { v.m = notAandB(vsignbits, v.m); return v; }
+template<typename T> HLML_INLINEF T   abs         (T v) { v.m = funcs::notAandB(vsignbits, v.m); return v; }
 template<typename T> HLML_INLINEF T   sign        (T v) { T zro0(vzeros); return (cmplt(v, zro0) & T(vonesneg)) | (cmpgt(v, zro0) & T(vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
-template<typename T> HLML_INLINEF T   min         (T a, T b) { a.m = AminB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   max         (T a, T b) { a.m = AmaxB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   min         (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   max         (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   clamp       (T t, T a, T b) { return min(max(t, a), b); }
 
-template<typename T> HLML_INLINEF U32 mask(T v) { return T::flagsall & movemask(v.m); }
+template<typename T> HLML_INLINEF U32 mask(T v) { return T::flagsall & funcs::movemask(v.m); }
 template<typename T> HLML_INLINEF B8  any (T v) { return mask(v); }
 template<typename T> HLML_INLINEF B8  none(T v) { return !any(v); }
 template<typename T> HLML_INLINEF B8  all (T v) { return T::flagsall == mask(v); }

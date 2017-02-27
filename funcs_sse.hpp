@@ -1,6 +1,7 @@
 #define HLML_INLINEF      __forceinline
 
 namespace hlml {
+namespace funcs {
 #define shuffleb2(V, X, Y) bool2(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3,2,Y,X)))
 #define shufflei2(V, X, Y) int2(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, 2, Y, X)))
 #define shufflef2(V, X, Y) float2(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)))
@@ -88,4 +89,5 @@ HLML_INLINEF VI128 ftoi(VI128 a) { return a; }
 HLML_INLINEF VF128 itof(VF128 a) { return a; }
 HLML_INLINEF VI128 fasi(VI128 a) { return a; }
 HLML_INLINEF VF128 iasf(VF128 a) { return a; }
+}
 }

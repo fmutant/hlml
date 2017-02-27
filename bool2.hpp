@@ -9,7 +9,7 @@ struct bool2 {
   VI128 m = { 0 };
 
   HLML_INLINEF bool2() {}
-  HLML_INLINEF explicit bool2(B8 x, B8 y) : bool2(setXYZW(x, y, snZero, snZero)) {}
+  HLML_INLINEF explicit bool2(B8 x, B8 y) : bool2(funcs::setXYZW(x, y, snZero, snZero)) {}
   HLML_INLINEF explicit bool2(B8* p) : bool2(p[0], p[1]) {}
   HLML_INLINEF explicit bool2(VI128 v) : m(v) {}
 

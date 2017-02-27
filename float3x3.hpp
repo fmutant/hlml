@@ -19,17 +19,17 @@ struct float3x3 {
 };
 
 HLML_INLINEF float3x3 transpose(float3x3 m) {
-  float3 t0 = m.c0, t1 = m.c1, t2 = m.c2, vT(azbzawbw(t0.m, t1.m));
-  t0.m = axbxayby(t0.m, t1.m);
-  m.c0.m = axaybxbw(t0.m, t2.m);
-  m.c1.m = azawbybw(t0.m, t2.m);
-  m.c2.m = axaybzbw(vT.m, t2.m);
+  float3 t0 = m.c0, t1 = m.c1, t2 = m.c2, vT(funcs::azbzawbw(t0.m, t1.m));
+  t0.m = funcs::axbxayby(t0.m, t1.m);
+  m.c0.m = funcs::axaybxbw(t0.m, t2.m);
+  m.c1.m = funcs::azawbybw(t0.m, t2.m);
+  m.c2.m = funcs::axaybzbw(vT.m, t2.m);
   return m;
 }
 HLML_INLINEF float3x3 inverse(float3x3 m) {
   float3 t0 = m.c0, t1 = m.c1, t2 = m.c2;
   float3 dets = rcp(dotv(t0, cross(t1, t2)));
-  dets.m = axaxazaz(dets.m);
+  dets.m = funcs::axaxazaz(dets.m);
   m.c0 = cross(t1, t2) * dets;
   m.c1 = cross(t2, t0) * dets;
   m.c2 = cross(t0, t1) * dets;
@@ -63,7 +63,7 @@ HLML_INLINEF float3x3   operator*   (F32 s, float3x3 a) { return a * s; }
 HLML_INLINEF float3     operator*   (float3x3 a, float3 v) { return v.xxx() * a.c0 + v.yyy() * a.c1 + v.zzz() * a.c2; }
 HLML_INLINEF float3     operator*   (float3 v, float3x3 a) {
   float3 xxx(dotv(v, a.c0)), yyy(dotv(v, a.c1)), zzz(dotv(v, a.c2));
-  float3 xyxy(axbxayby(xxx.m, yyy.m)), xyz0(bzbwazaw(zzz.m, xyxy.m));
+  float3 xyxy(funcs::axbxayby(xxx.m, yyy.m)), xyz0(funcs::bzbwazaw(zzz.m, xyxy.m));
   return xyz0;
 }
 HLML_INLINEF float3x3&  operator*=  (float3x3& a, float3x3 b) { a = a * b; return a; }

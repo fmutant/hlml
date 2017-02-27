@@ -10,7 +10,7 @@ struct float3 {
   VF128 m = { 0 };
 
   HLML_INLINEF float3() {}
-  HLML_INLINEF float3(F32 x, F32 y, F32 z) : m(setXYZW(x, y, z, sfZero)) {}
+  HLML_INLINEF float3(F32 x, F32 y, F32 z) : m(funcs::setXYZW(x, y, z, sfZero)) {}
   HLML_INLINEF float3(float2 v, F32 z) : float3(v.x(), v.y(), z) {}
   HLML_INLINEF explicit float3(F32 x) : float3(x, x, x) {}
   HLML_INLINEF explicit float3(const F32 *p) : float3(p[0], p[1], p[2]) {}
@@ -108,17 +108,17 @@ struct float3 {
   HLML_INLINEF float3 bbb() const { return zzz(); }
 };
 
-HLML_INLINEF bool3   operator== (float3 a, float3 b) { return bool3(ftoi(cmpeq(a, b).m)); }
-HLML_INLINEF bool3   operator!= (float3 a, float3 b) { return bool3(ftoi(cmpneq(a, b).m)); }
-HLML_INLINEF bool3   operator<  (float3 a, float3 b) { return bool3(ftoi(cmplt(a, b).m)); }
-HLML_INLINEF bool3   operator>  (float3 a, float3 b) { return bool3(ftoi(cmpgt(a, b).m)); }
-HLML_INLINEF bool3   operator<= (float3 a, float3 b) { return bool3(ftoi(cmple(a, b).m)); }
-HLML_INLINEF bool3   operator>= (float3 a, float3 b) { return bool3(ftoi(cmpge(a, b).m)); }
+HLML_INLINEF bool3   operator== (float3 a, float3 b) { return bool3(funcs::ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool3   operator!= (float3 a, float3 b) { return bool3(funcs::ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool3   operator<  (float3 a, float3 b) { return bool3(funcs::ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool3   operator>  (float3 a, float3 b) { return bool3(funcs::ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool3   operator<= (float3 a, float3 b) { return bool3(funcs::ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool3   operator>= (float3 a, float3 b) { return bool3(funcs::ftoi(cmpge(a, b).m)); }
 
-HLML_INLINEF int3 asint(float3 a) { return int3(fasi(a.m)); }
-HLML_INLINEF int3 toint(float3 a) { return int3(ftoi(a.m)); }
-HLML_INLINEF float3 asflt(int3 a) { return float3(iasf(a.m)); }
-HLML_INLINEF float3 toflt(int3 a) { return float3(itof(a.m)); }
+HLML_INLINEF int3 asint(float3 a) { return int3(funcs::fasi(a.m)); }
+HLML_INLINEF int3 toint(float3 a) { return int3(funcs::ftoi(a.m)); }
+HLML_INLINEF float3 asflt(int3 a) { return float3(funcs::iasf(a.m)); }
+HLML_INLINEF float3 toflt(int3 a) { return float3(funcs::itof(a.m)); }
 HLML_INLINEF float3 sumv(float3 v) { return v += v.zxy() + v.yzx(); }
 HLML_INLINEF float3 crossv(float3 a, float3 b) { return (a.zxy() * b - a * b.zxy()).zxy(); }
 HLML_INLINEF float3 cross(float3 a, float3 b) { return crossv(a, b); }

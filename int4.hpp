@@ -9,7 +9,7 @@ struct int4 {
   VI128 m = { 0 };
 
   HLML_INLINEF int4() {}
-  HLML_INLINEF int4(I32 x, I32 y, I32 z, I32 w) : m(setXYZW(x, y, z, w)) {}
+  HLML_INLINEF int4(I32 x, I32 y, I32 z, I32 w) : m(funcs::setXYZW(x, y, z, w)) {}
   HLML_INLINEF int4(int2 v, I32 z, I32 w) : int4(v.x(), v.y(), z, w) {}
   HLML_INLINEF int4(int3 v, I32 w) : int4(v.x(), v.y(), v.z(), w) {}
   HLML_INLINEF explicit int4(I32 x) : int4(x, x, x, x) {}
@@ -705,14 +705,14 @@ struct int4 {
   HLML_INLINEF int4 aaaa() const { return wwww(); }
 };
 
-HLML_INLINEF bool4   operator== (int4 a, int4 b) { return bool4(ftoi(cmpeq(a, b).m)); }
-HLML_INLINEF bool4   operator!= (int4 a, int4 b) { return bool4(ftoi(cmpneq(a, b).m)); }
-HLML_INLINEF bool4   operator<  (int4 a, int4 b) { return bool4(ftoi(cmplt(a, b).m)); }
-HLML_INLINEF bool4   operator>  (int4 a, int4 b) { return bool4(ftoi(cmpgt(a, b).m)); }
-HLML_INLINEF bool4   operator<= (int4 a, int4 b) { return bool4(ftoi(cmple(a, b).m)); }
-HLML_INLINEF bool4   operator>= (int4 a, int4 b) { return bool4(ftoi(cmpge(a, b).m)); }
+HLML_INLINEF bool4   operator== (int4 a, int4 b) { return bool4(funcs::ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool4   operator!= (int4 a, int4 b) { return bool4(funcs::ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool4   operator<  (int4 a, int4 b) { return bool4(funcs::ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool4   operator>  (int4 a, int4 b) { return bool4(funcs::ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool4   operator<= (int4 a, int4 b) { return bool4(funcs::ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool4   operator>= (int4 a, int4 b) { return bool4(funcs::ftoi(cmpge(a, b).m)); }
 
-HLML_INLINEF int4 sumv(int4 v) { v.m = AhaddB(v.m, v.zwxy().m); v.m = AhaddB(v.m, v.m); return v; }
+HLML_INLINEF int4 sumv(int4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
 HLML_INLINEF I32 hmin(int4 v) { v = min(v, shufflei4(v, 1, 0, 3, 2)); return min(v, shufflei4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF I32 hmax(int4 v) { v = max(v, shufflei4(v, 1, 0, 3, 2)); return max(v, shufflei4(v, 3, 2, 1, 0)).x(); }
 }

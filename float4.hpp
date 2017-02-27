@@ -10,7 +10,7 @@ struct float4 {
   VF128 m = { 0 };
 
   HLML_INLINEF float4() {}
-  HLML_INLINEF float4(F32 x, F32 y, F32 z, F32 w) : m(setXYZW(x, y, z, w)) {}
+  HLML_INLINEF float4(F32 x, F32 y, F32 z, F32 w) : m(funcs::setXYZW(x, y, z, w)) {}
   HLML_INLINEF float4(float2 v, F32 z, F32 w) : float4(v.x(), v.y(), z, w) {}
   HLML_INLINEF float4(float3 v, F32 w) : float4(v.x(), v.y(), v.z(), w) {}
   HLML_INLINEF explicit float4(F32 x) : float4(x, x, x, x) {}
@@ -707,19 +707,19 @@ struct float4 {
   HLML_INLINEF float4 aaaa() const { return wwww(); }
 };
 
-HLML_INLINEF bool4    operator== (float4 a, float4 b) { return bool4(ftoi(cmpeq(a, b).m)); }
-HLML_INLINEF bool4    operator!= (float4 a, float4 b) { return bool4(ftoi(cmpneq(a, b).m)); }
-HLML_INLINEF bool4    operator<  (float4 a, float4 b) { return bool4(ftoi(cmplt(a, b).m)); }
-HLML_INLINEF bool4    operator>  (float4 a, float4 b) { return bool4(ftoi(cmpgt(a, b).m)); }
-HLML_INLINEF bool4    operator<= (float4 a, float4 b) { return bool4(ftoi(cmple(a, b).m)); }
-HLML_INLINEF bool4    operator>= (float4 a, float4 b) { return bool4(ftoi(cmpge(a, b).m)); }
+HLML_INLINEF bool4    operator== (float4 a, float4 b) { return bool4(funcs::ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool4    operator!= (float4 a, float4 b) { return bool4(funcs::ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool4    operator<  (float4 a, float4 b) { return bool4(funcs::ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool4    operator>  (float4 a, float4 b) { return bool4(funcs::ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool4    operator<= (float4 a, float4 b) { return bool4(funcs::ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool4    operator>= (float4 a, float4 b) { return bool4(funcs::ftoi(cmpge(a, b).m)); }
 
-HLML_INLINEF int4 asint(float4 a) { return int4(fasi(a.m)); }
-HLML_INLINEF int4 toint(float4 a) { return int4(ftoi(a.m)); }
-HLML_INLINEF float4 asflt(int4 a) { return float4(iasf(a.m)); }
-HLML_INLINEF float4 toflt(int4 a) { return float4(itof(a.m)); }
+HLML_INLINEF int4 asint(float4 a) { return int4(funcs::fasi(a.m)); }
+HLML_INLINEF int4 toint(float4 a) { return int4(funcs::ftoi(a.m)); }
+HLML_INLINEF float4 asflt(int4 a) { return float4(funcs::iasf(a.m)); }
+HLML_INLINEF float4 toflt(int4 a) { return float4(funcs::itof(a.m)); }
 
-HLML_INLINEF float4 sumv(float4 v) { v.m = AhaddB(v.m, v.zwxy().m); v.m = AhaddB(v.m, v.m); return v; }
+HLML_INLINEF float4 sumv(float4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
 HLML_INLINEF F32 hmin(float4 v) { v = min(v, shufflef4(v, 1, 0, 3, 2)); return min(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF F32 hmax(float4 v) { v = max(v, shufflef4(v, 1, 0, 3, 2)); return max(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 }
