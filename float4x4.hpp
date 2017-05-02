@@ -105,33 +105,39 @@ HLML_INLINEF float4x4&  operator*=  (float4x4& a, F32 s) { a = a * s; return a; 
 HLML_INLINEF float4x4   operator/   (float4x4 a, F32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
 HLML_INLINEF float4x4&  operator/=  (float4x4& a, F32 s) { a = a / s; return a; }
 
-HLML_INLINEF float4x4 perspective(F32 fovDegs, F32 aspectW2H, F32 zNear, F32 zFar) {
-  const float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f);
-  const F32 scaley = (1.0f / tan(rads)).x();
-
-  const F32 aspectInv = 1.0f / aspectW2H;
-  const F32 scalex = aspectInv * scaley;
-  const F32 zdiff = 1.0f / (zNear - zFar);
-  const F32 roty = (zNear + zFar) * zdiff;
-  const F32 tranz = 2.0f * zFar * zNear * zdiff;
+HLML_INLINEF float4x4 ortho(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
+  F32 invW = 1.0f / (r - l), invH = 1.0f / (t - b), invD = 1.0f / (zn - zf);
+  F32 x = 2.0f * invW, y = 2.0f * invH, w = -(l + r) * invW, h = -(t + b) * invH, z = 2.0f * invD, d = (zf + zn) * invD;
   return float4x4(
-    scalex, 0.0f, 0.0f, 0.0f,
-    0.0f, scaley, 0.0f, 0.0f,
-    0.0f, 0.0f,   roty, -1.0f,
-    0.0f, 0.0f,  tranz, 0.0f
-  );
+    x,      0.0f,   0.0f,   0.0f,
+    0.0f,   y,      0.0f,   0.0f,
+    0.0f,   0.0f,   z,      0.0f,
+    w,      h,      d,      1.0f);
 }
 
-HLML_INLINEF float4x4 perspectiveInvZ(F32 fovDegs, F32 aspectW2H, F32 zNear) {
-  const float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f);
-  const F32 scaley = (1.0f / tan(rads)).x();
-  const F32 aspectInv = 1.0f / aspectW2H;
-  const F32 scalex = aspectInv * scaley;
+HLML_INLINEF float4x4 ortho(F32 w, F32 h, F32 zn, F32 zf) { F32 hw = 0.5f * w, hh = 0.5f * h; return ortho(-hw, hw, -hh, hh, zn, zf); }
+
+HLML_INLINEF float4x4 perspective(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
+  F32 invW = 1.0f / (r - l), invH = 1.0f / (t - b), invD = 1.0f / (zn - zf);
+  F32 dzn = 2.0f * zn, znf = 2.0f * zn * zf, lr = l + r, tb = t + b;
+  F32 x = dzn * invW, y = dzn * invH, w = lr * invW, h = tb * invH, z = (zf + zn) * invD, d = znf * invD;
   return float4x4(
-    scalex, 0.0f,  0.0f,  0.0f,
-    0.0f, scaley,  0.0f,  0.0f,
-    0.0f, 0.0f,    0.0f, -1.0f,
-    0.0f, 0.0f,   zNear,  0.0f
-  );
+    x,      0.0f,   w,      0.0f,
+    0.0f,   y,      h,      0.0f,
+    0.0f,   0.0f,   z,     -1.0f,
+    0.0f,   0.0f,   d,      0.0f);
+}
+
+HLML_INLINEF float4x4 perspective(F32 w, F32 h, F32 zn, F32 zf) { F32 hw = 0.5f * w, hh = 0.5f * h; return perspective(-hw, hw, -hh, hh, zn, zf); }
+
+HLML_INLINEF float4x4 perspectiveFov(F32 fovDegs, F32 w2h, F32 zn, F32 zf) {
+  const float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f);
+  const F32 aspectInv = 1.0f / w2h, t = 1.0f / tan(rads).x(), invD = 1.0f / (zn - zf);
+  const F32 x = aspectInv * t, y = t, z = (zf + zn) * invD, d = 2.0f * zn * zf * invD;
+  return float4x4(
+    x,      0.0f,   0.0f,   0.0f,
+    0.0f,   y,      0.0f,   0.0f,
+    0.0f,   0.0f,   z,     -1.0f,
+    0.0f,   0.0f,   d,      0.0f);
 }
 }
