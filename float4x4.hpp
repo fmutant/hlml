@@ -149,6 +149,16 @@ HLML_INLINEF float4x4 perspective(F32 l, F32 r, F32 b, F32 t, F32 zn) {
     w,      h,     -1.0f,  -1.0f,
     0.0f,   0.0f,   d,      0.0f);
 }
+HLML_INLINEF float4x4 perspectiveInvZ(F32 l, F32 r, F32 b, F32 t, F32 zn) {
+  F32 invW = 1.0f / (r - l), invH = 1.0f / (t - b);
+  F32 dzn = 2.0f * zn, lr = l + r, tb = t + b;
+  F32 x = dzn * invW, y = dzn * invH, w = lr * invW, h = tb * invH, d = -2.0f * zn;
+  return float4x4(
+    x,      0.0f,   0.0f,   0.0f,
+    0.0f,   y,      0.0f,   0.0f,
+    w,      h,      0.0f,  -1.0f,
+    0.0f,   0.0f,   zn,     0.0f);
+}
 
 HLML_INLINEF float4x4 perspective(F32 w, F32 h, F32 zn, F32 zf) { F32 hw = 0.5f * w, hh = 0.5f * h; return perspective(-hw, hw, -hh, hh, zn, zf); }
 HLML_INLINEF float4x4 perspective(F32 w, F32 h, F32 zn) { F32 hw = 0.5f * w, hh = 0.5f * h; return perspective(-hw, hw, -hh, hh, zn); }
@@ -173,5 +183,15 @@ HLML_INLINEF float4x4 perspectiveFov(F32 fovDegs, F32 w2h, F32 zn) {
     0.0f,   y,      0.0f,   0.0f,
     0.0f,   0.0f,  -1.0f,  -1.0f,
     0.0f,   0.0f,   d,      0.0f);
+}
+HLML_INLINEF float4x4 perspectiveFovInvZ(F32 fovDegs, F32 w2h, F32 zn) {
+  const float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f);
+  const F32 aspectInv = 1.0f / w2h, t = 1.0f / tan(rads).x();
+  const F32 x = aspectInv * t, y = t;
+  return float4x4(
+    x,      0.0f,   0.0f,   0.0f,
+    0.0f,   y,      0.0f,   0.0f,
+    0.0f,   0.0f,   0.0f,  -1.0f,
+    0.0f,   0.0f,   zn,     0.0f);
 }
 }
