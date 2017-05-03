@@ -133,9 +133,9 @@ HLML_INLINEF float4x4 perspective(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
   F32 dzn = 2.0f * zn, lr = l + r, tb = t + b;
   F32 x = dzn * invW, y = dzn * invH, w = lr * invW, h = tb * invH, z = (zf + zn) * invD, d = 2.0f * zn * zf * invD;
   return float4x4(
-    x,      0.0f,   w,      0.0f,
-    0.0f,   y,      h,      0.0f,
-    0.0f,   0.0f,   z,     -1.0f,
+    x,      0.0f,   0.0f,   0.0f,
+    0.0f,   y,      0.0f,   0.0f,
+    w,      h,      z,     -1.0f,
     0.0f,   0.0f,   d,      0.0f);
 }
 
@@ -144,9 +144,9 @@ HLML_INLINEF float4x4 perspective(F32 l, F32 r, F32 b, F32 t, F32 zn) {
   F32 dzn = 2.0f * zn, lr = l + r, tb = t + b;
   F32 x = dzn * invW, y = dzn * invH, w = lr * invW, h = tb * invH, d = -2.0f * zn;
   return float4x4(
-    x,      0.0f,   w,      0.0f,
-    0.0f,   y,      h,      0.0f,
-    0.0f,   0.0f,  -1.0f,  -1.0f,
+    x,      0.0f,   0.0f,   0.0f,
+    0.0f,   y,      0.0f,   0.0f,
+    w,      h,     -1.0f,  -1.0f,
     0.0f,   0.0f,   d,      0.0f);
 }
 
