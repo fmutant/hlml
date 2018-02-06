@@ -113,7 +113,7 @@ HLML_INLINEF quat     operator*  (quat a, quat b) {
 HLML_INLINEF float3   operator*  (quat a, float3 b) {
   float4 i((float4)a);
   float3 axyz(i.xyz()), www(i.www()), bxyz(b);
-  float3 t(2.0f * cross(axyz, b)), wwwt(www * t), axyzt(cross(axyz, t));
+  float3 t(float3(2.0f) * cross(axyz, b)), wwwt(www * t), axyzt(cross(axyz, t));
   return axyzt + wwwt + b;
 }
 HLML_INLINEF quat     operator*  (quat a, F32 s) { return quat((float4)a * s); }

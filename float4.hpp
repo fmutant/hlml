@@ -14,6 +14,8 @@ struct float4 {
   HLML_INLINEF float4(float2 v, F32 z, F32 w) : float4(v.x(), v.y(), z, w) {}
   HLML_INLINEF float4(float3 v, F32 w) : float4(v.x(), v.y(), v.z(), w) {}
   HLML_INLINEF explicit float4(F32 x) : float4(x, x, x, x) {}
+  HLML_INLINEF explicit float4(float2 v) : m(v.m) {}
+  HLML_INLINEF explicit float4(float3 v) : m(v.m) {}
   HLML_INLINEF explicit float4(const F32 *p) : float4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit float4(VF128 v) : m(v) {}
   HLML_INLINEF float4 float4i(I32 x, I32 y, I32 z, I32 w) { return float4((F32)x, (F32)y, (F32)z, (F32)w); }
