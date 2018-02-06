@@ -2,6 +2,7 @@
 
 #include "common.hpp"
 #include "float4.hpp"
+#include "float3x3.hpp"
 #include "trig.hpp"
 
 namespace hlml {
@@ -12,6 +13,7 @@ struct float4x4 {
   HLML_INLINEF explicit float4x4(const F32* p) : c0(p), c1(p+4), c2(p+8), c3(p+12) {}
   HLML_INLINEF float4x4(F32 x0, F32 y0, F32 z0, F32 w0, F32 x1, F32 y1, F32 z1, F32 w1, F32 x2, F32 y2, F32 z2, F32 w2, F32 x3, F32 y3, F32 z3, F32 w3) : c0(x0, y0, z0, w0), c1(x1, y1, z1, w1), c2(x2, y2, z2, w2), c3(x3, y3, z3, w3) {}
   HLML_INLINEF float4x4(float4 col0, float4 col1, float4 col2, float4 col3) : c0(col0), c1(col1), c2(col2), c3(col3) {}
+  HLML_INLINEF explicit float4x4(float3x3 m3) : c0(m3.c0.m), c1(m3.c1.m), c2(m3.c2.m), c3(0.0f, 0.0f, 0.0f, 1.0f) {}
 
   HLML_INLINEF static float4x4 identity() { static float4x4 i( { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f } ); return i; }
 
