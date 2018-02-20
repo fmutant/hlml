@@ -132,15 +132,15 @@ template<typename T> HLML_INLINEF B8  none(T v) { return !any(v); }
 template<typename T> HLML_INLINEF B8  all (T v) { return T::flagsall == mask(v); }
 
 template<typename T, typename S> HLML_INLINEF T   operator+  (T a, S b) { return a + T(b); }
-template<typename T, typename S> HLML_INLINEF T   operator+  (S b, T a) { return a + b; }
+//template<typename T, typename S> HLML_INLINEF T   operator+  (S b, T a) { return a + T(b); }
 template<typename T, typename S> HLML_INLINEF T&  operator+= (T& a, S b) { return a += T(b); }
 template<typename T, typename S> HLML_INLINEF T   operator-  (T a, S b) { return a - T(b); }
-template<typename T, typename S> HLML_INLINEF T   operator-  (S a, T b) { return T(a) - b; }
+//template<typename T, typename S> HLML_INLINEF T   operator-  (S a, T b) { return T(a) - b; }
 template<typename T, typename S> HLML_INLINEF T&  operator-= (T& a, S b) { return a -= T(b); }
 template<typename T, typename S> HLML_INLINEF T   operator*  (T a, S b) { return a * T(b); }
-template<typename T, typename S> HLML_INLINEF T   operator*  (S b, T a) { return a * b; }
+//template<typename T, typename S> HLML_INLINEF T   operator*  (S b, T a) { return a * b; }
 template<typename T, typename S> HLML_INLINEF T&  operator*= (T& a, S b) { return a *= T(b); }
 template<typename T, typename S> HLML_INLINEF T   operator/  (T a, S b) { return a / T(b); }
-template<typename T, typename S> HLML_INLINEF T   operator/  (S a, T b) { return T(a) / b; }
+//template<typename T, typename S> HLML_INLINEF T   operator/  (S a, T b) { return T(a) / b; }
 template<typename T, typename S> HLML_INLINEF T&  operator/= (T& a, S b) { return a /= T(b); }
 }

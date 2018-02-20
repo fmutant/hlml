@@ -74,19 +74,16 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
 HLML_INLINEF B8         operator==  (float4x4 lhs, float4x4 rhs) { return all(lhs.c0 == rhs.c0) && all(lhs.c1 == rhs.c1) && all(lhs.c2 == rhs.c2) && all(lhs.c3 == rhs.c3); }
 HLML_INLINEF B8         operator!=  (float4x4 lhs, float4x4 rhs) { return !(lhs == rhs); }
 
-HLML_INLINEF float4x4   operator+   (float4x4 m) { return m; }
-HLML_INLINEF float4x4   operator+   (float4x4 a, float4x4 b) { a.c0 += b.c0; a.c1 += b.c1; a.c2 += b.c2; a.c3 += b.c3; return a; }
-HLML_INLINEF float4x4   operator+   (float4x4 a, F32 s) { a.c0 += s; a.c1 += s; a.c2 += s; a.c3 += s; return a; }
-HLML_INLINEF float4x4   operator+   (F32 s, float4x4 a) { return a + s; }
-HLML_INLINEF float4x4&  operator+=  (float4x4& a, float4x4 b) { a = a + b; return a; }
-HLML_INLINEF float4x4&  operator+=  (float4x4& a, F32 s) { a = a + s; return a; }
+template<> HLML_INLINEF float4x4   operator+   (float4x4 a, float4x4 b) { a.c0 += b.c0; a.c1 += b.c1; a.c2 += b.c2; a.c3 += b.c3; return a; }
+template<> HLML_INLINEF float4x4   operator+   (float4x4 a, F32 s) { a.c0 += s; a.c1 += s; a.c2 += s; a.c3 += s; return a; }
+//template<> HLML_INLINEF float4x4   operator+   (F32 s, float4x4 a) { return a + s; }
+//template<> HLML_INLINEF float4x4&  operator+=  (float4x4& a, F32 s) { a = a + s; return a; }
 HLML_INLINEF float4x4   operator-   (float4x4 m) { m.c0 = -m.c0; m.c1 = -m.c1; m.c2 = -m.c2, m.c3 = -m.c3; return m; }
-HLML_INLINEF float4x4   operator-   (float4x4 a, float4x4 b) { a.c0 -= b.c0; a.c1 -= b.c1; a.c2 -= b.c2; a.c3 -= b.c3; return a; }
+template<> HLML_INLINEF float4x4   operator-   (float4x4 a, float4x4 b) { a.c0 -= b.c0; a.c1 -= b.c1; a.c2 -= b.c2; a.c3 -= b.c3; return a; }
 HLML_INLINEF float4x4   operator-   (float4x4 a, F32 s) { float4 tmp(s); return a - float4x4(tmp, tmp, tmp, tmp); }
 HLML_INLINEF float4x4   operator-   (F32 s, float4x4 a) { float4 tmp(s); return float4x4(tmp, tmp, tmp, tmp) - a; }
-HLML_INLINEF float4x4&  operator-=  (float4x4& a, float4x4 b) { a = a - b; return a; }
 HLML_INLINEF float4x4&  operator-=  (float4x4& a, F32 s) { a = a - s; return a; }
-HLML_INLINEF float4x4   operator*   (float4x4 a, float4x4 b) {
+template<> HLML_INLINEF float4x4   operator*   (float4x4 a, float4x4 b) {
   float4 lc0 = a.c0, lc1 = a.c1, lc2 = a.c2, lc3 = a.c3, rc0 = b.c0, rc1 = b.c1, rc2 = b.c2, rc3 = b.c3;
   a.c0 = lc0 * rc0.xxxx() + lc1 * rc0.yyyy() + lc2 * rc0.zzzz() + lc3 * rc0.wwww();
   a.c1 = lc0 * rc1.xxxx() + lc1 * rc1.yyyy() + lc2 * rc1.zzzz() + lc3 * rc1.wwww();
@@ -94,18 +91,19 @@ HLML_INLINEF float4x4   operator*   (float4x4 a, float4x4 b) {
   a.c3 = lc0 * rc3.xxxx() + lc1 * rc3.yyyy() + lc2 * rc3.zzzz() + lc3 * rc3.wwww();
   return a;
 }
-HLML_INLINEF float4x4   operator*   (float4x4 a, F32 s) { a.c0 *= s; a.c1 *= s; a.c2 *= s; a.c3 *= s; return a; }
-HLML_INLINEF float4x4   operator*   (F32 s, float4x4 a) { return a * s; }
+template<> HLML_INLINEF float4x4   operator*   (float4x4 a, F32 s) { a.c0 *= s; a.c1 *= s; a.c2 *= s; a.c3 *= s; return a; }
+//template<> HLML_INLINEF float4x4   operator*   (F32 s, float4x4 a) { return a * s; }
 HLML_INLINEF float4     operator*   (float4x4 a, float4 v) { return v.xxxx() * a.c0 + v.yyyy() * a.c1 + v.zzzz() * a.c2 + v.wwww() * a.c3; }
-HLML_INLINEF float4     operator*   (float4 v, float4x4 a) {
+/*
+template<> HLML_INLINEF float4     operator*   (float4 v, float4x4 a) {
   float4 xxxx(dotv(v, a.c0)), yyyy(dotv(v, a.c1)), zzzz(dotv(v, a.c2)), wwww(dotv(v, a.c3));
   float4 xyxy(funcs::axbxayby(xxxx.m, yyyy.m)), zwzw(funcs::axbxayby(zzzz.m, wwww.m)), xyzw(funcs::axaybxby(xyxy.m, zwzw.m));
   return xyzw;
 }
-HLML_INLINEF float4x4&  operator*=  (float4x4& a, float4x4 b) { a = a * b; return a; }
-HLML_INLINEF float4x4&  operator*=  (float4x4& a, F32 s) { a = a * s; return a; }
-HLML_INLINEF float4x4   operator/   (float4x4 a, F32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
-HLML_INLINEF float4x4&  operator/=  (float4x4& a, F32 s) { a = a / s; return a; }
+*/
+//HLML_INLINEF float4x4&  operator*=  (float4x4& a, F32 s) { a = a * s; return a; }
+template<> HLML_INLINEF float4x4   operator/   (float4x4 a, F32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
+//HLML_INLINEF float4x4&  operator/=  (float4x4& a, F32 s) { a = a / s; return a; }
 
 HLML_INLINEF float4x4 ortho(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
   F32 invW = 1.0f / (r - l), invH = 1.0f / (t - b), invD = 1.0f / (zn - zf);

@@ -44,7 +44,7 @@ HLML_INLINEF bool2                    operator<  (float2 a, float2 b) { return b
 HLML_INLINEF bool2                    operator>  (float2 a, float2 b) { return bool2(funcs::ftoi(cmpgt(a, b).m)); }
 HLML_INLINEF bool2                    operator<= (float2 a, float2 b) { return bool2(funcs::ftoi(cmple(a, b).m)); }
 HLML_INLINEF bool2                    operator>= (float2 a, float2 b) { return bool2(funcs::ftoi(cmpge(a, b).m)); }
-
+/*
 template<typename T> HLML_INLINEF T   operator+  (T a, F32 b) { return a + T(b); }
 template<typename T> HLML_INLINEF T   operator+  (F32 b, T a) { return a + b; }
 template<typename T> HLML_INLINEF T&  operator+= (T& a, F32 b) { return a += T(b); }
@@ -57,7 +57,7 @@ template<typename T> HLML_INLINEF T&  operator*= (T& a, F32 b) { return a *= T(b
 template<typename T> HLML_INLINEF T   operator/  (T a, F32 b) { return a / T(b); }
 template<typename T> HLML_INLINEF T   operator/  (F32 a, T b) { return T(a) / b; }
 template<typename T> HLML_INLINEF T&  operator/= (T& a, F32 b) { return a /= T(b); }
-
+*/
 HLML_INLINEF int2 asint(float2 a) { return int2(funcs::fasi(a.m)); }
 HLML_INLINEF int2 toint(float2 a) { return int2(funcs::ftoi(a.m)); }
 HLML_INLINEF float2 asflt(int2 a) { return float2(funcs::iasf(a.m)); }
