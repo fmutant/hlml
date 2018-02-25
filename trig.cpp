@@ -28,7 +28,6 @@ HLML_VCONST vconstu vntwos = { snTwo, snTwo, snTwo, snTwo };
 HLML_VCONST vconstu vnfours = { snFour, snFour, snFour, snFour };
 HLML_VCONST vconstu vn127s = { sn127, sn127, sn127, sn127 };
 
-HLML_VCONST vconstu vones = { sfOne, sfOne, sfOne, sfOne };
 HLML_VCONST vconstu vonesneg = { sfOneNeg, sfOneNeg, sfOneNeg, sfOneNeg };
 HLML_VCONST vconstu vhalves = { sfHalf, sfHalf, sfHalf, sfHalf };
 HLML_VCONST vconstu vsqrthf = { 0.707106781186547524f, 0.707106781186547524f, 0.707106781186547524f, 0.707106781186547524f };

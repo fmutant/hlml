@@ -25,6 +25,5 @@ struct bool2 {
   HLML_INLINEF bool2 xy() const { return *this; }
   HLML_INLINEF bool2 yx() const { return shuffleb2(*this, 1, 0); }
   HLML_INLINEF bool2 yy() const { return shuffleb2(*this, 1, 1); }
-
 };
 }

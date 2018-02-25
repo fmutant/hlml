@@ -353,6 +353,5 @@ struct bool4 {
   HLML_INLINEF bool4 wwwy() const { return shuffleb4(*this, 3, 3, 3, 1); }
   HLML_INLINEF bool4 wwwz() const { return shuffleb4(*this, 3, 3, 3, 2); }
   HLML_INLINEF bool4 wwww() const { return shuffleb4(*this, 3, 3, 3, 3); }
-
 };
 }

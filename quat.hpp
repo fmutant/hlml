@@ -2,6 +2,7 @@
 
 #include "float4.hpp"
 #include "float3x3.hpp"
+#include "trig.hpp"
 
 namespace hlml {
 class quat {
@@ -19,7 +20,7 @@ class quat {
     //http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
     F32 angleHalf(HLML_DEG2RAD(degs) * 0.5f);
     float4 sc = sincos(float4(angleHalf)), xxyz(axis.m);
-    float4 sins(xxyz.xxyz() * sc.xxxx()), coss(sc.yyyy());
+    float4 sins(xxyz.xxyz() * sc.xxxx()), coss(sc.zzzz());
     m.m = funcs::bxayazaw(sins.m, coss.m);
   }
   //pitch = X axis, yaw = Y axis, roll = Z axis
@@ -66,7 +67,7 @@ class quat {
     }
     m *= rsqrt(factor) * 0.5f;
   }
-  quat(float3 u, float3 v) : quat(dot(u, v), cross(u, v)) {
+  quat(float3 u, float3 f) : quat(dot(u, f), cross(u, f)) {
     //http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
     float4 t(length(m));
     m.m = funcs::AaddssB(m.m, t.m);
@@ -75,7 +76,7 @@ class quat {
   explicit HLML_INLINEF operator float4() const { return m.yzwx(); }
   HLML_INLINEF operator float3x3() const {
     //http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
-    float4 v = (float4)*this;
+    float4 v = float4(*this);
     float3 c0l(-2.0f, -2.0f, 2.0f), c0r(-2.0f, 2.0f, 2.0f), c1l(2.0f, -2.0f, 2.0f), c1r(-c0r), c2l(-c0l), c2r(-c1l);
     float3 xzy(v.xzy()), wxx(v.wxx());
     float3 col0 = c0l * v.zzy() * v.zww() + c0r * v.yyz() * v.yxx();
