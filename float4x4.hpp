@@ -142,7 +142,8 @@ HLML_INLINEF float4x4 perspective(F32 fovDegs, F32 h2w, F32 zn, F32 zf) {
   const F32 invD = 1.0f / (zn - zf);
   float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
-  F32 y = (c / s).x(), x = y * h2w, z = zf * invD, d = zf * zn * invD;
+  F32 invtan = (c / s).x();
+  F32 x = invtan * h2w, y = invtan, z = zf * invD, d = zf * zn * invD;
   return fillpersp(x, y, z, 0.0f, 0.0f, d);
 }
 HLML_INLINEF float4x4 perspective(F32 fovDegs, F32 width, F32 height, F32 zn, F32 zf) { return perspective(fovDegs, height / width, zn, zf); }
