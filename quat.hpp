@@ -18,14 +18,13 @@ class quat {
   quat(F32 w, F32 x, F32 y, F32 z) : m(w, x, y, z) {}
   quat(float3 axis, F32 degs) {
     //http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
-    F32 angleHalf(HLML_DEG2RAD(degs) * 0.5f);
-    float4 sc = sincos(float4(angleHalf)), xxyz(axis.m);
-    float4 sins(xxyz.xxyz() * sc.xxxx()), coss(sc.zzzz());
-    m.m = funcs::bxayazaw(sins.m, coss.m);
+    float4 s, c, xxyz(axis.m);
+    sincos(float4(HLML_DEG2RAD(degs) * 0.5f), s, c);
+    m.m = funcs::bxayazaw((s * xxyz.xxyz()).m, c.m);
   }
   //pitch = X axis, yaw = Y axis, roll = Z axis
-  quat(F32 pitch, F32 yaw, F32 roll) {
-    float4 angles(pitch, pitch, yaw, roll), sines, coses;
+  quat(F32 pitchdegs, F32 yawdegs, F32 rolldegs) {
+    float4 angles(HLML_DEG2RAD(pitchdegs), HLML_DEG2RAD(pitchdegs), HLML_DEG2RAD(yawdegs), HLML_DEG2RAD(rolldegs)), sines, coses;
     sincos(angles * 0.5f, sines, coses);
     float4 cxxyz(funcs::bxayazaw(sines.m, coses.m)), sxxyz(funcs::bxayazaw(coses.m, sines.m));;
     float4 left = cxxyz * coses.zzyz() * coses.wwwy(), right = sxxyz * sines.zzyz() * sines.wwwy();
@@ -82,7 +81,8 @@ class quat {
     float3 col0 = c0l * v.zzy() * v.zww() + c0r * v.yyz() * v.yxx();
     float3 col1 = c1l * xzy * v.yzz() + c1r * wxx * v.zxw();
     float3 col2 = c2l * xzy * v.zyy() + c2r * wxx * v.ywx();
-    return float3x3::identity() + float3x3(col0, col1, col2);
+    float3x3 result = float3x3::identity() + float3x3(col0, col1, col2);
+		return result;
   }
   HLML_INLINEF F32 x() const { return m.y(); }
   HLML_INLINEF F32 y() const { return m.z(); }

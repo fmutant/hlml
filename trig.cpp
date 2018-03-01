@@ -146,12 +146,6 @@ void sincos(float4 x, float4& s, float4& c) {
   c = ycos ^ signs_cos;
 }
 
-float4 sincos(float4 x) {
-  float4 s, c;
-  sincos(x, s, c);
-  return float4(funcs::ayaxbybx(s.m, c.m));
-}
-
 float4 tan(float4 x) {
   const float4 signs(consts::vsignbits), ones(consts::vones), signsres(x & signs), fopi(consts::vfopi), tanp1(consts::vtancp1), tanp2(consts::vtancp2), tanp3(consts::vtancp3), tanp4(consts::vtancp4), tanp5(consts::vtancp5);
   const int4 iones(consts::vnones), ionesn(consts::vnonesn), twos(consts::vntwos), nzeros(consts::vnzeros);

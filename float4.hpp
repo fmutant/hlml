@@ -15,6 +15,7 @@ struct float4 {
   HLML_INLINEF float4(float3 v, F32 w) : float4(v.x(), v.y(), v.z(), w) {}
   HLML_INLINEF explicit float4(F32 x) : float4(x, x, x, x) {}
   HLML_INLINEF explicit float4(float2 v) : m(v.m) {}
+  HLML_INLINEF explicit float4(float2 v, float2 u) : float4(v.x(), v.y(), u.x(), u.y()) {}
   HLML_INLINEF explicit float4(float3 v) : m(v.m) {}
   HLML_INLINEF explicit float4(const F32 *p) : float4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit float4(VF128 v) : m(v) {}
@@ -724,4 +725,13 @@ HLML_INLINEF float4 toflt(int4 a) { return float4(funcs::itof(a.m)); }
 HLML_INLINEF float4 sumv(float4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
 HLML_INLINEF F32 hmin(float4 v) { v = min(v, shufflef4(v, 1, 0, 3, 2)); return min(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF F32 hmax(float4 v) { v = max(v, shufflef4(v, 1, 0, 3, 2)); return max(v, shufflef4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF float2 normalize(float2 v) {
+  float4 r(dotv(v, v), float2(1.0f));
+  return v * rsqrt(r).xy();
+}
+HLML_INLINEF float3 normalize(float3 v) {
+  float4 r(dotv(v, v), 1.0f);
+  return v * rsqrt(r).xyz();
+}
+HLML_INLINEF float4 normalize(float4 v) { return v * rsqrt(dotv(v, v)); }
 }

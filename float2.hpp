@@ -58,7 +58,6 @@ HLML_INLINEF F32 hmax(float2 v) { return max(v, shufflef2(v, 1, 0)).x(); }
 template<typename T> HLML_INLINEF T rcp(T v) { v.m = funcs::rcp(v.m); return v; }
 template<typename T> HLML_INLINEF T sqrt(T v) { v.m = funcs::sqrt(v.m); return v; }
 template<typename T> HLML_INLINEF T rsqrt(T v) { v.m = funcs::rsqrt(v.m); return v; }
-template<typename T> HLML_INLINEF T normalize(T v) { return v * rsqrt(T(dot(v, v))); }
 template<typename T> HLML_INLINEF T dotv(T a, T b) { return sumv(a * b); }
 template<typename T> HLML_INLINEF F32 dot(T a, T b) { return dotv(a, b).x(); }
 template<typename T> HLML_INLINEF F32 sum(T v) { return sumv(v).x(); }
