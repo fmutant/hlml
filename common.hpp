@@ -89,13 +89,12 @@ HLML_INLINEF I32 f2i(F32 x) {
   x += *(F32*)&magic;
   return *(I32*)&x - magic;
 }
-HLML_INLINEF U32 ftou(F32 nfloat, U32 bits) { U32 nIntervals = (1u << bits) - 1u; return VE_MINN((U32)(nfloat * (F32)(nIntervals) + 0.5f), nIntervals); }
+template<typename T> HLML_INLINEF T min(T a, T b) { return (a) < (b) ? (a) : (b); }
+template<typename T> HLML_INLINEF T max(T a, T b) { return (a) > (b) ? (a) : (b); }
+HLML_INLINEF U32 ftou(F32 nfloat, U32 bits) { U32 nIntervals = (1u << bits) - 1u; return min((U32)(nfloat * (F32)(nIntervals) + 0.5f), nIntervals); }
 HLML_INLINEF F32 utof(U32 quantized, U32 bits) { return (F32)quantized / (F32)((1u << bits) - 1u); }
 HLML_INLINEF U32 ftou(F32 value, F32 min, F32 max, U32 bits) { return ftou((value - min) / (max - min), bits); }
 HLML_INLINEF F32 utof(U32 quantized, F32 min, F32 max, U32 bits) { return min + (utof(quantized, bits) * (max - min)); }
-
-HLML_INLINEF F32 min(F32 a, F32 b) { return (a) < (b) ? (a) : (b); }
-HLML_INLINEF F32 max(F32 a, F32 b) { return (a) > (b) ? (a) : (b); }
 
 template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = funcs::notAandB(a.m, consts::vsignbits); return a; } // for bools
 template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = funcs::notAandB(a.m, consts::vnall); return a; }
@@ -131,8 +130,8 @@ template<typename T> HLML_INLINEF T   cmple       (T a, T b) { return T(funcs::A
 
 template<typename T> HLML_INLINEF T   abs         (T v) { v.m = funcs::notAandB(consts::vsignbits, v.m); return v; }
 template<typename T> HLML_INLINEF T   sign        (T v) { T zro0(vzeros); return (cmplt(v, zro0) & T(vonesneg)) | (cmpgt(v, zro0) & T(vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
-template<typename T> HLML_INLINEF T   min         (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   max         (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   minv        (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   maxv        (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   clamp       (T t, T a, T b) { return min(max(t, a), b); }
 
 template<typename T> HLML_INLINEF U32 mask(T v) { return T::flagsall & funcs::movemask(v.m); }

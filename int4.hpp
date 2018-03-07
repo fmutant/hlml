@@ -713,6 +713,6 @@ HLML_INLINEF bool4   operator<= (int4 a, int4 b) { return bool4(funcs::ftoi(cmpl
 HLML_INLINEF bool4   operator>= (int4 a, int4 b) { return bool4(funcs::ftoi(cmpge(a, b).m)); }
 
 HLML_INLINEF int4 sumv(int4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
-HLML_INLINEF I32 hmin(int4 v) { v = min(v, shufflei4(v, 1, 0, 3, 2)); return min(v, shufflei4(v, 3, 2, 1, 0)).x(); }
-HLML_INLINEF I32 hmax(int4 v) { v = max(v, shufflei4(v, 1, 0, 3, 2)); return max(v, shufflei4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF I32 hmin(int4 v) { v = minv(v, shufflei4(v, 1, 0, 3, 2)); return minv(v, shufflei4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF I32 hmax(int4 v) { v = maxv(v, shufflei4(v, 1, 0, 3, 2)); return maxv(v, shufflei4(v, 3, 2, 1, 0)).x(); }
 }

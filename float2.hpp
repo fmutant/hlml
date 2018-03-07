@@ -52,8 +52,8 @@ HLML_INLINEF float2 toflt(int2 a) { return float2(funcs::itof(a.m)); }
 HLML_INLINEF float2 sumv(float2 v) { v.m = funcs::AhaddB(v.m, v.m);  return v; }
 HLML_INLINEF float2 crossv(float2 a, float2 b) { return (a * b.yx() - a.yx() * b); }
 HLML_INLINEF F32 cross(float2 a, float2 b) { return crossv(a, b).x(); }
-HLML_INLINEF F32 hmin(float2 v) { return min(v, shufflef2(v, 1, 0)).x(); }
-HLML_INLINEF F32 hmax(float2 v) { return max(v, shufflef2(v, 1, 0)).x(); }
+HLML_INLINEF F32 hmin(float2 v) { return minv(v, shufflef2(v, 1, 0)).x(); }
+HLML_INLINEF F32 hmax(float2 v) { return maxv(v, shufflef2(v, 1, 0)).x(); }
 
 template<typename T> HLML_INLINEF T rcp(T v) { v.m = funcs::rcp(v.m); return v; }
 template<typename T> HLML_INLINEF T sqrt(T v) { v.m = funcs::sqrt(v.m); return v; }

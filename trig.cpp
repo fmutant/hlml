@@ -85,7 +85,7 @@ float4 log(float4 x) {
   const int4 v127(consts::vn127s);
 
   float4 maskinv = cmple(x, zeros);
-  x = max(x, npos);
+  x = maxv(x, npos);
   int4 emm0((asint(x) >> 23) - v127);
   x = (x & mantisn) | halves;
   float4 mask = cmplt(x, sqrthf), e = toflt(emm0) - (ones & mask) + ones;
@@ -106,7 +106,7 @@ float4 log(float4 x) {
 float4 exp(float4 x) {
   const float4 one(consts::vones), ehi(consts::vexphi), elo(consts::vexplo), elf(consts::vlogef), halves(consts::vhalves), exc1(consts::vexpc1), exc2(consts::vexpc2), exp1(consts::vexpp1), exp2(consts::vexpp2), exp3(consts::vexpp3), exp4(consts::vexpp4), exp5(consts::vexpp5);
   const int4 n127(consts::vn127s);
-  float4 xex = max(elo, min(x, ehi)), fx = xex * elf + halves; //express exp(x) as exp(g + n*log(2))
+  float4 xex = maxv(elo, minv(x, ehi)), fx = xex * elf + halves; //express exp(x) as exp(g + n*log(2))
   float4 nfx(toflt(toint(fx))); //how to perform a floorf with SSE: just below
   fx = toflt(toint(fx)) - (cmpgt(nfx, fx) & one); //if greater, substract 1
   xex = xex - fx * exc1 - fx * exc2;

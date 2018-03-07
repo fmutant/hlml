@@ -55,6 +55,6 @@ HLML_INLINEF bool2   operator>= (int2 a, int2 b) { return bool2(funcs::ftoi(cmpg
 
 HLML_INLINEF int2 sumv(int2 v) { v.m = funcs::AhaddB(v.m, v.m);  return v; }
 template<typename T> HLML_INLINEF I32 sum(T v) { return sumv(v).x(); }
-HLML_INLINEF I32 hmin(int2 v) { return min(v, shufflei2(v, 1, 0)).x(); }
-HLML_INLINEF I32 hmax(int2 v) { return max(v, shufflei2(v, 1, 0)).x(); }
+HLML_INLINEF I32 hmin(int2 v) { return minv(v, shufflei2(v, 1, 0)).x(); }
+HLML_INLINEF I32 hmax(int2 v) { return maxv(v, shufflei2(v, 1, 0)).x(); }
 }

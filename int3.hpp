@@ -115,6 +115,6 @@ HLML_INLINEF bool3   operator<= (int3 a, int3 b) { return bool3(funcs::ftoi(cmpl
 HLML_INLINEF bool3   operator>= (int3 a, int3 b) { return bool3(funcs::ftoi(cmpge(a, b).m)); }
 
 HLML_INLINEF int3 sumv(int3 v) { return v += v.zxy() + v.yzx(); }
-HLML_INLINEF I32 hmin(int3 v) { v = min(v, shufflei3(v, 1, 0, 2)); return min(v, shufflei3(v, 2, 0, 1)).x(); }
-HLML_INLINEF I32 hmax(int3 v) { v = max(v, shufflei3(v, 1, 0, 2)); return max(v, shufflei3(v, 2, 0, 1)).x(); }
+HLML_INLINEF I32 hmin(int3 v) { v = minv(v, shufflei3(v, 1, 0, 2)); return minv(v, shufflei3(v, 2, 0, 1)).x(); }
+HLML_INLINEF I32 hmax(int3 v) { v = maxv(v, shufflei3(v, 1, 0, 2)); return maxv(v, shufflei3(v, 2, 0, 1)).x(); }
 }

@@ -723,8 +723,8 @@ HLML_INLINEF float4 asflt(int4 a) { return float4(funcs::iasf(a.m)); }
 HLML_INLINEF float4 toflt(int4 a) { return float4(funcs::itof(a.m)); }
 
 HLML_INLINEF float4 sumv(float4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
-HLML_INLINEF F32 hmin(float4 v) { v = min(v, shufflef4(v, 1, 0, 3, 2)); return min(v, shufflef4(v, 3, 2, 1, 0)).x(); }
-HLML_INLINEF F32 hmax(float4 v) { v = max(v, shufflef4(v, 1, 0, 3, 2)); return max(v, shufflef4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF F32 hmin(float4 v) { v = minv(v, shufflef4(v, 1, 0, 3, 2)); return minv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF F32 hmax(float4 v) { v = maxv(v, shufflef4(v, 1, 0, 3, 2)); return maxv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF float2 normalize(float2 v) {
   float4 r(dotv(v, v), float2(1.0f));
   return v * rsqrt(r).xy();
