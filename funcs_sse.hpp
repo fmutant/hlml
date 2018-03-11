@@ -16,6 +16,7 @@ namespace funcs {
 #define insertf(V, X, i) _mm_insert_ps((V), _mm_set_ss((X)), (i) << 4)
 #define extracti(V, i) _mm_extract_epi32((V), (i))
 #define extractf(V, i) _mm_extract_ps((V), (i))
+
 HLML_INLINEF VF128 axbxayby(VF128 a, VF128 b) { return _mm_unpacklo_ps(a, b); }
 HLML_INLINEF VF128 axaybxby(VF128 a, VF128 b) { return _mm_movelh_ps(a, b); }
 HLML_INLINEF VF128 azbzawbw(VF128 a, VF128 b) { return _mm_unpackhi_ps(a, b); }
