@@ -124,8 +124,8 @@ HLML_INLINEF float4x4 fillpersp(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
   return float4x4(
     x,      0.0f,   0.0f,   0.0f,
     0.0f,  -y,      0.0f,   0.0f,
-    w,      h,      d,     -1.0f,
-    0.0f,   0.0f,   z,      0.0f
+    w,      h,     -z,      1.0f,
+    0.0f,   0.0f,   d,      0.0f
   );
 }
 
