@@ -61,10 +61,10 @@ template<typename T> HLML_INLINEF T rsqrt(T v) { v.m = funcs::rsqrt(v.m); return
 template<typename T> HLML_INLINEF T dotv(T a, T b) { return sumv(a * b); }
 template<typename T> HLML_INLINEF F32 dot(T a, T b) { return dotv(a, b).x(); }
 template<typename T> HLML_INLINEF F32 sum(T v) { return sumv(v).x(); }
-template<typename T> HLML_INLINEF T reflect(T v, T n) { return v = v - 2.0f * n * dotv(v, n); }
+template<typename T> HLML_INLINEF T reflect(T v, T n) { return v - n * dotv(v, n) * 2.0f; }
 template<typename T> HLML_INLINEF T refract(T v, T n, F32 idx) {
-  T vn = dotv(v, n), k = max(T(vzeros), 1.0f - idx * idx * (1.0f - vn * vn));
-  return idx * v - (idx * vn + sqrt(k)) * n;
+  T vn = dotv(v, n), k = maxv(T(consts::vzeros), T(1.0f - idx * idx * (1.0f - vn * vn)));
+  return v * idx - (vn * idx + sqrt(k)) * n;
 }
 template<typename T> HLML_INLINEF T mad(T a, T b, T c) { a.m = funcs::mulABaddC(a.m, b.m, c.m); return a; }
 template<typename T> HLML_INLINEF T fmod(T a, T b) { return a - toflt(toint(a / b)) * b; }
@@ -76,7 +76,7 @@ template<typename T> HLML_INLINEF T frac(T a) { a.m = funcs::frac(a.m); return a
 template<typename T> HLML_INLINEF T trunc(T a) { a.m = funcs::trunc(a.m); return a; }
 template<typename T> HLML_INLINEF T round(T a) { a.m = funcs::round(a.m); return a; }
 template<typename T> HLML_INLINEF F32 length(T v) { return sqrt(dotv(v, v)).x(); }
-template<typename T> HLML_INLINEF F32 lengthSq(T v) { return dot(v, v); }
+template<typename T> HLML_INLINEF F32 lengthsq(T v) { return dot(v, v); }
 template<typename T> HLML_INLINEF T step(T e, T v) { return max(T(vzeros), sign(v - e)); }
 template<typename T> HLML_INLINEF T smoothstep(T e0, T e1, T v) {
   T zeros(vzeros), ones(vones), t = clamp((v - e0) / (e1 - e0), zeros, ones);
