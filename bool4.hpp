@@ -4,7 +4,7 @@
 
 namespace hlml {
 struct bool4 {
-  static constexpr U32 flagsall = 0x8888;
+  static constexpr u32 flagsall = 0x8888;
 
   VI128 m = { 0 };
 

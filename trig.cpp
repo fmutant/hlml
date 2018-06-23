@@ -5,17 +5,17 @@ namespace hlml {
 namespace consts {
 // i got these here http://gruntthepeon.free.fr/ssemath/
 // and here https://github.com/to-miz/sse_mathfun_extension/blob/master/sse_mathfun_extension.h
-static constexpr F32 sfOneNeg = -sfOne;
-static constexpr F32 sfHalf = 0.5f;
-static constexpr U32 snOne = 1u;
-static constexpr U32 snOneN = ~snOne;
-static constexpr U32 snTwo = 2u;
-static constexpr U32 snFour = 4u;
-static constexpr U32 sn127 = 0x7F;
+static constexpr f32 sfOneNeg = -sfOne;
+static constexpr f32 sfHalf = 0.5f;
+static constexpr u32 snOne = 1u;
+static constexpr u32 snOneN = ~snOne;
+static constexpr u32 snTwo = 2u;
+static constexpr u32 snFour = 4u;
+static constexpr u32 sn127 = 0x7F;
 
-static constexpr U32 snNormPos = 0x00800000;
-static constexpr U32 snMaskMantis = 0x7f800000;
-static constexpr U32 snMaskMantisN = ~snMaskMantis;
+static constexpr u32 snNormPos = 0x00800000;
+static constexpr u32 snMaskMantis = 0x7f800000;
+static constexpr u32 snMaskMantisN = ~snMaskMantis;
 
 HLML_VCONST vconstu vnormpos = { snNormPos, snNormPos, snNormPos, snNormPos };
 HLML_VCONST vconstu vmskmnts = { snMaskMantis, snMaskMantis, snMaskMantis, snMaskMantis };

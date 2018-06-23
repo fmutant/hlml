@@ -10,15 +10,15 @@ struct float4x4 {
   float4 c0, c1, c2, c3;
 
   HLML_INLINEF float4x4() : c0(), c1(), c2(), c3() {}
-  HLML_INLINEF explicit float4x4(const F32* p) : c0(p), c1(p+4), c2(p+8), c3(p+12) {}
+  HLML_INLINEF explicit float4x4(const f32* p) : c0(p), c1(p+4), c2(p+8), c3(p+12) {}
   HLML_INLINEF explicit float4x4(float3x3 m) : c0(m.c0.m), c1(m.c1.m), c2(m.c2.m), c3(consts::vpoint) {}
-  HLML_INLINEF float4x4(F32 x0, F32 y0, F32 z0, F32 w0, F32 x1, F32 y1, F32 z1, F32 w1, F32 x2, F32 y2, F32 z2, F32 w2, F32 x3, F32 y3, F32 z3, F32 w3) : c0(x0, y0, z0, w0), c1(x1, y1, z1, w1), c2(x2, y2, z2, w2), c3(x3, y3, z3, w3) {}
+  HLML_INLINEF float4x4(f32 x0, f32 y0, f32 z0, f32 w0, f32 x1, f32 y1, f32 z1, f32 w1, f32 x2, f32 y2, f32 z2, f32 w2, f32 x3, f32 y3, f32 z3, f32 w3) : c0(x0, y0, z0, w0), c1(x1, y1, z1, w1), c2(x2, y2, z2, w2), c3(x3, y3, z3, w3) {}
   HLML_INLINEF float4x4(float4 col0, float4 col1, float4 col2, float4 col3) : c0(col0), c1(col1), c2(col2), c3(col3) {}
 
   HLML_INLINEF static float4x4 identity() { static float4x4 i( { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f } ); return i; }
 
   HLML_INLINEF float4x4& operator= (float4x4 b) { c0 = b.c0; c1 = b.c1; c2 = b.c2; c3 = b.c3; return *this; }
-  HLML_INLINEF float4x4& operator= (F32 s) { c0 = c1 = c2 = c3 = float4(s); return *this; }
+  HLML_INLINEF float4x4& operator= (f32 s) { c0 = c1 = c2 = c3 = float4(s); return *this; }
 };
 
 HLML_INLINEF float4x4 transpose(float4x4 m) {
@@ -75,11 +75,11 @@ HLML_INLINEF B8         operator==  (float4x4 lhs, float4x4 rhs) { return all(lh
 HLML_INLINEF B8         operator!=  (float4x4 lhs, float4x4 rhs) { return !(lhs == rhs); }
 
 template<> HLML_INLINEF float4x4   operator+   (float4x4 a, float4x4 b) { a.c0 += b.c0; a.c1 += b.c1; a.c2 += b.c2; a.c3 += b.c3; return a; }
-template<> HLML_INLINEF float4x4   operator+   (float4x4 a, F32 s) { a.c0 += s; a.c1 += s; a.c2 += s; a.c3 += s; return a; }
+template<> HLML_INLINEF float4x4   operator+   (float4x4 a, f32 s) { a.c0 += s; a.c1 += s; a.c2 += s; a.c3 += s; return a; }
 template<> HLML_INLINEF float4x4   operator-   (float4x4 m) { m.c0 = -m.c0; m.c1 = -m.c1; m.c2 = -m.c2, m.c3 = -m.c3; return m; }
 template<> HLML_INLINEF float4x4   operator-   (float4x4 a, float4x4 b) { a.c0 -= b.c0; a.c1 -= b.c1; a.c2 -= b.c2; a.c3 -= b.c3; return a; }
-template<> HLML_INLINEF float4x4   operator-   (float4x4 a, F32 s) { float4 tmp(s); return a - float4x4(tmp, tmp, tmp, tmp); }
-template<> HLML_INLINEF float4x4&  operator-=  (float4x4& a, F32 s) { a = a - s; return a; }
+template<> HLML_INLINEF float4x4   operator-   (float4x4 a, f32 s) { float4 tmp(s); return a - float4x4(tmp, tmp, tmp, tmp); }
+template<> HLML_INLINEF float4x4&  operator-=  (float4x4& a, f32 s) { a = a - s; return a; }
 template<> HLML_INLINEF float4x4   operator*   (float4x4 a, float4x4 b) {
   float4 lc0 = a.c0, lc1 = a.c1, lc2 = a.c2, lc3 = a.c3, rc0 = b.c0, rc1 = b.c1, rc2 = b.c2, rc3 = b.c3;
   a.c0 = lc0 * rc0.xxxx() + lc1 * rc0.yyyy() + lc2 * rc0.zzzz() + lc3 * rc0.wwww();
@@ -88,15 +88,15 @@ template<> HLML_INLINEF float4x4   operator*   (float4x4 a, float4x4 b) {
   a.c3 = lc0 * rc3.xxxx() + lc1 * rc3.yyyy() + lc2 * rc3.zzzz() + lc3 * rc3.wwww();
   return a;
 }
-template<> HLML_INLINEF float4x4   operator*   (float4x4 a, F32 s) { a.c0 *= s; a.c1 *= s; a.c2 *= s; a.c3 *= s; return a; }
+template<> HLML_INLINEF float4x4   operator*   (float4x4 a, f32 s) { a.c0 *= s; a.c1 *= s; a.c2 *= s; a.c3 *= s; return a; }
 HLML_INLINEF float4     operator*   (float4x4 a, float4 v) { return v.xxxx() * a.c0 + v.yyyy() * a.c1 + v.zzzz() * a.c2 + v.wwww() * a.c3; }
-template<> HLML_INLINEF float4x4   operator/   (float4x4 a, F32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
+template<> HLML_INLINEF float4x4   operator/   (float4x4 a, f32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
 template<> HLML_INLINEF float4x4&  operator*=  (float4x4& a, float4x4 b) { a = a * b; return a; }
-template<> HLML_INLINEF float4x4&  operator*=  (float4x4& a, F32 s) { a = a * s; return a; }
-HLML_INLINEF float4x4   operator/   (float4x4 a, F32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
-template<> HLML_INLINEF float4x4&  operator/=  (float4x4& a, F32 s) { a = a / s; return a; }
+template<> HLML_INLINEF float4x4&  operator*=  (float4x4& a, f32 s) { a = a * s; return a; }
+HLML_INLINEF float4x4   operator/   (float4x4 a, f32 s) { a.c0 /= s; a.c1 /= s; a.c2 /= s; a.c3 /= s; return a; }
+template<> HLML_INLINEF float4x4&  operator/=  (float4x4& a, f32 s) { a = a / s; return a; }
 
-HLML_INLINEF float4x4 fillortho(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
+HLML_INLINEF float4x4 fillortho(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
   return float4x4(
     x,      0.0f,   0.0f,   0.0f,
     0.0f,  -y,      0.0f,   0.0f,
@@ -104,23 +104,23 @@ HLML_INLINEF float4x4 fillortho(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
     -w,     -h,     -d,     1.0f
   );
 }
-HLML_INLINEF float4x4 ortho(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
-  F32 invW = 1.0f / (r - l), invH = 1.0f / (t - b), invD = 1.0f / (zf - zn);
+HLML_INLINEF float4x4 ortho(f32 l, f32 r, f32 b, f32 t, f32 zn, f32 zf) {
+  f32 invW = 1.0f / (r - l), invH = 1.0f / (t - b), invD = 1.0f / (zf - zn);
   return fillortho(2.0f * invW, 2.0f * invH, -invD, (l + r) * invW, (t + b) * invH, zn * invD);
 }
-HLML_INLINEF float4x4 orthoinverse(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
+HLML_INLINEF float4x4 orthoinverse(f32 l, f32 r, f32 b, f32 t, f32 zn, f32 zf) {
   return fillortho((r - l) * 0.5f, (t - b) * 0.5f, -(zf - zn), (r + l) * 0.5f, (t + b) * 0.5f, zn);
 }
-HLML_INLINEF float4x4 ortho(F32 w, F32 h, F32 zn, F32 zf) {
-  F32 hw = 0.5f * w, hh = 0.5f * h;
+HLML_INLINEF float4x4 ortho(f32 w, f32 h, f32 zn, f32 zf) {
+  f32 hw = 0.5f * w, hh = 0.5f * h;
   return ortho(-hw, hw, -hh, hh, zn, zf);
 }
-HLML_INLINEF float4x4 orthoinverse(F32 w, F32 h, F32 zn, F32 zf) {
-  F32 hw = 0.5f * w, hh = 0.5f * h;
+HLML_INLINEF float4x4 orthoinverse(f32 w, f32 h, f32 zn, f32 zf) {
+  f32 hw = 0.5f * w, hh = 0.5f * h;
   return orthoinverse(-hw, hw, -hh, hh, zn, zf);
 }
 
-HLML_INLINEF float4x4 fillpersp(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
+HLML_INLINEF float4x4 fillpersp(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
   return float4x4(
     x,      0.0f,   0.0f,   0.0f,
     0.0f,  -y,      0.0f,   0.0f,
@@ -129,7 +129,7 @@ HLML_INLINEF float4x4 fillpersp(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
   );
 }
 
-HLML_INLINEF float4x4 fillperspinv(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
+HLML_INLINEF float4x4 fillperspinv(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
   return float4x4(
     x,      0.0f,   0.0f,   0.0f,
     0.0f,  -y,      0.0f,   0.0f,
@@ -138,40 +138,40 @@ HLML_INLINEF float4x4 fillperspinv(F32 x, F32 y, F32 z, F32 w, F32 h, F32 d) {
   );
 }
 
-HLML_INLINEF float4x4 perspective(F32 fovDegs, F32 h2w, F32 zn, F32 zf) {
-  const F32 invD = 1.0f / (zn - zf);
+HLML_INLINEF float4x4 perspective(f32 fovDegs, f32 h2w, f32 zn, f32 zf) {
+  const f32 invD = 1.0f / (zn - zf);
   float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
-  F32 invtan = (c / s).x();
-  F32 x = invtan * h2w, y = invtan, z = zf * invD, d = zf * zn * invD;
+  f32 invtan = (c / s).x();
+  f32 x = invtan * h2w, y = invtan, z = zf * invD, d = zf * zn * invD;
   return fillpersp(x, y, z, 0.0f, 0.0f, d);
 }
-HLML_INLINEF float4x4 perspective(F32 fovDegs, F32 width, F32 height, F32 zn, F32 zf) { return perspective(fovDegs, height / width, zn, zf); }
-HLML_INLINEF float4x4 perspectiveinverse(F32 fovDegs, F32 h2w, F32 zn, F32 zf) {
-  const F32 invzn = 1.0f / zn, invzf = 1.0f / zf, invdzn = invzn * 0.5f, invdznzf = invdzn * invzf;
+HLML_INLINEF float4x4 perspective(f32 fovDegs, f32 width, f32 height, f32 zn, f32 zf) { return perspective(fovDegs, height / width, zn, zf); }
+HLML_INLINEF float4x4 perspectiveinverse(f32 fovDegs, f32 h2w, f32 zn, f32 zf) {
+  const f32 invzn = 1.0f / zn, invzf = 1.0f / zf, invdzn = invzn * 0.5f, invdznzf = invdzn * invzf;
   float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
-  F32 y = (c / s).x(), x = y * h2w, z = (zn - zf) * invzf, d = zn;
+  f32 y = (c / s).x(), x = y * h2w, z = (zn - zf) * invzf, d = zn;
   return fillperspinv(x, y, z, 0.0f, 0.0f, d);
 }
-HLML_INLINEF float4x4 perspectiveZinv(F32 fovDegs, F32 h2w, F32 zn, F32 epsilon = 2.4e-7f) {
+HLML_INLINEF float4x4 perspectiveZinv(f32 fovDegs, f32 h2w, f32 zn, f32 epsilon = 2.4e-7f) {
   float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
-  F32 diff = (c / s).x() * zn, dzn = 2.0f * zn;
-  F32 l = -diff * h2w, r = diff * h2w, b = -h2w, t = h2w;
-  F32 x = (r - l) * dzn, y = (t - b) * dzn, z = (epsilon - 2.0f) * zn;
+  f32 diff = (c / s).x() * zn, dzn = 2.0f * zn;
+  f32 l = -diff * h2w, r = diff * h2w, b = -h2w, t = h2w;
+  f32 x = (r - l) * dzn, y = (t - b) * dzn, z = (epsilon - 2.0f) * zn;
   return fillpersp(x, y, z, 0.0f, 0.0f, epsilon - 1.0f);
 }
-HLML_INLINEF float4x4 frustum(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
-  F32 dzn = 2.0f * zn, diffx = 1.0f / (r - l), diffy = 1.0f / (t - b), diffz = 1.0f / (zn - zf);
-  F32 x = dzn * diffx, y = dzn * diffy, z = zn * zf * diffz;
-  F32 w = (r + l) * diffx, h = (t + b) * diffy, d = zf * diffz;
+HLML_INLINEF float4x4 frustum(f32 l, f32 r, f32 b, f32 t, f32 zn, f32 zf) {
+  f32 dzn = 2.0f * zn, diffx = 1.0f / (r - l), diffy = 1.0f / (t - b), diffz = 1.0f / (zn - zf);
+  f32 x = dzn * diffx, y = dzn * diffy, z = zn * zf * diffz;
+  f32 w = (r + l) * diffx, h = (t + b) * diffy, d = zf * diffz;
   return fillpersp(x, y, z, w, h, d);
 }
-HLML_INLINEF float4x4 frustuminverse(F32 l, F32 r, F32 b, F32 t, F32 zn, F32 zf) {
-  F32 invdzn = 1.0f / (2.0f * zn), invdznzf = invdzn / zf, diffx = (r - l), diffy = (t - b), diffz = (zn - zf);
-  F32 x = invdzn * diffx, y = invdzn * diffy, z = diffz * invdznzf;
-  F32 w = (r + l) * invdzn, h = (t + b) * invdzn, d = (zn + zf) * invdznzf;
+HLML_INLINEF float4x4 frustuminverse(f32 l, f32 r, f32 b, f32 t, f32 zn, f32 zf) {
+  f32 invdzn = 1.0f / (2.0f * zn), invdznzf = invdzn / zf, diffx = (r - l), diffy = (t - b), diffz = (zn - zf);
+  f32 x = invdzn * diffx, y = invdzn * diffy, z = diffz * invdznzf;
+  f32 w = (r + l) * invdzn, h = (t + b) * invdzn, d = (zn + zf) * invdznzf;
   return fillperspinv(x, y, z, w, h, d);
 }
 }

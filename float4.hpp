@@ -10,28 +10,28 @@ struct float4 {
   VF128 m = { 0 };
 
   HLML_INLINEF float4() {}
-  HLML_INLINEF float4(F32 x, F32 y, F32 z, F32 w) : m(funcs::setXYZW(x, y, z, w)) {}
-  HLML_INLINEF float4(float2 v, F32 z, F32 w) : float4(v.x(), v.y(), z, w) {}
-  HLML_INLINEF float4(float3 v, F32 w) : float4(v.x(), v.y(), v.z(), w) {}
-  HLML_INLINEF explicit float4(F32 x) : float4(x, x, x, x) {}
+  HLML_INLINEF float4(f32 x, f32 y, f32 z, f32 w) : m(funcs::setXYZW(x, y, z, w)) {}
+  HLML_INLINEF float4(float2 v, f32 z, f32 w) : float4(v.x(), v.y(), z, w) {}
+  HLML_INLINEF float4(float3 v, f32 w) : float4(v.x(), v.y(), v.z(), w) {}
+  HLML_INLINEF explicit float4(f32 x) : float4(x, x, x, x) {}
   HLML_INLINEF explicit float4(float2 v) : m(v.m) {}
   HLML_INLINEF explicit float4(float2 v, float2 u) : float4(v.x(), v.y(), u.x(), u.y()) {}
   HLML_INLINEF explicit float4(float3 v) : m(v.m) {}
-  HLML_INLINEF explicit float4(const F32 *p) : float4(p[0], p[1], p[2], p[3]) {}
+  HLML_INLINEF explicit float4(const f32 *p) : float4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit float4(VF128 v) : m(v) {}
-  HLML_INLINEF float4 float4i(I32 x, I32 y, I32 z, I32 w) { return float4((F32)x, (F32)y, (F32)z, (F32)w); }
+  HLML_INLINEF float4 float4i(i32 x, i32 y, i32 z, i32 w) { return float4((f32)x, (f32)y, (f32)z, (f32)w); }
 
-  HLML_INLINEF void store(F32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
+  HLML_INLINEF void store(f32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
 
-  HLML_INLINEF void setX(F32 x) { m = insertf(m, x, 0); }
-  HLML_INLINEF void setY(F32 y) { m = insertf(m, y, 1); }
-  HLML_INLINEF void setZ(F32 z) { m = insertf(m, z, 2); }
-  HLML_INLINEF void setW(F32 w) { m = insertf(m, w, 3); }
+  HLML_INLINEF void setX(f32 x) { m = insertf(m, x, 0); }
+  HLML_INLINEF void setY(f32 y) { m = insertf(m, y, 1); }
+  HLML_INLINEF void setZ(f32 z) { m = insertf(m, z, 2); }
+  HLML_INLINEF void setW(f32 w) { m = insertf(m, w, 3); }
 
-  HLML_INLINEF F32 x() const { uiasf res = extractf(m, 0); return res.f; }
-  HLML_INLINEF F32 y() const { uiasf res = extractf(m, 1); return res.f; }
-  HLML_INLINEF F32 z() const { uiasf res = extractf(m, 2); return res.f; }
-  HLML_INLINEF F32 w() const { uiasf res = extractf(m, 3); return res.f; }
+  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.f; }
+  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.f; }
+  HLML_INLINEF f32 z() const { uiasf res = extractf(m, 2); return res.f; }
+  HLML_INLINEF f32 w() const { uiasf res = extractf(m, 3); return res.f; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }
@@ -378,10 +378,10 @@ struct float4 {
   HLML_INLINEF float4 wwwz() const { return shufflef4(*this, 3, 3, 3, 2); }
   HLML_INLINEF float4 wwww() const { return shufflef4(*this, 3, 3, 3, 3); }
 
-  HLML_INLINEF F32 r() const { return x(); }
-  HLML_INLINEF F32 g() const { return y(); }
-  HLML_INLINEF F32 b() const { return z(); }
-  HLML_INLINEF F32 a() const { return w(); }
+  HLML_INLINEF f32 r() const { return x(); }
+  HLML_INLINEF f32 g() const { return y(); }
+  HLML_INLINEF f32 b() const { return z(); }
+  HLML_INLINEF f32 a() const { return w(); }
 
   HLML_INLINEF float2 rr() const { return xx(); }
   HLML_INLINEF float2 rg() const { return xy(); }
@@ -723,8 +723,8 @@ HLML_INLINEF float4 asflt(int4 a) { return float4(funcs::iasf(a.m)); }
 HLML_INLINEF float4 toflt(int4 a) { return float4(funcs::itof(a.m)); }
 
 HLML_INLINEF float4 sumv(float4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
-HLML_INLINEF F32 hmin(float4 v) { v = minv(v, shufflef4(v, 1, 0, 3, 2)); return minv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
-HLML_INLINEF F32 hmax(float4 v) { v = maxv(v, shufflef4(v, 1, 0, 3, 2)); return maxv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF f32 hmin(float4 v) { v = minv(v, shufflef4(v, 1, 0, 3, 2)); return minv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF f32 hmax(float4 v) { v = maxv(v, shufflef4(v, 1, 0, 3, 2)); return maxv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF float2 normalize(float2 v) {
   float4 r(dotv(v, v), float2(1.0f));
   return v * rsqrt(r).xy();

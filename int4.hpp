@@ -9,24 +9,24 @@ struct int4 {
   VI128 m = { 0 };
 
   HLML_INLINEF int4() {}
-  HLML_INLINEF int4(I32 x, I32 y, I32 z, I32 w) : m(funcs::setXYZW(x, y, z, w)) {}
-  HLML_INLINEF int4(int2 v, I32 z, I32 w) : int4(v.x(), v.y(), z, w) {}
-  HLML_INLINEF int4(int3 v, I32 w) : int4(v.x(), v.y(), v.z(), w) {}
-  HLML_INLINEF explicit int4(I32 x) : int4(x, x, x, x) {}
-  HLML_INLINEF explicit int4(const I32 *p) : int4(p[0], p[1], p[2], p[3]) {}
+  HLML_INLINEF int4(i32 x, i32 y, i32 z, i32 w) : m(funcs::setXYZW(x, y, z, w)) {}
+  HLML_INLINEF int4(int2 v, i32 z, i32 w) : int4(v.x(), v.y(), z, w) {}
+  HLML_INLINEF int4(int3 v, i32 w) : int4(v.x(), v.y(), v.z(), w) {}
+  HLML_INLINEF explicit int4(i32 x) : int4(x, x, x, x) {}
+  HLML_INLINEF explicit int4(const i32 *p) : int4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit int4(VI128 v) : m(v) {}
 
-  HLML_INLINEF void store(I32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
+  HLML_INLINEF void store(i32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
 
-  HLML_INLINEF void setX(I32 x) { m = inserti(m, x, 0); }
-  HLML_INLINEF void setY(I32 y) { m = inserti(m, y, 1); }
-  HLML_INLINEF void setZ(I32 z) { m = inserti(m, z, 2); }
-  HLML_INLINEF void setW(I32 w) { m = inserti(m, w, 3); }
+  HLML_INLINEF void setX(i32 x) { m = inserti(m, x, 0); }
+  HLML_INLINEF void setY(i32 y) { m = inserti(m, y, 1); }
+  HLML_INLINEF void setZ(i32 z) { m = inserti(m, z, 2); }
+  HLML_INLINEF void setW(i32 w) { m = inserti(m, w, 3); }
 
-  HLML_INLINEF I32 x() const { return extracti(m, 0); }
-  HLML_INLINEF I32 y() const { return extracti(m, 1); }
-  HLML_INLINEF I32 z() const { return extracti(m, 2); }
-  HLML_INLINEF I32 w() const { return extracti(m, 3); }
+  HLML_INLINEF i32 x() const { return extracti(m, 0); }
+  HLML_INLINEF i32 y() const { return extracti(m, 1); }
+  HLML_INLINEF i32 z() const { return extracti(m, 2); }
+  HLML_INLINEF i32 w() const { return extracti(m, 3); }
 
   HLML_INLINEF int2 xx() const { return shufflei2(*this, 0, 0); }
   HLML_INLINEF int2 xy() const { return shufflei2(*this, 0, 1); }
@@ -373,10 +373,10 @@ struct int4 {
   HLML_INLINEF int4 wwwz() const { return shufflei4(*this, 3, 3, 3, 2); }
   HLML_INLINEF int4 wwww() const { return shufflei4(*this, 3, 3, 3, 3); }
 
-  HLML_INLINEF I32 r() const { return x(); }
-  HLML_INLINEF I32 g() const { return y(); }
-  HLML_INLINEF I32 b() const { return z(); }
-  HLML_INLINEF I32 a() const { return w(); }
+  HLML_INLINEF i32 r() const { return x(); }
+  HLML_INLINEF i32 g() const { return y(); }
+  HLML_INLINEF i32 b() const { return z(); }
+  HLML_INLINEF i32 a() const { return w(); }
 
   HLML_INLINEF int2 rr() const { return xx(); }
   HLML_INLINEF int2 rg() const { return xy(); }
@@ -713,6 +713,6 @@ HLML_INLINEF bool4   operator<= (int4 a, int4 b) { return bool4(funcs::ftoi(cmpl
 HLML_INLINEF bool4   operator>= (int4 a, int4 b) { return bool4(funcs::ftoi(cmpge(a, b).m)); }
 
 HLML_INLINEF int4 sumv(int4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
-HLML_INLINEF I32 hmin(int4 v) { v = minv(v, shufflei4(v, 1, 0, 3, 2)); return minv(v, shufflei4(v, 3, 2, 1, 0)).x(); }
-HLML_INLINEF I32 hmax(int4 v) { v = maxv(v, shufflei4(v, 1, 0, 3, 2)); return maxv(v, shufflei4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF i32 hmin(int4 v) { v = minv(v, shufflei4(v, 1, 0, 3, 2)); return minv(v, shufflei4(v, 3, 2, 1, 0)).x(); }
+HLML_INLINEF i32 hmax(int4 v) { v = maxv(v, shufflei4(v, 1, 0, 3, 2)); return maxv(v, shufflei4(v, 3, 2, 1, 0)).x(); }
 }

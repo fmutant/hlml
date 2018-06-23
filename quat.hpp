@@ -12,18 +12,18 @@ class quat {
   quat() = default;
   explicit quat(float3 v) : quat(0.0f, v) {}
   explicit quat(float4 v) : m(v.wxyz()) {}
-  explicit quat(F32* v) : m(v) {}
-  explicit quat(F32 scalar) : m(funcs::bxayazaw(funcs::setXXXX(scalar), consts::vzeros)) {}
-  quat(F32 w, float3 v) : m(w, v.x(), v.y(), v.z()) {}
-  quat(F32 w, F32 x, F32 y, F32 z) : m(w, x, y, z) {}
-  quat(float3 axis, F32 degs) {
+  explicit quat(f32* v) : m(v) {}
+  explicit quat(f32 scalar) : m(funcs::bxayazaw(funcs::setXXXX(scalar), consts::vzeros)) {}
+  quat(f32 w, float3 v) : m(w, v.x(), v.y(), v.z()) {}
+  quat(f32 w, f32 x, f32 y, f32 z) : m(w, x, y, z) {}
+  quat(float3 axis, f32 degs) {
     //http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
     float4 s, c, xxyz(axis.m);
     sincos(float4(HLML_DEG2RAD(degs) * 0.5f), s, c);
     m.m = funcs::bxayazaw((s * xxyz.xxyz()).m, c.m);
   }
   //pitch = X axis, yaw = Y axis, roll = Z axis
-  quat(F32 pitchdegs, F32 yawdegs, F32 rolldegs) {
+  quat(f32 pitchdegs, f32 yawdegs, f32 rolldegs) {
     float4 angles(HLML_DEG2RAD(pitchdegs), HLML_DEG2RAD(pitchdegs), HLML_DEG2RAD(yawdegs), HLML_DEG2RAD(rolldegs)), sines, coses;
     sincos(angles * 0.5f, sines, coses);
     float4 cxxyz(funcs::bxayazaw(sines.m, coses.m)), sxxyz(funcs::bxayazaw(coses.m, sines.m));;
@@ -84,26 +84,26 @@ class quat {
     float3x3 result = float3x3::identity() + float3x3(col0, col1, col2);
 		return result;
   }
-  HLML_INLINEF F32 x() const { return m.y(); }
-  HLML_INLINEF F32 y() const { return m.z(); }
-  HLML_INLINEF F32 z() const { return m.w(); }
-  HLML_INLINEF F32 w() const { return m.x(); }
-  HLML_INLINEF F32 real() const { return w(); }
+  HLML_INLINEF f32 x() const { return m.y(); }
+  HLML_INLINEF f32 y() const { return m.z(); }
+  HLML_INLINEF f32 z() const { return m.w(); }
+  HLML_INLINEF f32 w() const { return m.x(); }
+  HLML_INLINEF f32 real() const { return w(); }
   HLML_INLINEF float3 imag() const { return m.yzw(); }
 };
 
 HLML_INLINEF quat     operator+  (quat a) { return a; }
 HLML_INLINEF quat     operator+  (quat a, quat b) { return quat((float4)a + (float4)b); }
-HLML_INLINEF quat     operator+  (quat a, F32 s) { return a + quat(s); }
-HLML_INLINEF quat     operator+  (F32 s, quat a) { return a + s; }
+HLML_INLINEF quat     operator+  (quat a, f32 s) { return a + quat(s); }
+HLML_INLINEF quat     operator+  (f32 s, quat a) { return a + s; }
 HLML_INLINEF quat&    operator+= (quat& a, quat b) { a = a + b; return a; }
-HLML_INLINEF quat&    operator+= (quat& a, F32 s) { a = a + quat(s); return a; }
+HLML_INLINEF quat&    operator+= (quat& a, f32 s) { a = a + quat(s); return a; }
 HLML_INLINEF quat     operator-  (quat a) { return quat((float4)a ^ float4(consts::vsignpppn)); }
 HLML_INLINEF quat     operator-  (quat a, quat b) { return quat((float4)a - (float4)b); }
-HLML_INLINEF quat     operator-  (quat a, F32 s) { return a - quat(s); }
-HLML_INLINEF quat     operator-  (F32 s, quat b) { return quat(s) - b; }
+HLML_INLINEF quat     operator-  (quat a, f32 s) { return a - quat(s); }
+HLML_INLINEF quat     operator-  (f32 s, quat b) { return quat(s) - b; }
 HLML_INLINEF quat&    operator-= (quat& a, quat b) { a = a - b; return a; }
-HLML_INLINEF quat&    operator-= (quat& a, F32 s) { a = a - quat(s); return a; }
+HLML_INLINEF quat&    operator-= (quat& a, f32 s) { a = a - quat(s); return a; }
 HLML_INLINEF quat     operator*  (quat a, quat b) {
   float4 ai = (float4)a, bi = (float4)b;
   float4 s1 = ai.xyzy() * bi.wwwy() + ai.yzxz() * bi.zxyz();
@@ -117,12 +117,12 @@ HLML_INLINEF float3   operator*  (quat a, float3 b) {
   float3 t(float3(2.0f) * cross(axyz, b)), wwwt(www * t), axyzt(cross(axyz, t));
   return axyzt + wwwt + b;
 }
-HLML_INLINEF quat     operator*  (quat a, F32 s) { return quat((float4)a * s); }
-HLML_INLINEF quat     operator*  (F32 s, quat a) { return a * s; }
+HLML_INLINEF quat     operator*  (quat a, f32 s) { return quat((float4)a * s); }
+HLML_INLINEF quat     operator*  (f32 s, quat a) { return a * s; }
 HLML_INLINEF quat&    operator*= (quat& a, quat b) { a = a * b; return a; }
-HLML_INLINEF quat&    operator*= (quat& a, F32 s) { a = a * s; }
-HLML_INLINEF quat     operator/  (quat a, F32 s) { return a * (1.0f / s); }
-HLML_INLINEF quat&    operator/= (quat& a, F32 s) { a = a / s; return a; }
+HLML_INLINEF quat&    operator*= (quat& a, f32 s) { a = a * s; }
+HLML_INLINEF quat     operator/  (quat a, f32 s) { return a * (1.0f / s); }
+HLML_INLINEF quat&    operator/= (quat& a, f32 s) { a = a / s; return a; }
 
 HLML_INLINEF bool4    operator== (quat a, quat b) { return (float4)a == (float4)b; }
 HLML_INLINEF bool4    operator!= (quat a, quat b) { return (float4)a != (float4)b; }

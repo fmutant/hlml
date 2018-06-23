@@ -31,10 +31,10 @@ HLML_INLINEF VF128 azawbybw(VF128 a, VF128 b) { return _mm_shuffle_ps(a, b, _MM_
 HLML_INLINEF VF128 axaybzbw(VF128 a, VF128 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(3,2,1,0)); }
 HLML_INLINEF VF128 axazbxbz(VF128 a, VF128 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(2,0,2,0)); }
 HLML_INLINEF VF128 ayawbybw(VF128 a, VF128 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(3,1,3,1)); }
-HLML_INLINEF VF128 setXYZW(F32 x, F32 y, F32 z, F32 w) { return _mm_set_ps(w, z, y, x); }
-HLML_INLINEF VI128 setXYZW(I32 x, I32 y, I32 z, I32 w) { return _mm_set_epi32(w, z, y, x); }
-HLML_INLINEF VF128 setXXXX(F32 x) { return _mm_set1_ps(x); }
-HLML_INLINEF VI128 setXXXX(I32 x) { return _mm_set_epi32(x, x, x, x); }
+HLML_INLINEF VF128 setXYZW(f32 x, f32 y, f32 z, f32 w) { return _mm_set_ps(w, z, y, x); }
+HLML_INLINEF VI128 setXYZW(i32 x, i32 y, i32 z, i32 w) { return _mm_set_epi32(w, z, y, x); }
+HLML_INLINEF VF128 setXXXX(f32 x) { return _mm_set1_ps(x); }
+HLML_INLINEF VI128 setXXXX(i32 x) { return _mm_set_epi32(x, x, x, x); }
 HLML_INLINEF VF128 AaddssB(VF128 a, VF128 b) { return _mm_add_ss(a, b); }
 HLML_INLINEF VF128 notAandB(VF128 a, VF128 b) { return _mm_andnot_ps(a, b); }
 HLML_INLINEF VI128 notAandB(VI128 a, VI128 b) { return _mm_andnot_si128(a, b); }
@@ -69,9 +69,9 @@ HLML_INLINEF VF128 AmaxB(VF128 a, VF128 b) { return _mm_max_ps(a, b); }
 HLML_INLINEF VI128 AmaxB(VI128 a, VI128 b) { return _mm_max_epi32(a, b); }
 HLML_INLINEF VF128 AhaddB(VF128 a, VF128 b) { return _mm_hadd_ps(a, b); }
 HLML_INLINEF VI128 AhaddB(VI128 a, VI128 b) { return _mm_hadd_epi32(a, b); }
-HLML_INLINEF VI128 Ashiftl(VI128 a, U8 bits) { return _mm_slli_epi32(a, bits); }
-HLML_INLINEF VI128 Ashiftr(VI128 a, U8 bits) { return _mm_srli_epi32(a, bits); }
-HLML_INLINEF I32 movemask(VI128 a) { return _mm_movemask_epi8(a); }
+HLML_INLINEF VI128 Ashiftl(VI128 a, u8 bits) { return _mm_slli_epi32(a, bits); }
+HLML_INLINEF VI128 Ashiftr(VI128 a, u8 bits) { return _mm_srli_epi32(a, bits); }
+HLML_INLINEF i32 movemask(VI128 a) { return _mm_movemask_epi8(a); }
 
 HLML_INLINEF VF128 rcp(VF128 a) { return _mm_rcp_ps(a); }
 HLML_INLINEF VF128 sqrt(VF128 a) { return _mm_sqrt_ps(a); }
