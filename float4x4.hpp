@@ -71,8 +71,8 @@ HLML_INLINEF float4x4 inverse(float4x4 m) {
   return m;
 }
 
-HLML_INLINEF B8         operator==  (float4x4 lhs, float4x4 rhs) { return all(lhs.c0 == rhs.c0) && all(lhs.c1 == rhs.c1) && all(lhs.c2 == rhs.c2) && all(lhs.c3 == rhs.c3); }
-HLML_INLINEF B8         operator!=  (float4x4 lhs, float4x4 rhs) { return !(lhs == rhs); }
+HLML_INLINEF b8         operator==  (float4x4 lhs, float4x4 rhs) { return all(lhs.c0 == rhs.c0) && all(lhs.c1 == rhs.c1) && all(lhs.c2 == rhs.c2) && all(lhs.c3 == rhs.c3); }
+HLML_INLINEF b8         operator!=  (float4x4 lhs, float4x4 rhs) { return !(lhs == rhs); }
 
 template<> HLML_INLINEF float4x4   operator+   (float4x4 a, float4x4 b) { a.c0 += b.c0; a.c1 += b.c1; a.c2 += b.c2; a.c3 += b.c3; return a; }
 template<> HLML_INLINEF float4x4   operator+   (float4x4 a, f32 s) { a.c0 += s; a.c1 += s; a.c2 += s; a.c3 += s; return a; }
@@ -124,7 +124,7 @@ HLML_INLINEF float4x4 fillpersp(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
   return float4x4(
     x,      0.0f,   0.0f,   0.0f,
     0.0f,  -y,      0.0f,   0.0f,
-    w,      h,     -z,      1.0f,
+    w,      h,      -z,      1.0f,
     0.0f,   0.0f,   d,      0.0f
   );
 }

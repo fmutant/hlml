@@ -31,8 +31,8 @@ HLML_INLINEF float2x2 inverse(float2x2 a) {
   return a;
 }
 
-HLML_INLINEF B8         operator==  (float2x2 lhs, float2x2 rhs) { return all(lhs.m == rhs.m); }
-HLML_INLINEF B8         operator!=  (float2x2 lhs, float2x2 rhs) { return !(lhs == rhs); }
+HLML_INLINEF b8         operator==  (float2x2 lhs, float2x2 rhs) { return all(lhs.m == rhs.m); }
+HLML_INLINEF b8         operator!=  (float2x2 lhs, float2x2 rhs) { return !(lhs == rhs); }
 
 HLML_INLINEF float2x2   operator+   (float2x2 m) { return m; }
 HLML_INLINEF float2x2   operator+   (float2x2 a, float2x2 b) { a.m += b.m; return a; }

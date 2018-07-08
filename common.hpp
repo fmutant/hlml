@@ -10,7 +10,8 @@
 
 namespace hlml {
 typedef float f32;
-typedef bool B8;
+typedef float float1;
+typedef bool b8;
 typedef ::uint_least8_t u8;
 typedef ::int_least8_t i8;
 typedef ::uint_least16_t u16;
@@ -19,6 +20,8 @@ typedef ::uint_least32_t u32;
 typedef ::int_least32_t i32;
 typedef ::uint_least64_t u64;
 typedef ::int_least64_t i64;
+typedef u16 b16;
+typedef u32 b32;
 typedef __m128 VF128;
 typedef __m128i VI128;
 };
@@ -135,9 +138,9 @@ template<typename T> HLML_INLINEF T   maxv        (T a, T b) { a.m = funcs::Amax
 template<typename T> HLML_INLINEF T   clamp       (T t, T a, T b) { return min(max(t, a), b); }
 
 template<typename T> HLML_INLINEF u32 mask(T v) { return T::flagsall & funcs::movemask(v.m); }
-template<typename T> HLML_INLINEF B8  any (T v) { return mask(v); }
-template<typename T> HLML_INLINEF B8  none(T v) { return !any(v); }
-template<typename T> HLML_INLINEF B8  all (T v) { return T::flagsall == mask(v); }
+template<typename T> HLML_INLINEF b8  any (T v) { return mask(v); }
+template<typename T> HLML_INLINEF b8  none(T v) { return !any(v); }
+template<typename T> HLML_INLINEF b8  all (T v) { return T::flagsall == mask(v); }
 
 template<typename T> HLML_INLINEF T   operator+  (T a, f32 b) { return a + T(b); }
 template<typename T> HLML_INLINEF T&  operator+= (T& a, f32 b) { return a += T(b); }

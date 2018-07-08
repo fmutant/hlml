@@ -36,8 +36,8 @@ HLML_INLINEF float3x3 inverse(float3x3 m) {
   return transpose(m);
 }
 
-HLML_INLINEF B8         operator==  (float3x3 lhs, float3x3 rhs) { return all(lhs.c0 == rhs.c0) && all(lhs.c1 == rhs.c1) && all(lhs.c2 == rhs.c2); }
-HLML_INLINEF B8         operator!=  (float3x3 lhs, float3x3 rhs) { return !(lhs == rhs); }
+HLML_INLINEF b8         operator==  (float3x3 lhs, float3x3 rhs) { return all(lhs.c0 == rhs.c0) && all(lhs.c1 == rhs.c1) && all(lhs.c2 == rhs.c2); }
+HLML_INLINEF b8         operator!=  (float3x3 lhs, float3x3 rhs) { return !(lhs == rhs); }
 
 HLML_INLINEF float3x3   operator+   (float3x3 m) { return m; }
 HLML_INLINEF float3x3   operator+   (float3x3 a, float3x3 b) { a.c0 += b.c0; a.c1 += b.c1; a.c2 += b.c2; return a; }

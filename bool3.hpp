@@ -9,20 +9,20 @@ struct bool3 {
   VI128 m = { 0 };
 
   HLML_INLINEF bool3() {}
-  HLML_INLINEF explicit bool3(B8 x, B8 y, B8 z) : m(funcs::setXYZW(x, y, z, consts::snZero)) {}
-  HLML_INLINEF explicit bool3(B8* p) : bool3(p[0], p[1], p[2]) {}
-  HLML_INLINEF explicit bool3(bool2 v, B8 z) : bool3(v.x(), v.y(), z) {}
+  HLML_INLINEF explicit bool3(b8 x, b8 y, b8 z) : m(funcs::setXYZW(x, y, z, consts::snZero)) {}
+  HLML_INLINEF explicit bool3(b8* p) : bool3(p[0], p[1], p[2]) {}
+  HLML_INLINEF explicit bool3(bool2 v, b8 z) : bool3(v.x(), v.y(), z) {}
   HLML_INLINEF explicit bool3(VI128 v) : m(v) {}
 
-  HLML_INLINEF void store(B8 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); }
+  HLML_INLINEF void store(b8 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); }
 
-  HLML_INLINEF void setX(B8 x) { m = inserti(m, x, 0); }
-  HLML_INLINEF void setY(B8 y) { m = inserti(m, y, 1); }
-  HLML_INLINEF void setZ(B8 y) { m = inserti(m, y, 2); }
+  HLML_INLINEF void setX(b8 x) { m = inserti(m, x, 0); }
+  HLML_INLINEF void setY(b8 y) { m = inserti(m, y, 1); }
+  HLML_INLINEF void setZ(b8 y) { m = inserti(m, y, 2); }
 
-  HLML_INLINEF B8 x() const { return 0 != extracti(m, 0); }
-  HLML_INLINEF B8 y() const { return 0 != extracti(m, 1); }
-  HLML_INLINEF B8 z() const { return 0 != extracti(m, 2); }
+  HLML_INLINEF b8 x() const { return 0 != extracti(m, 0); }
+  HLML_INLINEF b8 y() const { return 0 != extracti(m, 1); }
+  HLML_INLINEF b8 z() const { return 0 != extracti(m, 2); }
 
   HLML_INLINEF bool2 xx() const { return shuffleb2(*this, 0, 0); }
   HLML_INLINEF bool2 xy() const { return shuffleb2(*this, 0, 1); }
