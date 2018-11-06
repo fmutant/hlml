@@ -120,7 +120,7 @@ HLML_INLINEF int3 toint(float3 a) { return int3(funcs::ftoi(a.m)); }
 HLML_INLINEF float3 asflt(int3 a) { return float3(funcs::iasf(a.m)); }
 HLML_INLINEF float3 toflt(int3 a) { return float3(funcs::itof(a.m)); }
 HLML_INLINEF float3 sumv(float3 v) { return v += v.zxy() + v.yzx(); }
-HLML_INLINEF float3 crossv(float3 a, float3 b) { return (a.zxy() * b - a * b.zxy()).zxy(); }
+HLML_INLINEF float3 crossv(float3 a, float3 b) { return (a.yzx() * b - a * b.yzx()).yzx(); }
 HLML_INLINEF float3 cross(float3 a, float3 b) { return crossv(a, b); }
 HLML_INLINEF f32 hmin(float3 v) { v = minv(v, shufflef3(v, 1, 0, 2)); return minv(v, shufflef3(v, 2, 0, 1)).x(); }
 HLML_INLINEF f32 hmax(float3 v) { v = maxv(v, shufflef3(v, 1, 0, 2)); return maxv(v, shufflef3(v, 2, 0, 1)).x(); }
