@@ -2,12 +2,15 @@
 
 namespace hlml {
 namespace funcs {
-#define shuffleb2(V, X, Y) bool2(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3,2,Y,X)))
+#define shuffleb2(V, X, Y) bool2(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, 2, Y, X)))
 #define shufflei2(V, X, Y) int2(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, 2, Y, X)))
 #define shufflef2(V, X, Y) float2(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)))
 #define shuffleb3(V, X, Y, Z) bool3(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, Z, Y, X)))
 #define shufflei3(V, X, Y, Z) int3(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, Z, Y, X)))
 #define shufflef3(V, X, Y, Z) float3(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, Z, Y, X)))
+//#define shufflef4tof3(V, X, Y, Z) float3(_mm_blend_ps(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, Z, Y, X)), _mm_setzero_ps(), (1 << 3)))
+//#define shufflef4tof2(V, X, Y) float2(_mm_blend_ps(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)), _mm_setzero_ps(), (1 << 3) | (1 << 2)))
+//#define shufflef3tof2(V, X, Y) float2(_mm_blend_ps(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)), _mm_setzero_ps(), (1 << 3) | (1 << 2)))
 #define shuffleb4(V, X, Y, Z, W) bool4(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(W, Z, Y, X)))
 #define shufflei4(V, X, Y, Z, W) int4(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(W, Z, Y, X)))
 #define shufflef4(V, X, Y, Z, W) float4(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(W, Z, Y, X)))
@@ -17,6 +20,8 @@ namespace funcs {
 #define extracti(V, i) _mm_extract_epi32((V), (i))
 #define extractf(V, i) _mm_extract_ps((V), (i))
 
+HLML_INLINEF VF128 axayaz00(VF128 a) { return _mm_blend_ps(a, _mm_setzero_ps(), (1 << 3)); }
+HLML_INLINEF VF128 axay0000(VF128 a) { return _mm_blend_ps(a, _mm_setzero_ps(), (1 << 3) | (1 << 2)); }
 HLML_INLINEF VF128 axbxayby(VF128 a, VF128 b) { return _mm_unpacklo_ps(a, b); }
 HLML_INLINEF VF128 axaybxby(VF128 a, VF128 b) { return _mm_movelh_ps(a, b); }
 HLML_INLINEF VF128 azbzawbw(VF128 a, VF128 b) { return _mm_unpackhi_ps(a, b); }
@@ -51,6 +56,9 @@ HLML_INLINEF VI128 AsubB(VI128 a, VI128 b) { return _mm_sub_epi32(a, b); }
 HLML_INLINEF VF128 AmulB(VF128 a, VF128 b) { return _mm_mul_ps(a, b); }
 HLML_INLINEF VI128 AmulB(VI128 a, VI128 b) { return _mm_mul_epi32(a, b); }
 HLML_INLINEF VF128 AdivB(VF128 a, VF128 b) { return _mm_div_ps(a, b); }
+HLML_INLINEF VF128 AdotBxyzw(VF128 a, VF128 b) { return _mm_dp_ps(a, b, 0xFF); }
+HLML_INLINEF VF128 AdotBxyz(VF128 a, VF128 b) { return _mm_dp_ps(a, b, (0x11 << 2) | (0x11 << 1) | (0x11 << 0)); }
+HLML_INLINEF VF128 AdotBxy(VF128 a, VF128 b) { return _mm_dp_ps(a, b, (0x11 << 1) | (0x11 << 0)); }
 HLML_INLINEF VF128 AcmpeqB(VF128 a, VF128 b) { return _mm_cmpeq_ps(a, b); }
 HLML_INLINEF VI128 AcmpeqB(VI128 a, VI128 b) { return _mm_cmpeq_epi32(a, b); }
 HLML_INLINEF VF128 AcmpneqB(VF128 a, VF128 b) { return _mm_cmpneq_ps(a, b); }

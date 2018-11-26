@@ -5,6 +5,8 @@
 #include "int3.hpp"
 
 namespace hlml {
+struct float4;
+
 struct float3 {
 
   VF128 m = { 0 };
@@ -14,7 +16,9 @@ struct float3 {
   HLML_INLINEF float3(float2 v, f32 z) : float3(v.x(), v.y(), z) {}
   HLML_INLINEF explicit float3(f32 x) : float3(x, x, x) {}
   HLML_INLINEF explicit float3(const f32 *p) : float3(p[0], p[1], p[2]) {}
-  HLML_INLINEF explicit float3(VF128 v) : m(v) {}
+  HLML_INLINEF explicit float3(VF128 v) : m(funcs::axayaz00(v)) {}
+  //HLML_INLINEF explicit float3(float4 v) : float3(v.m) {}
+  HLML_INLINEF float3& operator=(VF128 v) { m = v; return *this; }
   HLML_INLINEF float3 float3i(i32 x, i32 y, i32 z) { return float3((f32)x, (f32)y, (f32)z); }
 
   HLML_INLINEF void store(f32 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); }
@@ -23,9 +27,9 @@ struct float3 {
   HLML_INLINEF void setY(f32 y) { m = insertf(m, y, 1); }
   HLML_INLINEF void setZ(f32 z) { m = insertf(m, z, 2); }
 
-  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.f; }
-  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.f; }
-  HLML_INLINEF f32 z() const { uiasf res = extractf(m, 2); return res.f; }
+  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.asf32; }
+  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.asf32; }
+  HLML_INLINEF f32 z() const { uiasf res = extractf(m, 2); return res.asf32; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }

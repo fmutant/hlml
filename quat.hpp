@@ -66,7 +66,7 @@ class quat {
     }
     m *= rsqrt(factor) * 0.5f;
   }
-  quat(float3 u, float3 f) : quat(dot(u, f), cross(u, f)) {
+  quat(float3 u, float3 v) : quat(dot(u, v), cross(u, v)) {
     //http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
     float4 t(length(m));
     m.m = funcs::AaddssB(m.m, t.m);

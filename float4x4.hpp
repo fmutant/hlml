@@ -101,7 +101,7 @@ HLML_INLINEF float4x4 fillortho(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
     x,      0.0f,   0.0f,   0.0f,
     0.0f,  -y,      0.0f,   0.0f,
     0.0f,   0.0f,   z,      0.0f,
-    -w,     -h,     -d,     1.0f
+    -w,     -h,     d,     1.0f
   );
 }
 HLML_INLINEF float4x4 ortho(f32 l, f32 r, f32 b, f32 t, f32 zn, f32 zf) {
@@ -131,10 +131,10 @@ HLML_INLINEF float4x4 fillpersp(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
 
 HLML_INLINEF float4x4 fillperspinv(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
   return float4x4(
-    x,      0.0f,   0.0f,   0.0f,
-    0.0f,  -y,      0.0f,   0.0f,
-    0.0f,   0.0f,   0.0f,   z,
-    w,      h,     -1.0f,   d
+    1.0f / x,      0.0f,   0.0f,   0.0f,
+    0.0f,  1.0f / -y,      0.0f,   0.0f,
+    0.0f,   0.0f,   0.0f,   1.0f / d,
+    w,      h,     1.0f,   z / d
   );
 }
 
@@ -148,10 +148,12 @@ HLML_INLINEF float4x4 perspective(f32 fovDegs, f32 h2w, f32 zn, f32 zf) {
 }
 HLML_INLINEF float4x4 perspective(f32 fovDegs, f32 width, f32 height, f32 zn, f32 zf) { return perspective(fovDegs, height / width, zn, zf); }
 HLML_INLINEF float4x4 perspectiveinverse(f32 fovDegs, f32 h2w, f32 zn, f32 zf) {
-  const f32 invzn = 1.0f / zn, invzf = 1.0f / zf, invdzn = invzn * 0.5f, invdznzf = invdzn * invzf;
+  //const f32 invzn = 1.0f / zn, invzf = 1.0f / zf, invdzn = invzn * 0.5f, invdznzf = invdzn * invzf;
+  const f32 invD = 1.0f / (zn - zf);
   float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
-  f32 y = (c / s).x(), x = y * h2w, z = (zn - zf) * invzf, d = zn;
+  f32 invtan = (c / s).x();
+  f32 x = invtan * h2w, y = invtan, z = zf * invD, d = zf * zn * invD;
   return fillperspinv(x, y, z, 0.0f, 0.0f, d);
 }
 HLML_INLINEF float4x4 perspectiveZinv(f32 fovDegs, f32 h2w, f32 zn, f32 epsilon = 2.4e-7f) {

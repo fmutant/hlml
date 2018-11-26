@@ -28,10 +28,10 @@ struct float4 {
   HLML_INLINEF void setZ(f32 z) { m = insertf(m, z, 2); }
   HLML_INLINEF void setW(f32 w) { m = insertf(m, w, 3); }
 
-  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.f; }
-  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.f; }
-  HLML_INLINEF f32 z() const { uiasf res = extractf(m, 2); return res.f; }
-  HLML_INLINEF f32 w() const { uiasf res = extractf(m, 3); return res.f; }
+  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.asf32; }
+  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.asf32; }
+  HLML_INLINEF f32 z() const { uiasf res = extractf(m, 2); return res.asf32; }
+  HLML_INLINEF f32 w() const { uiasf res = extractf(m, 3); return res.asf32; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }
@@ -725,13 +725,41 @@ HLML_INLINEF float4 toflt(int4 a) { return float4(funcs::itof(a.m)); }
 HLML_INLINEF float4 sumv(float4 v) { v.m = funcs::AhaddB(v.m, v.zwxy().m); v.m = funcs::AhaddB(v.m, v.m); return v; }
 HLML_INLINEF f32 hmin(float4 v) { v = minv(v, shufflef4(v, 1, 0, 3, 2)); return minv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
 HLML_INLINEF f32 hmax(float4 v) { v = maxv(v, shufflef4(v, 1, 0, 3, 2)); return maxv(v, shufflef4(v, 3, 2, 1, 0)).x(); }
-HLML_INLINEF float2 normalize(float2 v) {
-  float4 r(dotv(v, v), float2(1.0f));
-  return v * rsqrt(r).xy();
+
+HLML_INLINEF float4 dotv(float4 a, float4 b) { a.m = funcs::AdotBxyzw(a.m, b.m); return a; }
+HLML_INLINEF float3 dotv(float3 a, float3 b) { a.m = funcs::AdotBxyz(a.m, b.m); return a; }
+HLML_INLINEF float2 dotv(float2 a, float2 b) { a.m = funcs::AdotBxy(a.m, b.m); return a; }
+
+template<typename T> HLML_INLINEF T rcp(T v) { v.m = funcs::rcp(v.m); return v; }
+template<typename T> HLML_INLINEF T sqrt(T v) { v.m = funcs::sqrt(v.m); return v; }
+template<typename T> HLML_INLINEF T rsqrt(T v) { v.m = funcs::rsqrt(v.m); return v; }
+template<typename T> HLML_INLINEF T mad(T a, T b, T c) { a.m = funcs::mulABaddC(a.m, b.m, c.m); return a; }
+template<typename T> HLML_INLINEF T fmod(T a, T b) { return a - toflt(toint(a / b)) * b; }
+template<typename T> HLML_INLINEF T lerp(T a, T b, f32 t) { return a + (b - a) * t; }
+template<typename T> HLML_INLINEF T clamp(T v, f32 a, f32 b) { return minv(maxv(v, T(a)), T(b)); }
+template<> HLML_INLINEF f32 clamp(f32 v, f32 a, f32 b) { return min(max(v, a), b); }
+template<typename T> HLML_INLINEF T saturate(T a) { return clamp(a, 0.0f, 1.0f); }
+template<typename T> HLML_INLINEF T floor(T a) { a.m = funcs::floor(a.m); return a; }
+template<typename T> HLML_INLINEF T ceil(T a) { a.m = funcs::ceil(a.m); return a; }
+template<typename T> HLML_INLINEF T frac(T a) { a.m = funcs::frac(a.m); return a; }
+template<typename T> HLML_INLINEF T trunc(T a) { a.m = funcs::trunc(a.m); return a; }
+template<typename T> HLML_INLINEF T round(T a) { a.m = funcs::round(a.m); return a; }
+template<typename T> HLML_INLINEF T step(T e, T v) { return max(T(vzeros), sign(v - e)); }
+template<typename T> HLML_INLINEF T smoothstep(T e0, T e1, T v) {
+  T zeros(vzeros), ones(vones), t = clamp((v - e0) / (e1 - e0), zeros, ones);
+  return (3.0f - 2.0f * t) * t * t;
 }
-HLML_INLINEF float3 normalize(float3 v) {
-  float4 r(dotv(v, v), 1.0f);
-  return v * rsqrt(r).xyz();
+template<typename T> HLML_INLINEF T reflect(T v, T n) { return v - n * dotv(v, n) * 2.0f; }
+template<typename T> HLML_INLINEF T refract(T v, T n, f32 idx) {
+  T vn = dotv(v, n), k = maxv(T(consts::vzeros), T(1.0f - idx * idx * (1.0f - vn * vn)));
+  return v * idx - (vn * idx + sqrt(k)) * n;
 }
-HLML_INLINEF float4 normalize(float4 v) { return v * rsqrt(dotv(v, v)); }
+template<typename T> HLML_INLINEF f32 dot(T a, T b) { return dotv(a, b).x(); }
+template<typename T> HLML_INLINEF f32 sum(T v) { return sumv(v).x(); }
+template<typename T> HLML_INLINEF f32 lengthsq(T v) { return dot(v, v); }
+template<typename T> HLML_INLINEF f32 length(T v) { return sqrt(dotv(v, v)).x(); }
+template<typename T> T normalize(T v) {
+  T d = rsqrt(dotv(v, v));
+  return v * T(d.m);
+}
 }

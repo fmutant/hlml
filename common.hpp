@@ -84,20 +84,10 @@ HLML_VCONST vconstu vnall = { snZeroN, snZeroN, snZeroN, snZeroN };
 }
 
 struct uiasf {
-  union { i32 i; f32 f; };
-  uiasf(i32 val) : i(val) {}
+  union { i32 asi32; u32 asu32; f32 asf32; };
+  uiasf(i32 val) : asi32(val) {}
+  uiasf(f32 val) : asf32(val) {}
 };
-HLML_INLINEF i32 f2i(f32 x) {
-  const i32 magic = consts::snMagicF2I;
-  x += *(f32*)&magic;
-  return *(i32*)&x - magic;
-}
-template<typename T> HLML_INLINEF T min(T a, T b) { return (a) < (b) ? (a) : (b); }
-template<typename T> HLML_INLINEF T max(T a, T b) { return (a) > (b) ? (a) : (b); }
-HLML_INLINEF u32 ftou(f32 nfloat, u32 bits) { u32 nIntervals = (1u << bits) - 1u; return min((u32)(nfloat * (f32)(nIntervals) + 0.5f), nIntervals); }
-HLML_INLINEF f32 utof(u32 quantized, u32 bits) { return (f32)quantized / (f32)((1u << bits) - 1u); }
-HLML_INLINEF u32 ftou(f32 value, f32 min, f32 max, u32 bits) { return ftou((value - min) / (max - min), bits); }
-HLML_INLINEF f32 utof(u32 quantized, f32 min, f32 max, u32 bits) { return min + (utof(quantized, bits) * (max - min)); }
 
 template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = funcs::notAandB(a.m, consts::vsignbits); return a; } // for bools
 template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = funcs::notAandB(a.m, consts::vnall); return a; }
@@ -132,27 +122,44 @@ template<typename T> HLML_INLINEF T   cmplt       (T a, T b) { return T(funcs::A
 template<typename T> HLML_INLINEF T   cmple       (T a, T b) { return T(funcs::AcmpleB(a.m, b.m)); }
 
 template<typename T> HLML_INLINEF T   abs         (T v) { v.m = funcs::notAandB(consts::vsignbits, v.m); return v; }
-template<typename T> HLML_INLINEF T   sign        (T v) { T zro0(vzeros); return (cmplt(v, zro0) & T(vonesneg)) | (cmpgt(v, zro0) & T(vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
+template<>           HLML_INLINEF f32 abs         (f32 v) {
+  uiasf a = { v };
+  a.asu32 &= ~consts::snSignBit;
+  return a.asf32;
+}
+template<typename T> HLML_INLINEF T   sign        (T v) { return (cmplt(v, consts::vzeros) & -T(consts::vones)) | (cmpgt(v, consts::vzeros) & T(consts::vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
 template<typename T> HLML_INLINEF T   minv        (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   maxv        (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   clamp       (T t, T a, T b) { return min(max(t, a), b); }
+template<typename T> HLML_INLINEF T   min         (T a, T b) { return (a) < (b) ? (a) : (b); }
+template<typename T> HLML_INLINEF T   max         (T a, T b) { return (a) > (b) ? (a) : (b); }
 
-template<typename T> HLML_INLINEF u32 mask(T v) { return T::flagsall & funcs::movemask(v.m); }
-template<typename T> HLML_INLINEF b8  any (T v) { return mask(v); }
-template<typename T> HLML_INLINEF b8  none(T v) { return !any(v); }
-template<typename T> HLML_INLINEF b8  all (T v) { return T::flagsall == mask(v); }
+template<typename T> HLML_INLINEF u32 mask        (T v) { return T::flagsall & funcs::movemask(v.m); }
+template<typename T> HLML_INLINEF b8  any         (T v) { return mask(v); }
+template<typename T> HLML_INLINEF b8  none        (T v) { return !any(v); }
+template<typename T> HLML_INLINEF b8  all         (T v) { return T::flagsall == mask(v); }
 
-template<typename T> HLML_INLINEF T   operator+  (T a, f32 b) { return a + T(b); }
-template<typename T> HLML_INLINEF T&  operator+= (T& a, f32 b) { return a += T(b); }
-template<typename T> HLML_INLINEF T   operator-  (T a, f32 b) { return a - T(b); }
-template<typename T> HLML_INLINEF T&  operator-= (T& a, f32 b) { return a -= T(b); }
-template<typename T> HLML_INLINEF T   operator*  (T a, f32 b) { return a * T(b); }
-template<typename T> HLML_INLINEF T&  operator*= (T& a, f32 b) { return a *= T(b); }
-template<typename T> HLML_INLINEF T   operator/  (T a, f32 b) { return a / T(b); }
-template<typename T> HLML_INLINEF T&  operator/= (T& a, f32 b) { return a /= T(b); }
+template<typename T> HLML_INLINEF T   operator+   (T a, f32 b) { return a + T(b); }
+template<typename T> HLML_INLINEF T&  operator+=  (T& a, f32 b) { return a += T(b); }
+template<typename T> HLML_INLINEF T   operator-   (T a, f32 b) { return a - T(b); }
+template<typename T> HLML_INLINEF T&  operator-=  (T& a, f32 b) { return a -= T(b); }
+template<typename T> HLML_INLINEF T   operator*   (T a, f32 b) { return a * T(b); }
+template<typename T> HLML_INLINEF T&  operator*=  (T& a, f32 b) { return a *= T(b); }
+template<typename T> HLML_INLINEF T   operator/   (T a, f32 b) { return a / T(b); }
+template<typename T> HLML_INLINEF T&  operator/=  (T& a, f32 b) { return a /= T(b); }
 
-template<typename T> HLML_INLINEF T   operator+  (f32 a, T b) { return T(a) + b; }
-template<typename T> HLML_INLINEF T   operator-  (f32 a, T b) { return T(a) - b; }
-template<typename T> HLML_INLINEF T   operator*  (f32 a, T b) { return T(a) * b; }
-template<typename T> HLML_INLINEF T   operator/  (f32 a, T b) { return T(a) / b; }
+template<typename T> HLML_INLINEF T   operator+   (f32 a, T b) { return T(a) + b; }
+template<typename T> HLML_INLINEF T   operator-   (f32 a, T b) { return T(a) - b; }
+template<typename T> HLML_INLINEF T   operator*   (f32 a, T b) { return T(a) * b; }
+template<typename T> HLML_INLINEF T   operator/   (f32 a, T b) { return T(a) / b; }
+
+HLML_INLINEF i32 f2i(f32 x) {
+  const i32 magic = consts::snMagicF2I;
+  x += *(f32*)&magic;
+  return *(i32*)&x - magic;
+}
+HLML_INLINEF u32 ftou(f32 nfloat, u32 bits) { u32 nIntervals = (1u << bits) - 1u; return min((u32)(nfloat * (f32)(nIntervals) + 0.5f), nIntervals); }
+HLML_INLINEF f32 utof(u32 quantized, u32 bits) { return (f32)quantized / (f32)((1u << bits) - 1u); }
+HLML_INLINEF u32 ftou(f32 value, f32 min, f32 max, u32 bits) { return ftou((value - min) / (max - min), bits); }
+HLML_INLINEF f32 utof(u32 quantized, f32 min, f32 max, u32 bits) { return min + (utof(quantized, bits) * (max - min)); }
+
 }
