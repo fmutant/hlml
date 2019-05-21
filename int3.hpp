@@ -9,7 +9,7 @@ struct int3 {
 
   HLML_INLINEF int3() {}
   HLML_INLINEF int3(i32 x, i32 y, i32 z) : m(funcs::setXYZW(x, y, z, consts::snZero)) {}
-  HLML_INLINEF int3(int2 v, i32 z, i32) : int3(v.x(), v.y(), z) {}
+  HLML_INLINEF int3(int2 v, i32 z) : int3(v.x(), v.y(), z) {}
   HLML_INLINEF explicit int3(i32 x) : int3(x, x, x) {}
   HLML_INLINEF explicit int3(const i32 *p) : int3(p[0], p[1], p[2]) {}
   HLML_INLINEF explicit int3(VI128 v) : m(v) {}

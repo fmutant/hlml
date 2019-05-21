@@ -140,7 +140,7 @@ HLML_INLINEF float4x4 fillperspinv(f32 x, f32 y, f32 z, f32 w, f32 h, f32 d) {
 
 HLML_INLINEF float4x4 perspective(f32 fovDegs, f32 h2w, f32 zn, f32 zf) {
   const f32 invD = 1.0f / (zn - zf);
-  float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
+  float4 rads(hlml::DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
   f32 invtan = (c / s).x();
   f32 x = invtan * h2w, y = invtan, z = zf * invD, d = zf * zn * invD;
@@ -150,14 +150,14 @@ HLML_INLINEF float4x4 perspective(f32 fovDegs, f32 width, f32 height, f32 zn, f3
 HLML_INLINEF float4x4 perspectiveinverse(f32 fovDegs, f32 h2w, f32 zn, f32 zf) {
   //const f32 invzn = 1.0f / zn, invzf = 1.0f / zf, invdzn = invzn * 0.5f, invdznzf = invdzn * invzf;
   const f32 invD = 1.0f / (zn - zf);
-  float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
+  float4 rads(hlml::DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
   f32 invtan = (c / s).x();
   f32 x = invtan * h2w, y = invtan, z = zf * invD, d = zf * zn * invD;
   return fillperspinv(x, y, z, 0.0f, 0.0f, d);
 }
 HLML_INLINEF float4x4 perspectiveZinv(f32 fovDegs, f32 h2w, f32 zn, f32 epsilon = 2.4e-7f) {
-  float4 rads(HLML_DEG2RAD(fovDegs) * 0.5f), s, c;
+  float4 rads(hlml::DEG2RAD(fovDegs) * 0.5f), s, c;
   sincos(rads, s, c);
   f32 diff = (c / s).x() * zn, dzn = 2.0f * zn;
   f32 l = -diff * h2w, r = diff * h2w, b = -h2w, t = h2w;

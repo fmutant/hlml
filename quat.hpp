@@ -19,12 +19,12 @@ class quat {
   quat(float3 axis, f32 degs) {
     //http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
     float4 s, c, xxyz(axis.m);
-    sincos(float4(HLML_DEG2RAD(degs) * 0.5f), s, c);
+    sincos(float4(hlml::DEG2RAD(degs) * 0.5f), s, c);
     m.m = funcs::bxayazaw((s * xxyz.xxyz()).m, c.m);
   }
   //pitch = X axis, yaw = Y axis, roll = Z axis
   quat(f32 pitchdegs, f32 yawdegs, f32 rolldegs) {
-    float4 angles(HLML_DEG2RAD(pitchdegs), HLML_DEG2RAD(pitchdegs), HLML_DEG2RAD(yawdegs), HLML_DEG2RAD(rolldegs)), sines, coses;
+    float4 angles(hlml::DEG2RAD(pitchdegs), hlml::DEG2RAD(pitchdegs), hlml::DEG2RAD(yawdegs), hlml::DEG2RAD(rolldegs)), sines, coses;
     sincos(angles * 0.5f, sines, coses);
     float4 cxxyz(funcs::bxayazaw(sines.m, coses.m)), sxxyz(funcs::bxayazaw(coses.m, sines.m));;
     float4 left = cxxyz * coses.zzyz() * coses.wwwy(), right = sxxyz * sines.zzyz() * sines.wwwy();
