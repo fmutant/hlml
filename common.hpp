@@ -4,9 +4,6 @@
 #include <intrin.h>
 
 #define HLML_VCONST       extern const __declspec(selectany)
-#define HLML_PI           3.14159265358979323846f
-#define HLML_DEG2RAD(_a)  ((_a) * HLML_PI / 180.0f)
-#define HLML_RAD2DEG(_a)  ((_a) * 180.0f / HLML_PI)
 
 namespace hlml {
 typedef float f32;
@@ -33,6 +30,11 @@ typedef __m128i VI128;
 
 namespace hlml {
 namespace consts {
+constexpr f32 PI = 3.14159265358979323846f;
+constexpr f32 PI_INV = 1.0f / 3.14159265358979323846f;
+constexpr f32 DEGS_IN_RAD = 180.0f / PI;
+constexpr f32 RADS_IN_DEG = PI / 180.0f;
+
 struct vconstu {
   vconstu(u32 u0, u32 u1, u32 u2, u32 u3) {
     u[0] = u0;
@@ -83,6 +85,9 @@ HLML_VCONST vconstu vsignnpnp = { snZero, snSignBit, snZero, snSignBit };
 HLML_VCONST vconstu vnall = { snZeroN, snZeroN, snZeroN, snZeroN };
 }
 
+HLML_INLINEF f32 DEG2RAD(f32 degs) { return degs * consts::RADS_IN_DEG; }
+HLML_INLINEF f32 RAD2DEG(f32 rads) { return rads * consts::DEGS_IN_RAD; }
+
 struct uiasf {
   union { i32 asi32; u32 asu32; f32 asf32; };
   uiasf(i32 val) : asi32(val) {}
@@ -127,7 +132,7 @@ template<>           HLML_INLINEF f32 abs         (f32 v) {
   a.asu32 &= ~consts::snSignBit;
   return a.asf32;
 }
-template<typename T> HLML_INLINEF T   sign        (T v) { return (cmplt(v, consts::vzeros) & -T(consts::vones)) | (cmpgt(v, consts::vzeros) & T(consts::vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
+template<typename T> HLML_INLINEF T   sign        (T v) { return (cmplt(v, T(consts::vzeros)) & -T(consts::vones)) | (cmpgt(v, T(consts::vzeros)) & T(consts::vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
 template<typename T> HLML_INLINEF T   minv        (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   maxv        (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
 template<typename T> HLML_INLINEF T   min         (T a, T b) { return (a) < (b) ? (a) : (b); }
