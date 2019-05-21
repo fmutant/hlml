@@ -12,7 +12,7 @@ struct float2 {
   HLML_INLINEF float2(f32 x, f32 y) : m(funcs::setXYZW(x, y, consts::sfZero, consts::sfZero)) {}
   HLML_INLINEF explicit float2(f32 x) : float2(x, x) {}
   HLML_INLINEF explicit float2(const f32 *p) : float2(p[0], p[1]) {}
-  HLML_INLINEF explicit float2(VF128 v) : m(funcs::axay0000(v)) {}
+  HLML_INLINEF explicit float2(VF128 v) : m(v) {}
   HLML_INLINEF float2 float2i(i32 x, i32 y) { return float2((f32)x, (f32)y); }
 
   HLML_INLINEF void store(f32 *p) const { p[0] = x(); p[1] = y(); }
@@ -20,8 +20,8 @@ struct float2 {
   HLML_INLINEF void setX(f32 x) { m = insertf(m, x, 0); }
   HLML_INLINEF void setY(f32 y) { m = insertf(m, y, 1); }
 
-  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.asf32; }
-  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.asf32; }
+  HLML_INLINEF f32 x() const { uiasf res(extractf(m, 0)); return res.asf32; }
+  HLML_INLINEF f32 y() const { uiasf res(extractf(m, 1)); return res.asf32; }
 
   HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
   HLML_INLINEF float2 xy() const { return *this; }
@@ -37,12 +37,12 @@ struct float2 {
   HLML_INLINEF float2 gg() const { return yy(); }
 };
 
-HLML_INLINEF bool2                    operator== (float2 a, float2 b) { return bool2(funcs::ftoi(cmpeq(a, b).m)); }
-HLML_INLINEF bool2                    operator!= (float2 a, float2 b) { return bool2(funcs::ftoi(cmpneq(a, b).m)); }
-HLML_INLINEF bool2                    operator<  (float2 a, float2 b) { return bool2(funcs::ftoi(cmplt(a, b).m)); }
-HLML_INLINEF bool2                    operator>  (float2 a, float2 b) { return bool2(funcs::ftoi(cmpgt(a, b).m)); }
-HLML_INLINEF bool2                    operator<= (float2 a, float2 b) { return bool2(funcs::ftoi(cmple(a, b).m)); }
-HLML_INLINEF bool2                    operator>= (float2 a, float2 b) { return bool2(funcs::ftoi(cmpge(a, b).m)); }
+HLML_INLINEF bool2	operator== (float2 a, float2 b) { return bool2(funcs::ftoi(cmpeq(a, b).m)); }
+HLML_INLINEF bool2	operator!= (float2 a, float2 b) { return bool2(funcs::ftoi(cmpneq(a, b).m)); }
+HLML_INLINEF bool2	operator<  (float2 a, float2 b) { return bool2(funcs::ftoi(cmplt(a, b).m)); }
+HLML_INLINEF bool2	operator>  (float2 a, float2 b) { return bool2(funcs::ftoi(cmpgt(a, b).m)); }
+HLML_INLINEF bool2	operator<= (float2 a, float2 b) { return bool2(funcs::ftoi(cmple(a, b).m)); }
+HLML_INLINEF bool2	operator>= (float2 a, float2 b) { return bool2(funcs::ftoi(cmpge(a, b).m)); }
 
 HLML_INLINEF int2 asint(float2 a) { return int2(funcs::fasi(a.m)); }
 HLML_INLINEF int2 toint(float2 a) { return int2(funcs::ftoi(a.m)); }

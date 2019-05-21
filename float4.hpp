@@ -28,95 +28,95 @@ struct float4 {
   HLML_INLINEF void setZ(f32 z) { m = insertf(m, z, 2); }
   HLML_INLINEF void setW(f32 w) { m = insertf(m, w, 3); }
 
-  HLML_INLINEF f32 x() const { uiasf res = extractf(m, 0); return res.asf32; }
-  HLML_INLINEF f32 y() const { uiasf res = extractf(m, 1); return res.asf32; }
-  HLML_INLINEF f32 z() const { uiasf res = extractf(m, 2); return res.asf32; }
-  HLML_INLINEF f32 w() const { uiasf res = extractf(m, 3); return res.asf32; }
+  HLML_INLINEF f32 x() const { uiasf res(extractf(m, 0)); return res.asf32; }
+  HLML_INLINEF f32 y() const { uiasf res(extractf(m, 1)); return res.asf32; }
+  HLML_INLINEF f32 z() const { uiasf res(extractf(m, 2)); return res.asf32; }
+  HLML_INLINEF f32 w() const { uiasf res(extractf(m, 3)); return res.asf32; }
 
-  HLML_INLINEF float2 xx() const { return shufflef2(*this, 0, 0); }
-  HLML_INLINEF float2 xy() const { return shufflef2(*this, 0, 1); }
-  HLML_INLINEF float2 xz() const { return shufflef2(*this, 0, 2); }
-  HLML_INLINEF float2 xw() const { return shufflef2(*this, 0, 3); }
-  HLML_INLINEF float2 yy() const { return shufflef2(*this, 1, 1); }
-  HLML_INLINEF float2 yx() const { return shufflef2(*this, 1, 0); }
-  HLML_INLINEF float2 yz() const { return shufflef2(*this, 1, 2); }
-  HLML_INLINEF float2 yw() const { return shufflef2(*this, 1, 3); }
-  HLML_INLINEF float2 zz() const { return shufflef2(*this, 2, 2); }
-  HLML_INLINEF float2 zx() const { return shufflef2(*this, 2, 0); }
-  HLML_INLINEF float2 zy() const { return shufflef2(*this, 2, 1); }
-  HLML_INLINEF float2 zw() const { return shufflef2(*this, 2, 3); }
-  HLML_INLINEF float2 ww() const { return shufflef2(*this, 3, 3); }
-  HLML_INLINEF float2 wx() const { return shufflef2(*this, 3, 0); }
-  HLML_INLINEF float2 wy() const { return shufflef2(*this, 3, 1); }
-  HLML_INLINEF float2 wz() const { return shufflef2(*this, 3, 2); }
+  HLML_INLINEF float2 xx() const { return shufflef4tof2(*this, 0, 0); }
+  HLML_INLINEF float2 xy() const { return shufflef4tof2(*this, 0, 1); }
+  HLML_INLINEF float2 xz() const { return shufflef4tof2(*this, 0, 2); }
+  HLML_INLINEF float2 xw() const { return shufflef4tof2(*this, 0, 3); }
+  HLML_INLINEF float2 yy() const { return shufflef4tof2(*this, 1, 1); }
+  HLML_INLINEF float2 yx() const { return shufflef4tof2(*this, 1, 0); }
+  HLML_INLINEF float2 yz() const { return shufflef4tof2(*this, 1, 2); }
+  HLML_INLINEF float2 yw() const { return shufflef4tof2(*this, 1, 3); }
+  HLML_INLINEF float2 zz() const { return shufflef4tof2(*this, 2, 2); }
+  HLML_INLINEF float2 zx() const { return shufflef4tof2(*this, 2, 0); }
+  HLML_INLINEF float2 zy() const { return shufflef4tof2(*this, 2, 1); }
+  HLML_INLINEF float2 zw() const { return shufflef4tof2(*this, 2, 3); }
+  HLML_INLINEF float2 ww() const { return shufflef4tof2(*this, 3, 3); }
+  HLML_INLINEF float2 wx() const { return shufflef4tof2(*this, 3, 0); }
+  HLML_INLINEF float2 wy() const { return shufflef4tof2(*this, 3, 1); }
+  HLML_INLINEF float2 wz() const { return shufflef4tof2(*this, 3, 2); }
 
-  HLML_INLINEF float3 xxx() const { return shufflef3(*this, 0, 0, 0); }
-  HLML_INLINEF float3 xxy() const { return shufflef3(*this, 0, 0, 1); }
-  HLML_INLINEF float3 xxz() const { return shufflef3(*this, 0, 0, 2); }
-  HLML_INLINEF float3 xxw() const { return shufflef3(*this, 0, 0, 3); }
-  HLML_INLINEF float3 xyx() const { return shufflef3(*this, 0, 1, 0); }
-  HLML_INLINEF float3 xyy() const { return shufflef3(*this, 0, 1, 1); }
-  HLML_INLINEF float3 xyz() const { return shufflef3(*this, 0, 1, 2); }
-  HLML_INLINEF float3 xyw() const { return shufflef3(*this, 0, 1, 3); }
-  HLML_INLINEF float3 xzx() const { return shufflef3(*this, 0, 2, 0); }
-  HLML_INLINEF float3 xzy() const { return shufflef3(*this, 0, 2, 1); }
-  HLML_INLINEF float3 xzz() const { return shufflef3(*this, 0, 2, 2); }
-  HLML_INLINEF float3 xzw() const { return shufflef3(*this, 0, 2, 3); }
-  HLML_INLINEF float3 xwx() const { return shufflef3(*this, 0, 3, 0); }
-  HLML_INLINEF float3 xwy() const { return shufflef3(*this, 0, 3, 1); }
-  HLML_INLINEF float3 xwz() const { return shufflef3(*this, 0, 3, 2); }
-  HLML_INLINEF float3 xww() const { return shufflef3(*this, 0, 3, 3); }
+  HLML_INLINEF float3 xxx() const { return shufflef4tof3(*this, 0, 0, 0); }
+  HLML_INLINEF float3 xxy() const { return shufflef4tof3(*this, 0, 0, 1); }
+  HLML_INLINEF float3 xxz() const { return shufflef4tof3(*this, 0, 0, 2); }
+  HLML_INLINEF float3 xxw() const { return shufflef4tof3(*this, 0, 0, 3); }
+  HLML_INLINEF float3 xyx() const { return shufflef4tof3(*this, 0, 1, 0); }
+  HLML_INLINEF float3 xyy() const { return shufflef4tof3(*this, 0, 1, 1); }
+  HLML_INLINEF float3 xyz() const { return shufflef4tof3(*this, 0, 1, 2); }
+  HLML_INLINEF float3 xyw() const { return shufflef4tof3(*this, 0, 1, 3); }
+  HLML_INLINEF float3 xzx() const { return shufflef4tof3(*this, 0, 2, 0); }
+  HLML_INLINEF float3 xzy() const { return shufflef4tof3(*this, 0, 2, 1); }
+  HLML_INLINEF float3 xzz() const { return shufflef4tof3(*this, 0, 2, 2); }
+  HLML_INLINEF float3 xzw() const { return shufflef4tof3(*this, 0, 2, 3); }
+  HLML_INLINEF float3 xwx() const { return shufflef4tof3(*this, 0, 3, 0); }
+  HLML_INLINEF float3 xwy() const { return shufflef4tof3(*this, 0, 3, 1); }
+  HLML_INLINEF float3 xwz() const { return shufflef4tof3(*this, 0, 3, 2); }
+  HLML_INLINEF float3 xww() const { return shufflef4tof3(*this, 0, 3, 3); }
 
-  HLML_INLINEF float3 yxx() const { return shufflef3(*this, 1, 0, 0); }
-  HLML_INLINEF float3 yxy() const { return shufflef3(*this, 1, 0, 1); }
-  HLML_INLINEF float3 yxz() const { return shufflef3(*this, 1, 0, 2); }
-  HLML_INLINEF float3 yxw() const { return shufflef3(*this, 1, 0, 3); }
-  HLML_INLINEF float3 yyx() const { return shufflef3(*this, 1, 1, 0); }
-  HLML_INLINEF float3 yyy() const { return shufflef3(*this, 1, 1, 1); }
-  HLML_INLINEF float3 yyz() const { return shufflef3(*this, 1, 1, 2); }
-  HLML_INLINEF float3 yyw() const { return shufflef3(*this, 1, 1, 3); }
-  HLML_INLINEF float3 yzx() const { return shufflef3(*this, 1, 2, 0); }
-  HLML_INLINEF float3 yzy() const { return shufflef3(*this, 1, 2, 1); }
-  HLML_INLINEF float3 yzz() const { return shufflef3(*this, 1, 2, 2); }
-  HLML_INLINEF float3 yzw() const { return shufflef3(*this, 1, 2, 3); }
-  HLML_INLINEF float3 ywx() const { return shufflef3(*this, 1, 3, 0); }
-  HLML_INLINEF float3 ywy() const { return shufflef3(*this, 1, 3, 1); }
-  HLML_INLINEF float3 ywz() const { return shufflef3(*this, 1, 3, 2); }
-  HLML_INLINEF float3 yww() const { return shufflef3(*this, 1, 3, 3); }
+  HLML_INLINEF float3 yxx() const { return shufflef4tof3(*this, 1, 0, 0); }
+  HLML_INLINEF float3 yxy() const { return shufflef4tof3(*this, 1, 0, 1); }
+  HLML_INLINEF float3 yxz() const { return shufflef4tof3(*this, 1, 0, 2); }
+  HLML_INLINEF float3 yxw() const { return shufflef4tof3(*this, 1, 0, 3); }
+  HLML_INLINEF float3 yyx() const { return shufflef4tof3(*this, 1, 1, 0); }
+  HLML_INLINEF float3 yyy() const { return shufflef4tof3(*this, 1, 1, 1); }
+  HLML_INLINEF float3 yyz() const { return shufflef4tof3(*this, 1, 1, 2); }
+  HLML_INLINEF float3 yyw() const { return shufflef4tof3(*this, 1, 1, 3); }
+  HLML_INLINEF float3 yzx() const { return shufflef4tof3(*this, 1, 2, 0); }
+  HLML_INLINEF float3 yzy() const { return shufflef4tof3(*this, 1, 2, 1); }
+  HLML_INLINEF float3 yzz() const { return shufflef4tof3(*this, 1, 2, 2); }
+  HLML_INLINEF float3 yzw() const { return shufflef4tof3(*this, 1, 2, 3); }
+  HLML_INLINEF float3 ywx() const { return shufflef4tof3(*this, 1, 3, 0); }
+  HLML_INLINEF float3 ywy() const { return shufflef4tof3(*this, 1, 3, 1); }
+  HLML_INLINEF float3 ywz() const { return shufflef4tof3(*this, 1, 3, 2); }
+  HLML_INLINEF float3 yww() const { return shufflef4tof3(*this, 1, 3, 3); }
 
-  HLML_INLINEF float3 zxx() const { return shufflef3(*this, 2, 0, 0); }
-  HLML_INLINEF float3 zxy() const { return shufflef3(*this, 2, 0, 1); }
-  HLML_INLINEF float3 zxz() const { return shufflef3(*this, 2, 0, 2); }
-  HLML_INLINEF float3 zxw() const { return shufflef3(*this, 2, 0, 3); }
-  HLML_INLINEF float3 zyx() const { return shufflef3(*this, 2, 1, 0); }
-  HLML_INLINEF float3 zyy() const { return shufflef3(*this, 2, 1, 1); }
-  HLML_INLINEF float3 zyz() const { return shufflef3(*this, 2, 1, 2); }
-  HLML_INLINEF float3 zyw() const { return shufflef3(*this, 2, 1, 3); }
-  HLML_INLINEF float3 zzx() const { return shufflef3(*this, 2, 2, 0); }
-  HLML_INLINEF float3 zzy() const { return shufflef3(*this, 2, 2, 1); }
-  HLML_INLINEF float3 zzz() const { return shufflef3(*this, 2, 2, 2); }
-  HLML_INLINEF float3 zzw() const { return shufflef3(*this, 2, 2, 3); }
-  HLML_INLINEF float3 zwx() const { return shufflef3(*this, 2, 3, 0); }
-  HLML_INLINEF float3 zwy() const { return shufflef3(*this, 2, 3, 1); }
-  HLML_INLINEF float3 zwz() const { return shufflef3(*this, 2, 3, 2); }
-  HLML_INLINEF float3 zww() const { return shufflef3(*this, 2, 3, 3); }
+  HLML_INLINEF float3 zxx() const { return shufflef4tof3(*this, 2, 0, 0); }
+  HLML_INLINEF float3 zxy() const { return shufflef4tof3(*this, 2, 0, 1); }
+  HLML_INLINEF float3 zxz() const { return shufflef4tof3(*this, 2, 0, 2); }
+  HLML_INLINEF float3 zxw() const { return shufflef4tof3(*this, 2, 0, 3); }
+  HLML_INLINEF float3 zyx() const { return shufflef4tof3(*this, 2, 1, 0); }
+  HLML_INLINEF float3 zyy() const { return shufflef4tof3(*this, 2, 1, 1); }
+  HLML_INLINEF float3 zyz() const { return shufflef4tof3(*this, 2, 1, 2); }
+  HLML_INLINEF float3 zyw() const { return shufflef4tof3(*this, 2, 1, 3); }
+  HLML_INLINEF float3 zzx() const { return shufflef4tof3(*this, 2, 2, 0); }
+  HLML_INLINEF float3 zzy() const { return shufflef4tof3(*this, 2, 2, 1); }
+  HLML_INLINEF float3 zzz() const { return shufflef4tof3(*this, 2, 2, 2); }
+  HLML_INLINEF float3 zzw() const { return shufflef4tof3(*this, 2, 2, 3); }
+  HLML_INLINEF float3 zwx() const { return shufflef4tof3(*this, 2, 3, 0); }
+  HLML_INLINEF float3 zwy() const { return shufflef4tof3(*this, 2, 3, 1); }
+  HLML_INLINEF float3 zwz() const { return shufflef4tof3(*this, 2, 3, 2); }
+  HLML_INLINEF float3 zww() const { return shufflef4tof3(*this, 2, 3, 3); }
 
-  HLML_INLINEF float3 wxx() const { return shufflef3(*this, 3, 0, 0); }
-  HLML_INLINEF float3 wxy() const { return shufflef3(*this, 3, 0, 1); }
-  HLML_INLINEF float3 wxz() const { return shufflef3(*this, 3, 0, 2); }
-  HLML_INLINEF float3 wxw() const { return shufflef3(*this, 3, 0, 3); }
-  HLML_INLINEF float3 wyx() const { return shufflef3(*this, 3, 1, 0); }
-  HLML_INLINEF float3 wyy() const { return shufflef3(*this, 3, 1, 1); }
-  HLML_INLINEF float3 wyz() const { return shufflef3(*this, 3, 1, 2); }
-  HLML_INLINEF float3 wyw() const { return shufflef3(*this, 3, 1, 3); }
-  HLML_INLINEF float3 wzx() const { return shufflef3(*this, 3, 2, 0); }
-  HLML_INLINEF float3 wzy() const { return shufflef3(*this, 3, 2, 1); }
-  HLML_INLINEF float3 wzz() const { return shufflef3(*this, 3, 2, 2); }
-  HLML_INLINEF float3 wzw() const { return shufflef3(*this, 3, 2, 3); }
-  HLML_INLINEF float3 wwx() const { return shufflef3(*this, 3, 3, 0); }
-  HLML_INLINEF float3 wwy() const { return shufflef3(*this, 3, 3, 1); }
-  HLML_INLINEF float3 wwz() const { return shufflef3(*this, 3, 3, 2); }
-  HLML_INLINEF float3 www() const { return shufflef3(*this, 3, 3, 3); }
+  HLML_INLINEF float3 wxx() const { return shufflef4tof3(*this, 3, 0, 0); }
+  HLML_INLINEF float3 wxy() const { return shufflef4tof3(*this, 3, 0, 1); }
+  HLML_INLINEF float3 wxz() const { return shufflef4tof3(*this, 3, 0, 2); }
+  HLML_INLINEF float3 wxw() const { return shufflef4tof3(*this, 3, 0, 3); }
+  HLML_INLINEF float3 wyx() const { return shufflef4tof3(*this, 3, 1, 0); }
+  HLML_INLINEF float3 wyy() const { return shufflef4tof3(*this, 3, 1, 1); }
+  HLML_INLINEF float3 wyz() const { return shufflef4tof3(*this, 3, 1, 2); }
+  HLML_INLINEF float3 wyw() const { return shufflef4tof3(*this, 3, 1, 3); }
+  HLML_INLINEF float3 wzx() const { return shufflef4tof3(*this, 3, 2, 0); }
+  HLML_INLINEF float3 wzy() const { return shufflef4tof3(*this, 3, 2, 1); }
+  HLML_INLINEF float3 wzz() const { return shufflef4tof3(*this, 3, 2, 2); }
+  HLML_INLINEF float3 wzw() const { return shufflef4tof3(*this, 3, 2, 3); }
+  HLML_INLINEF float3 wwx() const { return shufflef4tof3(*this, 3, 3, 0); }
+  HLML_INLINEF float3 wwy() const { return shufflef4tof3(*this, 3, 3, 1); }
+  HLML_INLINEF float3 wwz() const { return shufflef4tof3(*this, 3, 3, 2); }
+  HLML_INLINEF float3 www() const { return shufflef4tof3(*this, 3, 3, 3); }
 
   HLML_INLINEF float4 xxxx() const { return shufflef4(*this, 0, 0, 0, 0); }
   HLML_INLINEF float4 xxxy() const { return shufflef4(*this, 0, 0, 0, 1); }
@@ -735,6 +735,7 @@ template<typename T> HLML_INLINEF T sqrt(T v) { v.m = funcs::sqrt(v.m); return v
 template<typename T> HLML_INLINEF T rsqrt(T v) { v.m = funcs::rsqrt(v.m); return v; }
 template<typename T> HLML_INLINEF T mad(T a, T b, T c) { a.m = funcs::mulABaddC(a.m, b.m, c.m); return a; }
 template<typename T> HLML_INLINEF T fmod(T a, T b) { return a - toflt(toint(a / b)) * b; }
+template<typename T> HLML_INLINEF T lerp(T a, T b, T t) { return a + (b - a) * t; }
 template<typename T> HLML_INLINEF T lerp(T a, T b, f32 t) { return a + (b - a) * t; }
 template<typename T> HLML_INLINEF T clamp(T v, f32 a, f32 b) { return minv(maxv(v, T(a)), T(b)); }
 template<> HLML_INLINEF f32 clamp(f32 v, f32 a, f32 b) { return min(max(v, a), b); }
@@ -744,7 +745,7 @@ template<typename T> HLML_INLINEF T ceil(T a) { a.m = funcs::ceil(a.m); return a
 template<typename T> HLML_INLINEF T frac(T a) { a.m = funcs::frac(a.m); return a; }
 template<typename T> HLML_INLINEF T trunc(T a) { a.m = funcs::trunc(a.m); return a; }
 template<typename T> HLML_INLINEF T round(T a) { a.m = funcs::round(a.m); return a; }
-template<typename T> HLML_INLINEF T step(T e, T v) { return max(T(vzeros), sign(v - e)); }
+template<typename T> HLML_INLINEF T step(T e, T v) { return maxv(T(consts::vzeros), sign(v - e)); }
 template<typename T> HLML_INLINEF T smoothstep(T e0, T e1, T v) {
   T zeros(vzeros), ones(vones), t = clamp((v - e0) / (e1 - e0), zeros, ones);
   return (3.0f - 2.0f * t) * t * t;
@@ -758,8 +759,15 @@ template<typename T> HLML_INLINEF f32 dot(T a, T b) { return dotv(a, b).x(); }
 template<typename T> HLML_INLINEF f32 sum(T v) { return sumv(v).x(); }
 template<typename T> HLML_INLINEF f32 lengthsq(T v) { return dot(v, v); }
 template<typename T> HLML_INLINEF f32 length(T v) { return sqrt(dotv(v, v)).x(); }
-template<typename T> T normalize(T v) {
-  T d = rsqrt(dotv(v, v));
-  return v * T(d.m);
+HLML_INLINEF float2 normalize(float2 v) {
+  float2 t = dotv(v, v);
+  float2 d = rsqrt(float4(t.m)).xy();
+  return v * d;
 }
+HLML_INLINEF float3 normalize(float3 v) {
+  float3 t = dotv(v, v);
+  float3 d = rsqrt(float4(t.m)).xyz();
+  return v * d;
+}
+HLML_INLINEF float4 normalize(float4 v) { return v * rsqrt(dotv(v, v)); }
 }

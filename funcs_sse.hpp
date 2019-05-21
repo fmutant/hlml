@@ -8,9 +8,6 @@ namespace funcs {
 #define shuffleb3(V, X, Y, Z) bool3(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, Z, Y, X)))
 #define shufflei3(V, X, Y, Z) int3(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(3, Z, Y, X)))
 #define shufflef3(V, X, Y, Z) float3(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, Z, Y, X)))
-//#define shufflef4tof3(V, X, Y, Z) float3(_mm_blend_ps(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, Z, Y, X)), _mm_setzero_ps(), (1 << 3)))
-//#define shufflef4tof2(V, X, Y) float2(_mm_blend_ps(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)), _mm_setzero_ps(), (1 << 3) | (1 << 2)))
-//#define shufflef3tof2(V, X, Y) float2(_mm_blend_ps(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X)), _mm_setzero_ps(), (1 << 3) | (1 << 2)))
 #define shuffleb4(V, X, Y, Z, W) bool4(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(W, Z, Y, X)))
 #define shufflei4(V, X, Y, Z, W) int4(_mm_shuffle_epi32((V).m, _MM_SHUFFLE(W, Z, Y, X)))
 #define shufflef4(V, X, Y, Z, W) float4(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(W, Z, Y, X)))
@@ -22,6 +19,10 @@ namespace funcs {
 
 HLML_INLINEF VF128 axayaz00(VF128 a) { return _mm_blend_ps(a, _mm_setzero_ps(), (1 << 3)); }
 HLML_INLINEF VF128 axay0000(VF128 a) { return _mm_blend_ps(a, _mm_setzero_ps(), (1 << 3) | (1 << 2)); }
+#define shufflef4tof3(V, X, Y, Z) float3(funcs::axayaz00(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, Z, Y, X))))
+#define shufflef4tof2(V, X, Y) float2(funcs::axay0000(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X))))
+#define shufflef3tof2(V, X, Y) float2(funcs::axay0000(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X))))
+
 HLML_INLINEF VF128 axbxayby(VF128 a, VF128 b) { return _mm_unpacklo_ps(a, b); }
 HLML_INLINEF VF128 axaybxby(VF128 a, VF128 b) { return _mm_movelh_ps(a, b); }
 HLML_INLINEF VF128 azbzawbw(VF128 a, VF128 b) { return _mm_unpackhi_ps(a, b); }
