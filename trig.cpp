@@ -1,5 +1,4 @@
 #include "trig.hpp"
-#include "int4.hpp"
 
 namespace hlml {
 namespace consts {
