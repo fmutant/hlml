@@ -9,17 +9,17 @@ struct bool4 {
   VI128 m = { 0 };
 
   HLML_INLINEF bool4() {}
-  HLML_INLINEF explicit bool4(b8 x, b8 y, b8 z, b8 w) : m(funcs::setXYZW(x, y, z, w)) {}
+  HLML_INLINEF explicit bool4(VI128 v) : m(v) {}
+  HLML_INLINEF explicit bool4(b8 x, b8 y, b8 z, b8 w) : m(funcs::Ashiftl(funcs::setXYZW(x, y, z, w), 31u)) {}
   HLML_INLINEF explicit bool4(b8* p) : bool4(p[0], p[1], p[2], p[3]) {}
   HLML_INLINEF explicit bool4(bool3 v, b8 w) : bool4(v.x(), v.y(), v.z(), w) {}
-  HLML_INLINEF explicit bool4(VI128 v) : m(v) {}
 
   HLML_INLINEF void store(b8 *p) const { p[0] = x(); p[1] = y(); p[2] = z(); p[3] = w(); }
 
-  HLML_INLINEF void setX(b8 x) { m = inserti(m, x, 0); }
-  HLML_INLINEF void setY(b8 y) { m = inserti(m, y, 1); }
-  HLML_INLINEF void setZ(b8 y) { m = inserti(m, y, 2); }
-  HLML_INLINEF void setW(b8 y) { m = inserti(m, y, 3); }
+  HLML_INLINEF void setX(b8 x) { m = inserti(m, x << 31u, 0); }
+  HLML_INLINEF void setY(b8 y) { m = inserti(m, y << 31u, 1); }
+  HLML_INLINEF void setZ(b8 y) { m = inserti(m, y << 31u, 2); }
+  HLML_INLINEF void setW(b8 y) { m = inserti(m, y << 31u, 3); }
 
   HLML_INLINEF b8 x() const { return 0 != extracti(m, 0); }
   HLML_INLINEF b8 y() const { return 0 != extracti(m, 1); }
@@ -354,4 +354,16 @@ struct bool4 {
   HLML_INLINEF bool4 wwwz() const { return shuffleb4(*this, 3, 3, 3, 2); }
   HLML_INLINEF bool4 wwww() const { return shuffleb4(*this, 3, 3, 3, 3); }
 };
+HLML_INLINEF bool4    operator!   (bool4 a) { a.m = funcs::notAandB(a.m, consts::vsignbits); return a; }
+HLML_INLINEF bool4    operator&   (bool4 a, bool4 b) { a.m = funcs::AandB(a.m, b.m); return a; }
+HLML_INLINEF bool4    operator|   (bool4 a, bool4 b) { a.m = funcs::AorB(a.m, b.m); return a; }
+HLML_INLINEF bool4    operator^   (bool4 a, bool4 b) { a.m = funcs::AxorB(a.m, b.m); return a; }
+HLML_INLINEF bool4&   operator&=  (bool4& a, bool4 b) { a = a & b; return a; }
+HLML_INLINEF bool4&   operator|=  (bool4& a, bool4 b) { a = a | b; return a; }
+HLML_INLINEF bool4&   operator^=  (bool4& a, bool4 b) { a = a ^ b; return a; }
+HLML_INLINEF bool4    operator~   (bool4 a) { return !a; }
+HLML_INLINEF u32      mask        (bool4 v) { return bool4::flagsall & funcs::movemask(v.m); }
+HLML_INLINEF b8       all         (bool4 v) { return bool4::flagsall == mask(v); }
+HLML_INLINEF b8       any         (bool4 v) { return mask(v); }
+HLML_INLINEF b8       none        (bool4 v) { return !any(v); }
 }
