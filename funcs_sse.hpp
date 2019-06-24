@@ -18,7 +18,9 @@ namespace funcs {
 #define extractf(V, i) _mm_extract_ps((V), (i))
 
 HLML_INLINEF VF128 axayaz00(VF128 a) { return _mm_blend_ps(a, _mm_setzero_ps(), (1 << 3)); }
+HLML_INLINEF VF128 axayaz11(VF128 a) { return _mm_blend_ps(a, _mm_set_ss(1.0f), (1 << 3)); }
 HLML_INLINEF VF128 axay0000(VF128 a) { return _mm_blend_ps(a, _mm_setzero_ps(), (1 << 3) | (1 << 2)); }
+HLML_INLINEF VF128 axay1111(VF128 a) { return _mm_blend_ps(a, _mm_set_ss(1.0f), (1 << 3) | (1 << 2)); }
 #define shufflef4tof3(V, X, Y, Z) float3(funcs::axayaz00(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, Z, Y, X))))
 #define shufflef4tof2(V, X, Y) float2(funcs::axay0000(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X))))
 #define shufflef3tof2(V, X, Y) float2(funcs::axay0000(_mm_shuffle_ps((V).m, (V).m, _MM_SHUFFLE(3, 2, Y, X))))
@@ -40,7 +42,7 @@ HLML_INLINEF VF128 ayawbybw(VF128 a, VF128 b) { return _mm_shuffle_ps(a, b, _MM_
 HLML_INLINEF VF128 setXYZW(f32 x, f32 y, f32 z, f32 w) { return _mm_set_ps(w, z, y, x); }
 HLML_INLINEF VI128 setXYZW(i32 x, i32 y, i32 z, i32 w) { return _mm_set_epi32(w, z, y, x); }
 HLML_INLINEF VF128 setXXXX(f32 x) { return _mm_set1_ps(x); }
-HLML_INLINEF VI128 setXXXX(i32 x) { return _mm_set_epi32(x, x, x, x); }
+HLML_INLINEF VI128 setXXXX(i32 x) { return _mm_set1_epi32(x); }
 HLML_INLINEF VF128 AaddssB(VF128 a, VF128 b) { return _mm_add_ss(a, b); }
 HLML_INLINEF VF128 notAandB(VF128 a, VF128 b) { return _mm_andnot_ps(a, b); }
 HLML_INLINEF VI128 notAandB(VI128 a, VI128 b) { return _mm_andnot_si128(a, b); }
@@ -62,7 +64,7 @@ HLML_INLINEF VF128 AdotBxyz(VF128 a, VF128 b) { return _mm_dp_ps(a, b, (0x11 << 
 HLML_INLINEF VF128 AdotBxy(VF128 a, VF128 b) { return _mm_dp_ps(a, b, (0x11 << 1) | (0x11 << 0)); }
 HLML_INLINEF VF128 AcmpeqB(VF128 a, VF128 b) { return _mm_cmpeq_ps(a, b); }
 HLML_INLINEF VI128 AcmpeqB(VI128 a, VI128 b) { return _mm_cmpeq_epi32(a, b); }
-HLML_INLINEF VF128 AcmpneqB(VF128 a, VF128 b) { return _mm_cmpneq_ps(a, b); }
+HLML_INLINEF VF128 AcmpneB(VF128 a, VF128 b) { return _mm_cmpneq_ps(a, b); }
 HLML_INLINEF VI128 AcmpneqB(VI128 a, VI128 b) { return notAandB(AcmpeqB(a, b), setXXXX(~0)); }
 HLML_INLINEF VF128 AcmpltB(VF128 a, VF128 b) { return _mm_cmplt_ps(a, b); }
 HLML_INLINEF VI128 AcmpltB(VI128 a, VI128 b) { return _mm_cmplt_epi32(a, b); }
@@ -85,7 +87,7 @@ HLML_INLINEF i32 movemask(VI128 a) { return _mm_movemask_epi8(a); }
 HLML_INLINEF VF128 rcp(VF128 a) { return _mm_rcp_ps(a); }
 HLML_INLINEF VF128 sqrt(VF128 a) { return _mm_sqrt_ps(a); }
 HLML_INLINEF VF128 rsqrt(VF128 a) { return _mm_rsqrt_ps(a); }
-HLML_INLINEF VF128 mulABaddC(VF128 a, VF128 b, VF128 c) { return _mm_fmadd_ps(a, b, c); }
+HLML_INLINEF VF128 AmulBaddC(VF128 a, VF128 b, VF128 c) { return _mm_fmadd_ps(a, b, c); }
 HLML_INLINEF VF128 floor(VF128 a) { return _mm_floor_ps(a); }
 HLML_INLINEF VF128 ceil(VF128 a) { return _mm_ceil_ps(a); }
 HLML_INLINEF VF128 trunc(VF128 a) { return _mm_round_ps(a, _MM_FROUND_TRUNC); }

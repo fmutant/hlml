@@ -723,7 +723,7 @@ HLML_INLINEF int4&  operator<<= (int4& a, u8 bits) { a = a << bits; return a; }
 HLML_INLINEF int4&  operator>>= (int4& a, u8 bits) { a = a >> bits; return a; }
 //arithmetic
 HLML_INLINEF int4   operator+   (int4 a) { return a; }
-HLML_INLINEF int4   operator-   (int4 a) { a.m = funcs::AxorB(a.m, consts::vsignbits); return a; }
+HLML_INLINEF int4   operator-   (int4 a) { a.m = funcs::AxorB(a.m, consts::vsignbits_xyzw); return a; }
 HLML_INLINEF int4   operator+   (int4 a, int4 b) { a.m = funcs::AaddB(a.m, b.m); return a; }
 HLML_INLINEF int4   operator-   (int4 a, int4 b) { a.m = funcs::AsubB(a.m, b.m); return a; }
 HLML_INLINEF int4   operator*   (int4 a, int4 b) { a.m = funcs::AmulB(a.m, b.m); return a; }
@@ -740,7 +740,7 @@ HLML_INLINEF int4&  operator+=  (int4& a, i32 b) { return a += int4(b); }
 HLML_INLINEF int4&  operator-=  (int4& a, i32 b) { return a -= int4(b); }
 HLML_INLINEF int4&  operator*=  (int4& a, i32 b) { return a *= int4(b); }
 //other
-HLML_INLINEF int4 abs(int4 v) { v.m = funcs::notAandB(consts::vsignbits, v.m); return v; }
+HLML_INLINEF int4 abs(int4 v) { v.m = funcs::notAandB(consts::vsignbits_xyzw, v.m); return v; }
 HLML_INLINEF int4 minv(int4 a, int4 b) { a.m = funcs::AminB(a.m, b.m); return a; }
 HLML_INLINEF int4 maxv(int4 a, int4 b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
 HLML_INLINEF int4 sumv(int4 v) {

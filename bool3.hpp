@@ -61,7 +61,7 @@ struct bool3 {
   HLML_INLINEF bool3 zzy() const { return shuffleb3(*this, 2, 2, 1); }
   HLML_INLINEF bool3 zzz() const { return shuffleb3(*this, 2, 2, 2); }
 };
-HLML_INLINEF bool3    operator!   (bool3 a) { a.m = funcs::notAandB(a.m, consts::vsignpppn); return a; }
+HLML_INLINEF bool3    operator!   (bool3 a) { a.m = funcs::notAandB(a.m, consts::vsignbits_xyz); return a; }
 HLML_INLINEF bool3    operator~   (bool3 a) { return !a; }
 HLML_INLINEF bool3    operator&   (bool3 a, bool3 b) { a.m = funcs::AandB(a.m, b.m); return a; }
 HLML_INLINEF bool3    operator|   (bool3 a, bool3 b) { a.m = funcs::AorB(a.m, b.m); return a; }

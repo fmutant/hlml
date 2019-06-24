@@ -21,6 +21,7 @@ typedef u16 b16;
 typedef u32 b32;
 typedef __m128 VF128;
 typedef __m128i VI128;
+static_assert(sizeof(bool) == 1, "sizeof(bool) is not 1 byte");
 };
 
 #undef min
@@ -61,6 +62,7 @@ struct vconstu {
 
 static constexpr f32 sfZero = 0.0f;
 static constexpr f32 sfOne = 1.0f;
+static constexpr f32 sfNOne = -1.0f;
 
 static constexpr u32 snSignBit = 0x80000000;
 static constexpr u32 snNSignBit = ~snSignBit;
@@ -70,19 +72,27 @@ static constexpr i32 snMagicF2I = (150 << 23) | (1 << 22);
 
 HLML_VCONST vconstu vzeros = { sfZero, sfZero, sfZero, sfZero };
 HLML_VCONST vconstu vones = { sfOne, sfOne, sfOne, sfOne };
+HLML_VCONST vconstu vones2 = { sfOne, sfOne, sfZero, sfZero };
+HLML_VCONST vconstu vones3 = { sfOne, sfOne, sfOne, sfZero };
+HLML_VCONST vconstu vones4 = { sfOne, sfOne, sfOne, sfOne };
+HLML_VCONST vconstu vnones2 = { sfNOne, sfNOne, sfZero, sfZero };
+HLML_VCONST vconstu vnones3 = { sfNOne, sfNOne, sfZero, sfZero };
+HLML_VCONST vconstu vnones4 = { sfNOne, sfNOne, sfNOne, sfZero };
 HLML_VCONST vconstu vpoint = { sfZero, sfZero, sfZero, sfOne };
 HLML_VCONST vconstu vvector = { sfZero, sfZero, sfZero, sfZero };
 HLML_VCONST vconstu vscaleinv = { sfOne, sfOne, sfOne, sfZero };
 HLML_VCONST vconstu vf2ibits = { snMagicF2I, snMagicF2I, snMagicF2I, snMagicF2I };
-HLML_VCONST vconstu vsignbits = { snSignBit, snSignBit, snSignBit, snSignBit };
+HLML_VCONST vconstu vsignbits_xyzw = { snSignBit, snSignBit, snSignBit, snSignBit };
 HLML_VCONST vconstu vsignbitsn = { snNSignBit, snNSignBit, snNSignBit, snNSignBit };
-HLML_VCONST vconstu vsignpnnp = { snZero, snSignBit, snSignBit, snZero };
-HLML_VCONST vconstu vsignnnnp = { snZero, snZero, snZero, snSignBit };
-HLML_VCONST vconstu vsignpppn = { snSignBit, snSignBit, snSignBit, snZero };
-HLML_VCONST vconstu vsignppnn = { snSignBit, snSignBit, snZero, snZero };
-HLML_VCONST vconstu vsignpnpn = { snSignBit, snZero, snSignBit, snZero };
-HLML_VCONST vconstu vsignnpnp = { snZero, snSignBit, snZero, snSignBit };
+HLML_VCONST vconstu vsignbits_yz = { snZero, snSignBit, snSignBit, snZero };
+HLML_VCONST vconstu vsignbits_w = { snZero, snZero, snZero, snSignBit };
+HLML_VCONST vconstu vsignbits_xyz = { snSignBit, snSignBit, snSignBit, snZero };
+HLML_VCONST vconstu vsignbits_xy = { snSignBit, snSignBit, snZero, snZero };
+HLML_VCONST vconstu vsignbits_xz = { snSignBit, snZero, snSignBit, snZero };
+HLML_VCONST vconstu vsignbits_yw = { snZero, snSignBit, snZero, snSignBit };
 HLML_VCONST vconstu vnall = { snZeroN, snZeroN, snZeroN, snZeroN };
+HLML_VCONST vconstu vnall3 = { snZeroN, snZeroN, snZeroN, snZero };
+HLML_VCONST vconstu vnall2 = { snZeroN, snZeroN, snZero, snZero };
 }
 
 HLML_INLINEF f32 DEG2RAD(f32 degs) { return degs * consts::RADS_IN_DEG; }
@@ -94,68 +104,24 @@ struct uiasf {
   uiasf(f32 val) : asf32(val) {}
 };
 
-template<typename T> HLML_INLINEF T   operator!   (T a) { a.m = funcs::notAandB(a.m, consts::vsignbits); return a; } // for bools
-template<typename T> HLML_INLINEF T   operator~   (T a) { a.m = funcs::notAandB(a.m, consts::vnall); return a; }
-template<typename T> HLML_INLINEF T   operator&   (T a, T b) { a.m = funcs::AandB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   operator|   (T a, T b) { a.m = funcs::AorB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   operator^   (T a, T b) { a.m = funcs::AxorB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T&  operator&=  (T& a, T b) { a = a & b; return a; }
-template<typename T> HLML_INLINEF T&  operator|=  (T& a, T b) { a = a | b; return a; }
-template<typename T> HLML_INLINEF T&  operator^=  (T& a, T b) { a = a ^ b; return a; }
+template<typename T> HLML_INLINEF T   cmpeq       (T a, T b) { a.m = funcs::AcmpeqB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   cmpne        (T a, T b) { a.m = funcs::AcmpneB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   cmpgt       (T a, T b) { a.m = funcs::AcmpgtB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   cmpge       (T a, T b) { a.m = funcs::AcmpgeB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   cmplt       (T a, T b) { a.m = funcs::AcmpltB(a.m, b.m); return a; }
+template<typename T> HLML_INLINEF T   cmple       (T a, T b) { a.m = funcs::AcmpleB(a.m, b.m); return a; }
 
-template<typename T> HLML_INLINEF T   operator+   (T a) { return a; }
-template<typename T> HLML_INLINEF T   operator+   (T a, T b) { a.m = funcs::AaddB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T&  operator+=  (T& a, T b) { a = a + b; return a; }
-template<typename T> HLML_INLINEF T   operator-   (T a) { a.m = funcs::AxorB(a.m, consts::vsignbits); return a; }
-template<typename T> HLML_INLINEF T   operator-   (T a, T b) { a.m = funcs::AsubB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T&  operator-=  (T& a, T b) { a = a - b; return a; }
-template<typename T> HLML_INLINEF T   operator*   (T a, T b) { a.m = funcs::AmulB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T&  operator*=  (T& a, T b) { a = a * b; return a; }
-template<typename T> HLML_INLINEF T   operator/   (T a, T b) { a.m = funcs::AdivB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T&  operator/=  (T& a, T b) { a = a / b; return a; }
-
-template<typename T> HLML_INLINEF T   operator<<  (T a, u8 bits) { a.m = funcs::Ashiftl(a.m, bits); return a; }
-template<typename T> HLML_INLINEF T   operator>>  (T a, u8 bits) { a.m = funcs::Ashiftr(a.m, bits); return a; }
-template<typename T> HLML_INLINEF T&  operator<<= (T& a, u8 bits) { a = a << bits; return a; }
-template<typename T> HLML_INLINEF T&  operator>>= (T& a, u8 bits) { a = a >> bits; return a; }
-
-template<typename T> HLML_INLINEF T   cmpeq       (T a, T b) { return T(funcs::AcmpeqB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmpneq      (T a, T b) { return T(funcs::AcmpneqB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmpgt       (T a, T b) { return T(funcs::AcmpgtB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmpge       (T a, T b) { return T(funcs::AcmpgeB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmplt       (T a, T b) { return T(funcs::AcmpltB(a.m, b.m)); }
-template<typename T> HLML_INLINEF T   cmple       (T a, T b) { return T(funcs::AcmpleB(a.m, b.m)); }
-
-template<typename T> HLML_INLINEF T   abs         (T v) { v.m = funcs::notAandB(consts::vsignbits, v.m); return v; }
-template<>           HLML_INLINEF f32 abs         (f32 v) {
+HLML_INLINEF u32 min(u32 a, u32 b) { return a < b ? a : b; }
+HLML_INLINEF u32 max(u32 a, u32 b) { return b < a ? a : b; }
+HLML_INLINEF f32 min(f32 a, f32 b) { return a < b ? a : b; }
+HLML_INLINEF f32 max(f32 a, f32 b) { return b < a ? a : b; }
+HLML_INLINEF f32 abs(f32 v) {
   uiasf a = { v };
   a.asu32 &= ~consts::snSignBit;
   return a.asf32;
 }
-template<typename T> HLML_INLINEF T   sign        (T v) { return (cmplt(v, T(consts::vzeros)) & -T(consts::vones)) | (cmpgt(v, T(consts::vzeros)) & T(consts::vones)); } //https://github.com/g-truc/glm/blob/master/glm/simd/common.h#L99
-template<typename T> HLML_INLINEF T   minv        (T a, T b) { a.m = funcs::AminB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   maxv        (T a, T b) { a.m = funcs::AmaxB(a.m, b.m); return a; }
-template<typename T> HLML_INLINEF T   min         (T a, T b) { return (a) < (b) ? (a) : (b); }
-template<typename T> HLML_INLINEF T   max         (T a, T b) { return (a) > (b) ? (a) : (b); }
-
-template<typename T> HLML_INLINEF u32 mask        (T v) { return T::flagsall & funcs::movemask(v.m); }
-template<typename T> HLML_INLINEF b8  any         (T v) { return mask(v); }
-template<typename T> HLML_INLINEF b8  none        (T v) { return !any(v); }
-template<typename T> HLML_INLINEF b8  all         (T v) { return T::flagsall == mask(v); }
-
-template<typename T> HLML_INLINEF T   operator+   (T a, f32 b) { return a + T(b); }
-template<typename T> HLML_INLINEF T&  operator+=  (T& a, f32 b) { return a += T(b); }
-template<typename T> HLML_INLINEF T   operator-   (T a, f32 b) { return a - T(b); }
-template<typename T> HLML_INLINEF T&  operator-=  (T& a, f32 b) { return a -= T(b); }
-template<typename T> HLML_INLINEF T   operator*   (T a, f32 b) { return a * T(b); }
-template<typename T> HLML_INLINEF T&  operator*=  (T& a, f32 b) { return a *= T(b); }
-template<typename T> HLML_INLINEF T   operator/   (T a, f32 b) { return a / T(b); }
-template<typename T> HLML_INLINEF T&  operator/=  (T& a, f32 b) { return a /= T(b); }
-
-template<typename T> HLML_INLINEF T   operator+   (f32 a, T b) { return T(a) + b; }
-template<typename T> HLML_INLINEF T   operator-   (f32 a, T b) { return T(a) - b; }
-template<typename T> HLML_INLINEF T   operator*   (f32 a, T b) { return T(a) * b; }
-template<typename T> HLML_INLINEF T   operator/   (f32 a, T b) { return T(a) / b; }
+HLML_INLINEF f32 clamp(f32 v, f32 a, f32 b) { return min(max(v, a), b); }
+HLML_INLINEF f32 saturate(f32 v) { return clamp(v, 0.0, 1.0f); }
 
 HLML_INLINEF i32 f2i(f32 x) {
   const i32 magic = consts::snMagicF2I;

@@ -354,7 +354,7 @@ struct bool4 {
   HLML_INLINEF bool4 wwwz() const { return shuffleb4(*this, 3, 3, 3, 2); }
   HLML_INLINEF bool4 wwww() const { return shuffleb4(*this, 3, 3, 3, 3); }
 };
-HLML_INLINEF bool4    operator!   (bool4 a) { a.m = funcs::notAandB(a.m, consts::vsignbits); return a; }
+HLML_INLINEF bool4    operator!   (bool4 a) { a.m = funcs::notAandB(a.m, consts::vsignbits_xyzw); return a; }
 HLML_INLINEF bool4    operator~   (bool4 a) { return !a; }
 HLML_INLINEF bool4    operator&   (bool4 a, bool4 b) { a.m = funcs::AandB(a.m, b.m); return a; }
 HLML_INLINEF bool4    operator|   (bool4 a, bool4 b) { a.m = funcs::AorB(a.m, b.m); return a; }

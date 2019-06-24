@@ -28,7 +28,7 @@ class quat {
     sincos(angles * 0.5f, sines, coses);
     float4 cxxyz(funcs::bxayazaw(sines.m, coses.m)), sxxyz(funcs::bxayazaw(coses.m, sines.m));;
     float4 left = cxxyz * coses.zzyz() * coses.wwwy(), right = sxxyz * sines.zzyz() * sines.wwwy();
-    m = left + (right ^ float4(consts::vsignnpnp));
+    m = left + (right ^ float4(consts::vsignbits_yw));
   }
   explicit quat(float3x3 rot) {
     // https://www.fd.cvut.cz/personal/voracsar/geometriepg/pgr020/matrix2quaternions.pdf
@@ -38,7 +38,7 @@ class quat {
     const float4 diag(consts::sfZero, m00.x(), m11.x(), m22.x())
                , left(consts::sfZero, rot.c2.y(), rot.c0.z(), rot.c1.x())
                , right(consts::sfZero, rot.c1.z(), rot.c2.x(), rot.c0.y());
-    const float4 s0(consts::vsignppnn), s1(consts::vsignpnpn), s2(consts::vsignpnnp);
+    const float4 s0(consts::vsignbits_xy), s1(consts::vsignbits_xz), s2(consts::vsignbits_yz);
     float4 factor(1.0f);
     if (all(m22 < zero)) {
       if (all(m00 > m11)) {
@@ -82,7 +82,7 @@ class quat {
     float3 col1 = c1l * xzy * v.yzz() + c1r * wxx * v.zxw();
     float3 col2 = c2l * xzy * v.zyy() + c2r * wxx * v.ywx();
     float3x3 result = float3x3::identity() + float3x3(col0, col1, col2);
-		return result;
+    return result;
   }
   HLML_INLINEF f32 x() const { return m.y(); }
   HLML_INLINEF f32 y() const { return m.z(); }
@@ -98,7 +98,7 @@ HLML_INLINEF quat     operator+  (quat a, f32 s) { return a + quat(s); }
 HLML_INLINEF quat     operator+  (f32 s, quat a) { return a + s; }
 HLML_INLINEF quat&    operator+= (quat& a, quat b) { a = a + b; return a; }
 HLML_INLINEF quat&    operator+= (quat& a, f32 s) { a = a + quat(s); return a; }
-HLML_INLINEF quat     operator-  (quat a) { return quat((float4)a ^ float4(consts::vsignpppn)); }
+HLML_INLINEF quat     operator-  (quat a) { return quat((float4)a ^ float4(consts::vsignbits_xyz)); }
 HLML_INLINEF quat     operator-  (quat a, quat b) { return quat((float4)a - (float4)b); }
 HLML_INLINEF quat     operator-  (quat a, f32 s) { return a - quat(s); }
 HLML_INLINEF quat     operator-  (f32 s, quat b) { return quat(s) - b; }
@@ -107,7 +107,7 @@ HLML_INLINEF quat&    operator-= (quat& a, f32 s) { a = a - quat(s); return a; }
 HLML_INLINEF quat     operator*  (quat a, quat b) {
   float4 ai = (float4)a, bi = (float4)b;
   float4 s1 = ai.xyzy() * bi.wwwy() + ai.yzxz() * bi.zxyz();
-  s1.m = funcs::AxorB(s1.m, consts::vsignnnnp);
+  s1.m = funcs::AxorB(s1.m, consts::vsignbits_w);
   ai = ai.wwww() * bi - ai.zxyx() * bi.yzxx() + s1;
   return quat(ai);
 }

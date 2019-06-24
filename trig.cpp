@@ -140,57 +140,57 @@ void sincos(float4 x, float4& s, float4& c) {
   float4 ysin = (polymsk & polys) + (polymskn & polyc);
   float4 ycos = polyc + polys - ysin;
   float4 signs_cos = asflt((~(emm2 - twos) & fours) << 29);
-  float4 signs_sin = (x & float4(consts::vsignbits)) ^ asflt((emm2 & fours) << 29);
+  float4 signs_sin = (x & float4(consts::vsignbits_xyzw)) ^ asflt((emm2 & fours) << 29);
   s = ysin ^ signs_sin;
   c = ycos ^ signs_cos;
 }
 
 float4 tan(float4 x) {
-  const float4 signs(consts::vsignbits), ones(consts::vones), signsres(x & signs), fopi(consts::vfopi), tanp1(consts::vtancp1), tanp2(consts::vtancp2), tanp3(consts::vtancp3), tanp4(consts::vtancp4), tanp5(consts::vtancp5);
+  const float4 signs(consts::vsignbits_xyzw), ones(consts::vones), signsres(x & signs), fopi(consts::vfopi), tanp1(consts::vtancp1), tanp2(consts::vtancp2), tanp3(consts::vtancp3), tanp4(consts::vtancp4), tanp5(consts::vtancp5);
   const int4 iones(consts::vnones), ionesn(consts::vnonesn), twos(consts::vntwos), nzeros(consts::vnzeros);
 
-	float4 ax(abs(x));
-	/* store the integer part of y in mm0 */
-	int4 emm2 = (toint(ax * fopi) + iones) & ionesn;
+  float4 ax(abs(x));
+  /* store the integer part of y in mm0 */
+  int4 emm2 = (toint(ax * fopi) + iones) & ionesn;
   float4 y = toflt(emm2);
   emm2 = cmpeq(emm2 & twos, nzeros);
   const float4 polymsk(asflt(emm2)), polymskn(~polymsk);
 
-	float4 z = ((ax + y * float4(consts::vnegdp1)) + y * float4(consts::vnegdp2)) + y * float4(consts::vnegdp3), zz(z * z), poly(consts::vtancp0);
-	poly = poly * zz + tanp1;
-	poly = poly * zz + tanp2;
-	poly = poly * zz + tanp3;
-	poly = poly * zz + tanp4;
-	poly = poly * zz + tanp5;
-	poly = poly * zz * z + z;
+  float4 z = ((ax + y * float4(consts::vnegdp1)) + y * float4(consts::vnegdp2)) + y * float4(consts::vnegdp3), zz(z * z), poly(consts::vtancp0);
+  poly = poly * zz + tanp1;
+  poly = poly * zz + tanp2;
+  poly = poly * zz + tanp3;
+  poly = poly * zz + tanp4;
+  poly = poly * zz + tanp5;
+  poly = poly * zz * z + z;
 
-	float4 polyinv = ones / poly;
-	poly = (poly & polymsk) | (-polyinv & polymskn);
-	return poly ^ signsres;
+  float4 polyinv = ones / poly;
+  poly = (poly & polymsk) | (-polyinv & polymskn);
+  return poly ^ signsres;
 }
 
 float4 atan(float4 x) {
-  const float4 signsn(consts::vsignbitsn), signs(consts::vsignbits), ones(consts::vones), atanhi(consts::vatanhi), atanlo(consts::vatanlo), pih(consts::vpih), piq(consts::vpiq), atanp0(consts::vatanp0), atanp1(consts::vatanp1), atanp2(consts::vatanp2), atanp3(consts::vatanp3);
+  const float4 signsn(consts::vsignbitsn), signs(consts::vsignbits_xyzw), ones(consts::vones), atanhi(consts::vatanhi), atanlo(consts::vatanlo), pih(consts::vpih), piq(consts::vpiq), atanp0(consts::vatanp0), atanp1(consts::vatanp1), atanp2(consts::vatanp2), atanp3(consts::vatanp3);
   float4 ax = abs(x), r = ax - ones, r0 = rcp(ax + ones), r1 = -rcp(ax);
-	float4 cmp0 = cmpgt(ax, atanhi), cmp1 = cmpgt(ax, atanlo), cmp2 = ~cmp0 & cmp1, cmp = cmp0 | cmp1;
-	float4 x2 = (cmp2 & (r * r0)) | (cmp0 & r1);
-	ax = (cmp & x2) | (~cmp & ax);
+  float4 cmp0 = cmpgt(ax, atanhi), cmp1 = cmpgt(ax, atanlo), cmp2 = ~cmp0 & cmp1, cmp = cmp0 | cmp1;
+  float4 x2 = (cmp2 & (r * r0)) | (cmp0 & r1);
+  ax = (cmp & x2) | (~cmp & ax);
 
-	float4 zz = ax * ax, acc = atanp0;
-	acc = acc * zz - atanp1;
-	acc = acc * zz + atanp2;
-	acc = acc * zz - atanp3;
-	acc = acc * zz * ax + ax + ((cmp0 & pih) | (cmp2 & piq));
-	return acc ^ (x & signs);
+  float4 zz = ax * ax, acc = atanp0;
+  acc = acc * zz - atanp1;
+  acc = acc * zz + atanp2;
+  acc = acc * zz - atanp3;
+  acc = acc * zz * ax + ax + ((cmp0 & pih) | (cmp2 & piq));
+  return acc ^ (x & signs);
 }
 
 float4 atan2(float4 x, float4 y) {
-  const float4 zeros(consts::vzeros), signs(consts::vsignbits), pi(consts::vpif), pih(consts::vpih);
-	float4 xeq = cmpeq(x, zeros), xgt = cmpgt(x, zeros), xle = cmple(x, zeros), xlt = cmplt(x, zeros), yeq = cmpeq(y, zeros), ylt = cmplt(y, zeros);
-	float4 zero_mask = (xeq & yeq) | (xgt & yeq), pio2_mask = ~yeq &  xeq;
-	float4 pio2_result = (pih ^ (ylt & signs)) & pio2_mask;
-	float4 atan_result = atan(y / x) + (xlt & (pi ^ (xlt & ylt & signs)));
+  const float4 zeros(consts::vzeros), signs(consts::vsignbits_xyzw), pi(consts::vpif), pih(consts::vpih);
+  float4 xeq = cmpeq(x, zeros), xgt = cmpgt(x, zeros), xle = cmple(x, zeros), xlt = cmplt(x, zeros), yeq = cmpeq(y, zeros), ylt = cmplt(y, zeros);
+  float4 zero_mask = (xeq & yeq) | (xgt & yeq), pio2_mask = ~yeq &  xeq;
+  float4 pio2_result = (pih ^ (ylt & signs)) & pio2_mask;
+  float4 atan_result = atan(y / x) + (xlt & (pi ^ (xlt & ylt & signs)));
 
-	return (~zero_mask & pio2_result) | (~pio2_mask & atan_result) | (pi & xle & yeq);
+  return (~zero_mask & pio2_result) | (~pio2_mask & atan_result) | (pi & xle & yeq);
 }
 }

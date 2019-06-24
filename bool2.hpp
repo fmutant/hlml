@@ -26,7 +26,7 @@ struct bool2 {
   HLML_INLINEF bool2 yx() const { return shuffleb2(*this, 1, 0); }
   HLML_INLINEF bool2 yy() const { return shuffleb2(*this, 1, 1); }
 };
-HLML_INLINEF bool2    operator!   (bool2 a) { a.m = funcs::notAandB(a.m, consts::vsignppnn); return a; }
+HLML_INLINEF bool2    operator!   (bool2 a) { a.m = funcs::notAandB(a.m, consts::vsignbits_xy); return a; }
 HLML_INLINEF bool2    operator~   (bool2 a) { return !a; }
 HLML_INLINEF bool2    operator&   (bool2 a, bool2 b) { a.m = funcs::AandB(a.m, b.m); return a; }
 HLML_INLINEF bool2    operator|   (bool2 a, bool2 b) { a.m = funcs::AorB(a.m, b.m); return a; }
